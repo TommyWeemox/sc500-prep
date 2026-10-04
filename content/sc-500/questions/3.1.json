@@ -1,0 +1,171 @@
+[
+  {
+    "id": "q-3.1-01", "objective": "3.1", "skills": ["3.1.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Avant de déployer Microsoft 365 Copilot à 2 000 utilisateurs, Brisemer veut identifier les sites SharePoint dont le contenu est partagé avec « Everyone except external users », puis limiter immédiatement l'accès des plus sensibles à un groupe précis. L'entreprise dispose de SharePoint Advanced Management.",
+    "stem": "Quelle démarche adoptez-vous ?",
+    "options": [
+      { "id": "a", "text": "Exécuter les rapports Data access governance (Site permissions, EEEU) dans le SharePoint admin center, puis appliquer Restricted access control aux sites sensibles.", "correct": true, "why": "Les rapports DAG identifient la surexposition ; RAC restreint l'accès d'un site à un groupe." },
+      { "id": "b", "text": "Activer Restricted Content Discovery sur tous les sites.", "correct": false, "why": "Masque les sites à Copilot sans retirer aucune permission : les utilisateurs gardent l'accès direct aux fichiers." },
+      { "id": "c", "text": "Créer une politique d'accès conditionnel exigeant un appareil conforme pour SharePoint.", "correct": false, "why": "Contrôle les conditions de connexion, pas qui a des permissions sur quel site." },
+      { "id": "d", "text": "Activer Defender for Storage sur les comptes de stockage.", "correct": false, "why": "SharePoint Online n'est pas un compte de stockage Azure du client." }
+    ],
+    "explanation": "Rapports snapshot (Site permissions, EEEU et Everyone) pour la base, rapports d'activité (28 jours) pour les nouveaux partages. Remédiation : Restricted access control, Change history, Site access review.",
+    "lesson": "3.1#s-3-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports"]
+  },
+  {
+    "id": "q-3.1-02", "objective": "3.1", "skills": ["3.1.2"], "type": "single", "difficulty": 2,
+    "scenario": "Le RSSI veut savoir quels documents sensibles Microsoft 365 Copilot pourrait faire remonter, et empêcher Copilot de **résumer** tout document portant l'étiquette « Confidentiel - Finance ».",
+    "stem": "Quelle combinaison répond au besoin ?",
+    "options": [
+      { "id": "a", "text": "Purview DSPM for AI : consulter l'évaluation de risque de données (oversharing), puis créer une politique DLP pour l'emplacement Microsoft 365 Copilot qui exclut les contenus portant cette étiquette.", "correct": true, "why": "L'évaluation identifie la surexposition ; la DLP « restrict access by label » empêche Copilot de traiter ces contenus." },
+      { "id": "b", "text": "Defender for AI Services avec la collecte des preuves de prompts.", "correct": false, "why": "Défend les applications IA Azure contre des attaques ; ne régit pas ce que Copilot résume dans Microsoft 365." },
+      { "id": "c", "text": "Un guardrail Foundry avec un contrôle PII.", "correct": false, "why": "Les guardrails Foundry s'appliquent aux modèles et agents Foundry, pas à Microsoft 365 Copilot." },
+      { "id": "d", "text": "Désactiver Copilot pour tous les utilisateurs de la Finance.", "correct": false, "why": "Excessif et ne protège pas le contenu vis-à-vis des autres utilisateurs." }
+    ],
+    "explanation": "DSPM for AI : prérequis Audit activé ; évaluation par défaut hebdomadaire des 100 sites les plus utilisés ; onglet Protect avec DLP par étiquette, Restricted Content Discovery, étiquetage automatique, rétention.",
+    "lesson": "3.1#s-3-1-2",
+    "sources": ["https://learn.microsoft.com/en-us/purview/dspm-for-ai"]
+  },
+  {
+    "id": "q-3.1-03", "objective": "3.1", "skills": ["3.1.3"], "type": "order", "difficulty": 3,
+    "scenario": "Brisemer veut bloquer en temps réel les appels d'outils d'un agent Copilot Studio qui tenteraient d'exfiltrer des secrets, sans perdre la visibilité sur les autres agents.",
+    "stem": "Dans quel ordre procédez-vous ?",
+    "options": [
+      { "id": "a", "text": "Activer la sécurité des agents IA dans Microsoft Defender, avec le connecteur d'application Microsoft 365, et connecter Copilot Studio.", "why": "Sans ces prérequis, Defender ne voit pas l'activité des agents Copilot Studio." },
+      { "id": "b", "text": "Laisser la règle Default, qui audite tous les agents, et observer les comportements enregistrés dans BehaviorInfo.", "why": "On mesure avant de bloquer : la règle par défaut audite sans interrompre." },
+      { "id": "c", "text": "Créer une règle personnalisée de type bloquant, détection « Secret exfiltration », limitée à l'agent concerné.", "why": "Les règles personnalisées bloquent avant exécution, sur un périmètre choisi." },
+      { "id": "d", "text": "Vérifier dans la chasse avancée que les blocages sont enregistrés comme behaviors et ajuster les exclusions.", "why": "Contrôle final et réglage des faux positifs." }
+    ],
+    "explanation": "Settings > Security for AI > Policies & rules > Real-time protection. Default = audit ; règles personnalisées = blocage. Les événements vont dans BehaviorInfo. Protection Copilot Studio en préversion.",
+    "lesson": "3.1#s-3-1-3",
+    "sources": ["https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-real-time-protection"]
+  },
+  {
+    "id": "q-3.1-04", "objective": "3.1", "skills": ["3.1.4"], "type": "single", "diagnostic": true, "difficulty": 3,
+    "scenario": "Un agent de Brisemer lit la boîte aux lettres de l'utilisateur connecté pour préparer des réponses (flux on-behalf-of). Le RSSI veut exiger un appareil conforme pour cet usage. Un administrateur a créé une politique d'accès conditionnel ciblant l'**identité de l'agent**, sans effet.",
+    "stem": "Pourquoi, et que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "En OBO, le sujet du jeton est l'utilisateur : il faut une politique ciblant les utilisateurs et groupes concernés, pour la ressource visée.", "correct": true, "why": "Microsoft documente que l'accès délégué se contrôle par des politiques sur les utilisateurs et groupes." },
+      { "id": "b", "text": "Il faut cibler le blueprint de l'agent plutôt que l'identité de l'agent.", "correct": false, "why": "Le blueprint couvre les identités d'agents (accès application seule), pas le flux délégué." },
+      { "id": "c", "text": "Il faut cibler le compte utilisateur de l'agent.", "correct": false, "why": "Ce modèle (agent-user) concerne un agent qui agit avec son propre compte, pas au nom de l'utilisateur." },
+      { "id": "d", "text": "L'accès conditionnel ne s'applique jamais aux agents.", "correct": false, "why": "Il s'applique, à condition de cibler le bon sujet." }
+    ],
+    "explanation": "Trois modèles : OBO (cibler utilisateurs), application seule (cibler identité d'agent ou blueprint), agent-user (cibler le compte utilisateur de l'agent). Licence : Microsoft 365 E7, ou Agent 365 avec Entra ID P1 ou Microsoft 365 E3.",
+    "lesson": "3.1#s-3-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"]
+  },
+  {
+    "id": "q-3.1-05", "objective": "3.1", "skills": ["3.1.4"], "type": "multiple", "difficulty": 3,
+    "scenario": null,
+    "stem": "Quelles **deux** affirmations sur l'accès conditionnel pour Microsoft Entra Agent ID sont exactes ?",
+    "options": [
+      { "id": "a", "text": "Une politique qui cible « tous les utilisateurs » n'inclut pas les comptes utilisateurs d'agents.", "correct": true, "why": "Limite documentée." },
+      { "id": "b", "text": "Un agent qui accède à une ressource avec une clé d'API n'est pas soumis à l'accès conditionnel.", "correct": true, "why": "Il contourne l'émission de jetons Entra, donc l'accès conditionnel." },
+      { "id": "c", "text": "Une politique ciblant une identité d'agent s'applique aussi à son compte utilisateur.", "correct": false, "why": "Documenté comme non pris en charge : il faut des politiques distinctes." },
+      { "id": "d", "text": "L'accès conditionnel pour agents s'applique aussi quand les security defaults sont activés.", "correct": false, "why": "Il ne s'applique pas avec les security defaults." },
+      { "id": "e", "text": "On peut inclure ou exclure des comptes utilisateurs d'agents par appartenance à un groupe.", "correct": false, "why": "Non pris en charge actuellement." }
+    ],
+    "explanation": "Pour cibler à l'échelle : blueprints et attributs de sécurité personnalisés. Pour bloquer les agents compromis : condition agent risk (ID Protection).",
+    "lesson": "3.1#s-3-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"]
+  },
+  {
+    "id": "q-3.1-06", "objective": "3.1", "skills": ["3.1.5"], "type": "single", "difficulty": 2,
+    "scenario": "Une alerte Defender signale une tentative d'injection indirecte de prompt (XPIA) contre un agent Foundry publié. L'analyste doit déterminer quels outils l'agent a invoqués et quelles données il a touchées dans les trois derniers jours.",
+    "stem": "Où travaille-t-il en priorité ?",
+    "options": [
+      { "id": "a", "text": "Dans l'incident Defender XDR (graphe et rayon d'impact), puis en chasse avancée sur CloudAppEvents et AgentsInfo.", "correct": true, "why": "CloudAppEvents contient la télémétrie Agent 365 (actions, appels d'outils, accès aux données) ; AgentsInfo l'inventaire." },
+      { "id": "b", "text": "Dans le journal d'activité Azure de la ressource Foundry.", "correct": false, "why": "Il trace les opérations ARM, pas les appels d'outils de l'agent." },
+      { "id": "c", "text": "Dans les journaux de connexion Entra uniquement.", "correct": false, "why": "Utiles mais insuffisants : ils ne montrent pas les actions de l'agent." },
+      { "id": "d", "text": "Dans le tableau de conformité réglementaire de Defender for Cloud.", "correct": false, "why": "Outil de posture, pas d'investigation d'incident." }
+    ],
+    "explanation": "Tables utiles : AlertInfo, AlertEvidence, CloudAppEvents, AgentsInfo, BehaviorInfo, BehaviorEntities. Seuls les agents Foundry publiés sont couverts par la détection.",
+    "lesson": "3.1#s-3-1-5",
+    "sources": ["https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-detection-protection"]
+  },
+  {
+    "id": "q-3.1-07", "objective": "3.1", "skills": ["3.1.6"], "type": "single", "difficulty": 2,
+    "scenario": "Un agent autonome de Brisemer a besoin, pendant trois mois, d'une permission applicative Microsoft Graph pour un projet de migration. Le RSSI exige une demande portée par un responsable métier, une approbation, une expiration automatique et un responsable désigné si l'actuel quitte l'entreprise.",
+    "stem": "Que mettez-vous en place ?",
+    "options": [
+      { "id": "a", "text": "Un sponsor pour l'agent, et un access package (entitlement management) contenant la permission, demandé par le sponsor pour l'agent, avec approbation et expiration à 3 mois.", "correct": true, "why": "Access packages pour agents : intentionnels, audités, limités dans le temps ; le sponsor est responsable et sa sponsorisation passe à son manager s'il part." },
+      { "id": "b", "text": "Accorder la permission par consentement administrateur et créer un rappel calendrier.", "correct": false, "why": "Permanent, sans approbation tracée ni expiration automatique." },
+      { "id": "c", "text": "Rendre l'agent éligible à Global Administrator dans PIM.", "correct": false, "why": "Démesuré, et PIM ne s'applique pas aux identités qui ne peuvent pas activer." },
+      { "id": "d", "text": "Ajouter l'agent à un groupe dynamique.", "correct": false, "why": "Ne fournit ni approbation ni expiration." }
+    ],
+    "explanation": "Les access packages peuvent donner des groupes, des permissions d'API (y compris applicatives Graph) et des rôles Entra. Demandes : l'agent, son sponsor, ou un admin. Pour les agents, cela relève de la licence Microsoft Agent 365.",
+    "lesson": "3.1#s-3-1-6",
+    "sources": ["https://learn.microsoft.com/en-us/entra/agent-id/manage-agent-identities-admin", "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"]
+  },
+  {
+    "id": "q-3.1-08", "objective": "3.1", "skills": ["3.1.7"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Trois équipes de Brisemer partagent les déploiements de modèles d'une même ressource Foundry. Une équipe a consommé tout le quota un lundi matin. Le RSSI veut un plafond de jetons par minute **par projet** et un journal centralisé des appels.",
+    "stem": "Que configurez-vous ?",
+    "options": [
+      { "id": "a", "text": "Un AI Gateway (API Management) sur la ressource Foundry, les projets ajoutés à la passerelle, et des limites de jetons par projet.", "correct": true, "why": "Les limites de l'AI Gateway s'appliquent par projet ; APIM journalise les appels." },
+      { "id": "b", "text": "Un guardrail Foundry par projet.", "correct": false, "why": "Les guardrails filtrent le contenu, pas la consommation de jetons." },
+      { "id": "c", "text": "Defender for AI Services.", "correct": false, "why": "Détecte les menaces ; ne limite pas les jetons." },
+      { "id": "d", "text": "Une politique Azure Policy de type deny sur les déploiements.", "correct": false, "why": "Agit sur la configuration ARM, pas sur la consommation à l'exécution." }
+    ],
+    "explanation": "AI Gateway : nouvelle instance Basic v2 ou instance v2 existante (même tenant et abonnement, API Management Service Contributor). Nouveaux projets activés par défaut, existants à ajouter. Dépassement TPM : 429 ; quota total : 403.",
+    "lesson": "3.1#s-3-1-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/foundry/configuration/enable-ai-api-management-gateway-portal", "https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities"]
+  },
+  {
+    "id": "q-3.1-09", "objective": "3.1", "skills": ["3.1.8"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer veut être alertée quand une application qui appelle Azure OpenAI subit des tentatives de jailbreak ou une fuite de données sensibles, et corréler ces alertes avec les autres incidents dans Defender XDR.",
+    "stem": "Que faut-il activer ?",
+    "options": [
+      { "id": "a", "text": "Le plan Defender for AI Services dans les protections de charges de travail de Defender for Cloud, sur l'abonnement.", "correct": true, "why": "Détection en temps réel (Prompt Shields, threat intelligence) et intégration Defender XDR." },
+      { "id": "b", "text": "Defender CSPM seul.", "correct": false, "why": "Gestion de posture ; ne produit pas d'alertes d'exécution sur les prompts." },
+      { "id": "c", "text": "Defender for Storage sur le compte de grounding.", "correct": false, "why": "Protège le stockage, pas les appels au modèle." },
+      { "id": "d", "text": "Microsoft Sentinel avec le connecteur Azure Activity.", "correct": false, "why": "Le journal d'activité ne contient pas le contenu des prompts ni les détections de jailbreak." }
+    ],
+    "explanation": "Defender for AI Services : GA, texte uniquement, essai de 30 jours plafonné à 75 milliards de jetons, activation par un Owner de l'abonnement.",
+    "lesson": "3.1#s-3-1-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/ai-threat-protection"]
+  },
+  {
+    "id": "q-3.1-10", "objective": "3.1", "skills": ["3.1.9"], "type": "single", "difficulty": 3,
+    "scenario": "Un agent Foundry Agent Service utilise un outil de recherche web. Le déploiement de modèle sous-jacent a un guardrail strict. L'agent, lui, a un guardrail personnalisé qui ne scanne que l'entrée utilisateur et la sortie. Une page web malveillante contient une injection de prompt.",
+    "stem": "La réponse de l'outil est-elle analysée pour les attaques indirectes ?",
+    "options": [
+      { "id": "a", "text": "Non : le guardrail de l'agent remplace entièrement celui du modèle, et il ne couvre pas le point d'intervention tool response.", "correct": true, "why": "Documenté : le guardrail de l'agent prime totalement ; tool response doit être explicitement couvert." },
+      { "id": "b", "text": "Oui : le guardrail du modèle s'applique en plus de celui de l'agent.", "correct": false, "why": "Il n'y a pas de cumul : celui de l'agent remplace celui du modèle." },
+      { "id": "c", "text": "Oui : Microsoft.DefaultV2 s'applique toujours aux outils.", "correct": false, "why": "DefaultV2 est le défaut des modèles ; l'agent utilise son guardrail assigné." },
+      { "id": "d", "text": "Non, car les guardrails ne s'appliquent jamais aux agents.", "correct": false, "why": "Ils s'appliquent aux agents de Foundry Agent Service (préversion)." }
+    ],
+    "explanation": "Points d'intervention : user input, tool call et tool response (agents, préversion), output. Ajouter un contrôle Indirect attacks sur tool response, action Annotate and block.",
+    "lesson": "3.1#s-3-1-9",
+    "sources": ["https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview"]
+  },
+  {
+    "id": "q-3.1-11", "objective": "3.1", "skills": ["3.1.10"], "type": "single", "difficulty": 2,
+    "scenario": "Le RSSI veut une vue unique montrant les ressources IA de l'abonnement, le nombre de prompts analysés, les alertes IA, et les comptes de stockage exposés à Internet qui servent au grounding.",
+    "stem": "Quel outil et quels prérequis ?",
+    "options": [
+      { "id": "a", "text": "Le tableau de bord Data and AI security de Defender for Cloud, avec Defender CSPM (et la découverte des données sensibles), Defender for Storage, Defender for Databases et la protection des charges de travail IA.", "correct": true, "why": "C'est la liste documentée des prérequis pour un accès complet au tableau de bord." },
+      { "id": "b", "text": "Le tableau DSPM for AI de Purview uniquement.", "correct": false, "why": "Orienté Microsoft 365 et données ; ne montre pas les ressources de grounding Azure exposées ni les prompts analysés par Defender." },
+      { "id": "c", "text": "Le tableau de bord du centre d'administration Microsoft 365 > Agents.", "correct": false, "why": "Inventaire et gouvernance des agents, pas la posture des ressources Azure." },
+      { "id": "d", "text": "Azure Monitor Workbooks par défaut.", "correct": false, "why": "Pas de vue intégrée des risques données et IA de Defender." }
+    ],
+    "explanation": "Sections : vue d'ensemble, top issues, data closer look, AI closer look (découverte IA, prompts analysés, requêtes, ressources de grounding exposées).",
+    "lesson": "3.1#s-3-1-10",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/data-aware-security-dashboard-overview"]
+  },
+  {
+    "id": "q-3.1-12", "objective": "3.1", "skills": ["3.1.11"], "type": "single", "difficulty": 1,
+    "scenario": "Un agent Copilot Studio créé par un employé parti de l'entreprise n'a plus de propriétaire et reste utilisé. Un autre agent tiers doit être rendu indisponible pour toute l'organisation immédiatement.",
+    "stem": "Que faites-vous dans le centre d'administration Microsoft 365 (Agents > All agents), et avec quel rôle ?",
+    "options": [
+      { "id": "a", "text": "Assign new owner pour le premier, Block pour le second, avec le rôle AI Administrator (ou Global Administrator).", "correct": true, "why": "Ces actions de gouvernance sont réservées à AI Administrator ou Global Administrator." },
+      { "id": "b", "text": "Delete pour les deux, avec le rôle Teams Administrator.", "correct": false, "why": "Supprimer le premier n'est pas demandé, et ce rôle ne suffit pas pour la gouvernance des agents." },
+      { "id": "c", "text": "Uninstall pour le second suffit à le rendre indisponible pour tous.", "correct": false, "why": "Désinstaller retire un déploiement ; Block empêche tout usage dans l'organisation." },
+      { "id": "d", "text": "Désactiver le compte Entra de l'ancien employé.", "correct": false, "why": "Ne réattribue pas l'agent et ne bloque pas l'agent tiers." }
+    ],
+    "explanation": "Actions : install/uninstall, activate (avec modèle de politiques), block/unblock, delete (30 jours de récupération), start/stop (Foundry), assign new owner (Agent Builder et Copilot Studio), publish/reject.",
+    "lesson": "3.1#s-3-1-11",
+    "sources": ["https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-actions", "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview"]
+  }
+]

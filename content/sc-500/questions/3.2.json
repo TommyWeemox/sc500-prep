@@ -1,0 +1,158 @@
+[
+  {
+    "id": "q-3.2-01", "objective": "3.2", "skills": ["3.2.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer déploie de nouvelles VM de calcul. Exigences : chiffrer aussi le disque temporaire et les caches, sans consommer de CPU de la VM, et rester supporté après 2028.",
+    "stem": "Quelle option choisissez-vous ?",
+    "options": [
+      { "id": "a", "text": "Encryption at host.", "correct": true, "why": "Chiffre disque temporaire, caches et flux vers le stockage, sans CPU invité ; c'est la recommandation pour les nouvelles VM." },
+      { "id": "b", "text": "Azure Disk Encryption (BitLocker / DM-Crypt).", "correct": false, "why": "Utilise le CPU de la VM et sera retiré le 15 septembre 2028." },
+      { "id": "c", "text": "Le chiffrement côté serveur par défaut.", "correct": false, "why": "Ne chiffre ni le disque temporaire ni les caches." },
+      { "id": "d", "text": "Un verrou ReadOnly sur les disques.", "correct": false, "why": "Un verrou ne chiffre rien." }
+    ],
+    "explanation": "SSE : toujours actif, disques au repos seulement. Encryption at host : + temp disk, caches, flux. ADE : retiré le 15/09/2028, migration vers encryption at host.",
+    "lesson": "3.2#s-3-2-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"]
+  },
+  {
+    "id": "q-3.2-02", "objective": "3.2", "skills": ["3.2.2"], "type": "single", "difficulty": 2,
+    "scenario": "Les administrateurs de Brisemer doivent se connecter en RDP aux VM sans IP publique, et le RSSI exige l'**enregistrement vidéo** des sessions pour l'audit.",
+    "stem": "Quelle solution ?",
+    "options": [
+      { "id": "a", "text": "Azure Bastion SKU Premium avec session recording.", "correct": true, "why": "L'enregistrement de session exige le SKU Premium." },
+      { "id": "b", "text": "Azure Bastion SKU Basic.", "correct": false, "why": "Basic n'offre pas l'enregistrement des sessions." },
+      { "id": "c", "text": "JIT VM access avec une IP publique sur chaque VM.", "correct": false, "why": "Expose les VM et n'enregistre pas les sessions." },
+      { "id": "d", "text": "Bastion Developer.", "correct": false, "why": "Offre minimale sans ces fonctionnalités." }
+    ],
+    "explanation": "Bastion : sous-réseau AzureBastionSubnet /26 minimum, IP publique Standard statique (sauf Developer et private-only). Shareable link et ports personnalisés : Standard ou plus. Session recording : Premium.",
+    "lesson": "3.2#s-3-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"]
+  },
+  {
+    "id": "q-3.2-03", "objective": "3.2", "skills": ["3.2.3"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Des VM d'exploitation doivent rester joignables en SSH par les ingénieurs, mais le port 22 ne doit être ouvert que sur demande, depuis l'IP du demandeur, pour une durée limitée. Les VM sont protégées par des NSG.",
+    "stem": "Que mettez-vous en place, et avec quel plan ?",
+    "options": [
+      { "id": "a", "text": "JIT VM access de Defender for Cloud, avec Defender for Servers Plan 2.", "correct": true, "why": "JIT ferme le port et l'ouvre temporairement depuis l'IP approuvée ; fonctionnalité de Plan 2." },
+      { "id": "b", "text": "JIT VM access avec Defender for Servers Plan 1.", "correct": false, "why": "JIT n'est pas inclus dans Plan 1." },
+      { "id": "c", "text": "PIM pour le rôle Virtual Machine Contributor.", "correct": false, "why": "PIM limite le rôle, pas l'ouverture réseau du port." },
+      { "id": "d", "text": "Une règle NSG Allow 22 depuis Internet avec une faible priorité.", "correct": false, "why": "Port ouvert en permanence." }
+    ],
+    "explanation": "JIT : règles deny sur les ports choisis (NSG et Azure Firewall en règles classiques), ouverture temporaire après contrôle RBAC, restauration à l'expiration, connexions établies non coupées. Fonctionne aussi sur AWS EC2.",
+    "lesson": "3.2#s-3-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-overview"]
+  },
+  {
+    "id": "q-3.2-04", "objective": "3.2", "skills": ["3.2.3"], "type": "single", "difficulty": 3,
+    "scenario": "Les VM d'un spoke sont protégées par un Azure Firewall dont les règles sont gérées par Azure Firewall Manager (Firewall Policy). L'équipe veut activer JIT sur ces VM.",
+    "stem": "Que se passe-t-il ?",
+    "options": [
+      { "id": "a", "text": "JIT ne prend pas en charge les VM protégées par un pare-feu géré par Firewall Manager ; il faut des règles classiques ou s'appuyer sur les NSG.", "correct": true, "why": "Limite documentée : Azure Firewall doit utiliser des règles classiques, pas des Firewall Policies." },
+      { "id": "b", "text": "JIT crée automatiquement des règles dans la Firewall Policy.", "correct": false, "why": "Non pris en charge." },
+      { "id": "c", "text": "JIT exige Azure Firewall Premium.", "correct": false, "why": "Le SKU n'est pas la condition ; c'est le mode de gestion des règles." },
+      { "id": "d", "text": "JIT fonctionne uniquement avec Azure Bastion.", "correct": false, "why": "JIT agit sur NSG et Azure Firewall (règles classiques)." }
+    ],
+    "explanation": "Lisez les limites de JIT : pas de VM derrière un Azure Firewall géré par Firewall Manager ; règles classiques uniquement.",
+    "lesson": "3.2#s-3-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-overview"]
+  },
+  {
+    "id": "q-3.2-05", "objective": "3.2", "skills": ["3.2.4"], "type": "multiple", "difficulty": 3,
+    "scenario": "Brisemer connecte ses contrôleurs de domaine on-premises à Azure Arc pour les protéger avec Defender for Servers et collecter leurs journaux de sécurité. L'équipe sécurité craint qu'un administrateur Azure puisse exécuter des scripts sur ces serveurs.",
+    "stem": "Quelles **deux** mesures recommandées par Microsoft appliquez-vous ?",
+    "options": [
+      { "id": "a", "text": "Placer ces serveurs Arc dans un abonnement dédié avec très peu d'administrateurs.", "correct": true, "why": "Un administrateur de l'abonnement est, de fait, administrateur local des serveurs Tier 0." },
+      { "id": "b", "text": "Sur chaque serveur, désactiver les connexions entrantes et définir une allowlist d'extensions limitée à AMA et Defender for Endpoint.", "correct": true, "why": "Les contrôles locaux de l'agent priment sur le cloud et bloquent par exemple Custom Script." },
+      { "id": "c", "text": "Faire tourner l'agent Connected Machine sous un compte de service de domaine.", "correct": false, "why": "Non pris en charge : l'agent utilise des comptes locaux gérés par le système." },
+      { "id": "d", "text": "Désactiver Defender for Servers sur ces machines.", "correct": false, "why": "Contraire à l'objectif de protection." },
+      { "id": "e", "text": "Ouvrir les ports RDP vers Azure pour que Defender puisse analyser.", "correct": false, "why": "Inutile et dangereux." }
+    ],
+    "explanation": "Actifs Tier 0 : abonnement dédié, contrôles locaux `azcmagent config` (incomingconnections, guestconfiguration, extensions.allowlist).",
+    "lesson": "3.2#s-3-2-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-arc/servers/security-overview"]
+  },
+  {
+    "id": "q-3.2-06", "objective": "3.2", "skills": ["3.2.5"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer veut protéger 40 VM d'un abonnement avec Defender for Servers Plan 2, sauf deux VM de test qui ne doivent pas être facturées.",
+    "stem": "Comment procédez-vous ?",
+    "options": [
+      { "id": "a", "text": "Activer Plan 2 au niveau abonnement, puis le désactiver au niveau des deux ressources de test.", "correct": true, "why": "Plan 2 s'active à l'abonnement et peut être désactivé par ressource." },
+      { "id": "b", "text": "Activer Plan 2 individuellement sur les 38 VM.", "correct": false, "why": "Plan 2 ne s'active pas au niveau ressource (Plan 1 oui)." },
+      { "id": "c", "text": "Activer Plan 1 sur l'abonnement et Plan 2 sur les VM de production.", "correct": false, "why": "Plan 2 ne s'active pas par ressource." },
+      { "id": "d", "text": "Placer les VM de test dans un groupe de ressources avec un verrou.", "correct": false, "why": "Un verrou n'a aucun effet sur la facturation Defender." }
+    ],
+    "explanation": "Portée : P1 activable et désactivable par ressource ; P2 activable seulement à l'abonnement, désactivable par ressource. Essai de 30 jours non prolongeable.",
+    "lesson": "3.2#s-3-2-5",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-overview"]
+  },
+  {
+    "id": "q-3.2-07", "objective": "3.2", "skills": ["3.2.6", "3.2.5"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Après activation de Defender for Servers sur un abonnement, quelles **deux** affirmations sont exactes ?",
+    "options": [
+      { "id": "a", "text": "L'extension Defender for Endpoint est installée automatiquement sur les machines prises en charge (désactivable).", "correct": true, "why": "Provisionnement automatique documenté." },
+      { "id": "b", "text": "Defender Vulnerability Management est activé par défaut sur les machines qui ont l'extension MDE.", "correct": true, "why": "C'est la solution de vulnérabilités par défaut." },
+      { "id": "c", "text": "L'agent Log Analytics est requis pour la plupart des fonctionnalités.", "correct": false, "why": "Remplacé par l'analyse sans agent et MDE pour la plupart des fonctionnalités." },
+      { "id": "d", "text": "La licence Defender for Servers est facturée par utilisateur.", "correct": false, "why": "Facturée à l'heure, par serveur." },
+      { "id": "e", "text": "JIT est activé d'office sur toutes les VM.", "correct": false, "why": "JIT se configure par VM, et seulement avec Plan 2." }
+    ],
+    "explanation": "MDE apporte EDR, ASR, protection nouvelle génération ; MDVM l'inventaire et les vulnérabilités (premium en P2). La licence donne aux serveurs les droits de MDE Plan 2.",
+    "lesson": "3.2#s-3-2-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/integration-defender-for-endpoint", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-overview"]
+  },
+  {
+    "id": "q-3.2-08", "objective": "3.2", "skills": ["3.2.7"], "type": "single", "difficulty": 2,
+    "scenario": "Des appliances virtuelles dans Azure et des instances EC2 sur AWS ne peuvent recevoir aucun agent. Brisemer veut quand même connaître leurs vulnérabilités logicielles et détecter des secrets en clair sur leurs disques.",
+    "stem": "Quelle capacité utilisez-vous ?",
+    "options": [
+      { "id": "a", "text": "L'analyse sans agent des machines (instantanés de disques), avec Defender CSPM ou Defender for Servers Plan 2.", "correct": true, "why": "Analyse hors bande des instantanés, sans agent ni impact, sur Azure, AWS et GCP." },
+      { "id": "b", "text": "Defender for Endpoint en mode passif.", "correct": false, "why": "Exige d'installer le capteur." },
+      { "id": "c", "text": "Machine Configuration en mode Audit.", "correct": false, "why": "Exige l'extension sur la machine." },
+      { "id": "d", "text": "Defender for Servers Plan 1.", "correct": false, "why": "L'analyse sans agent n'est pas dans P1." }
+    ],
+    "explanation": "Instantanés des disques analysés dans un environnement régional isolé puis supprimés. Rôle VM scanner operator ; permissions Key Vault en plus pour les disques chiffrés par CMK. Malware sans agent : P2 seulement.",
+    "lesson": "3.2#s-3-2-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-agentless-data-collection"]
+  },
+  {
+    "id": "q-3.2-09", "objective": "3.2", "skills": ["3.2.8"], "type": "single", "difficulty": 2,
+    "scenario": "Defender for Cloud signale qu'une VM Trusted Launch avec Secure Boot et vTPM activés ne fait pas l'objet de **surveillance de l'intégrité du démarrage**.",
+    "stem": "Que manque-t-il ?",
+    "options": [
+      { "id": "a", "text": "L'extension Guest Attestation sur la VM.", "correct": true, "why": "Elle permet l'attestation à distance (boot integrity monitoring) par Defender for Cloud." },
+      { "id": "b", "text": "Azure Disk Encryption.", "correct": false, "why": "Sans rapport avec l'attestation du démarrage." },
+      { "id": "c", "text": "Le type de sécurité Confidential VM.", "correct": false, "why": "Trusted Launch suffit pour l'attestation ; il manque l'extension." },
+      { "id": "d", "text": "Une VM de génération 1.", "correct": false, "why": "Trusted Launch exige au contraire la génération 2." }
+    ],
+    "explanation": "Recommandations Defender : activer Secure Boot, activer vTPM, installer Guest Attestation. En cas d'échec d'attestation : alerte de sévérité moyenne.",
+    "lesson": "3.2#s-3-2-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch"]
+  },
+  {
+    "id": "q-3.2-10", "objective": "3.2", "skills": ["3.2.9"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer exige que TLS 1.0 et 1.1 restent désactivés dans le registre Windows de tous ses serveurs Azure et Arc, et que toute modification manuelle soit **automatiquement corrigée**.",
+    "stem": "Que mettez-vous en place ?",
+    "options": [
+      { "id": "a", "text": "Une configuration Azure Machine Configuration en mode Apply and Autocorrect, affectée par Azure Policy.", "correct": true, "why": "Ce mode applique la configuration et corrige toute dérive." },
+      { "id": "b", "text": "Machine Configuration en mode Audit.", "correct": false, "why": "Rapporte sans corriger." },
+      { "id": "c", "text": "Une Azure Policy deny sur la ressource VM.", "correct": false, "why": "Policy ARM ne voit pas les paramètres internes de l'OS." },
+      { "id": "d", "text": "Un verrou ReadOnly sur les VM.", "correct": false, "why": "Agit sur le plan de contrôle Azure, pas sur le registre Windows." }
+    ],
+    "explanation": "Modes : Audit, Apply and Monitor, Apply and Autocorrect. Extension et identité managée requises (initiative de prérequis). Jusqu'à 50 affectations par machine.",
+    "lesson": "3.2#s-3-2-9",
+    "sources": ["https://learn.microsoft.com/en-us/azure/governance/machine-configuration/overview/01-overview-concepts"]
+  },
+  {
+    "id": "q-3.2-11", "objective": "3.2", "skills": ["3.2.2", "3.2.3"], "type": "order", "difficulty": 2,
+    "scenario": "Dans le projet JIT de Brisemer, une ingénieure doit intervenir en RDP sur une VM de production sans IP publique.",
+    "stem": "Remettez les étapes de son intervention dans l'ordre.",
+    "options": [
+      { "id": "a", "text": "Activer son rôle éligible (par exemple Virtual Machine Contributor) dans PIM avec justification et approbation.", "why": "Sans le rôle, elle n'a pas le droit de demander l'accès JIT." },
+      { "id": "b", "text": "Demander l'accès JIT au port 3389 pour la durée de l'intervention.", "why": "Defender vérifie son RBAC puis ouvre le port temporairement." },
+      { "id": "c", "text": "Se connecter via Azure Bastion depuis le portail.", "why": "La session passe par Bastion, sans exposer la VM à Internet." },
+      { "id": "d", "text": "Laisser expirer l'accès JIT et l'activation PIM.", "why": "Retour à l'état sans privilège ni port ouvert." }
+    ],
+    "explanation": "Défense en profondeur : identité (PIM), réseau (JIT), chemin d'accès (Bastion), et tout expire automatiquement.",
+    "lesson": "3.2#s-3-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-overview", "https://learn.microsoft.com/en-us/azure/bastion/bastion-overview"]
+  }
+]

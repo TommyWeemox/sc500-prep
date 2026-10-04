@@ -1,0 +1,158 @@
+[
+  {
+    "id": "q-3.3-01", "objective": "3.3", "skills": ["3.3.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer exploite des clusters AKS et EKS. Le RSSI veut empêcher le déploiement d'images contenant des vulnérabilités critiques et être alerté si un processus inconnu démarre dans un conteneur en production.",
+    "stem": "Quelle solution couvre les deux besoins ?",
+    "options": [
+      { "id": "a", "text": "Defender for Containers : déploiement conditionné (gated deployment) pour les images, et détection de dérive binaire via le capteur Defender.", "correct": true, "why": "Chaîne d'approvisionnement et protection à l'exécution sont deux domaines du plan, multicloud." },
+      { "id": "b", "text": "Defender for Servers Plan 2 sur les nœuds.", "correct": false, "why": "Protège les machines, sans contrôle d'admission des images ni dérive au niveau conteneur." },
+      { "id": "c", "text": "Azure Policy pour interdire les images non signées.", "correct": false, "why": "Ne couvre ni la vulnérabilité des images ni la détection d'exécution." },
+      { "id": "d", "text": "Le scan IaC de Microsoft Security DevOps.", "correct": false, "why": "Analyse les templates, pas les images ni l'exécution." }
+    ],
+    "explanation": "Defender for Containers : posture, vulnérabilités (registres, conteneurs, nœuds), runtime (capteur + audit logs), supply chain (gated deployment), déploiement des capteurs. AKS, EKS, GKE, Arc.",
+    "lesson": "3.3#s-3-3-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-containers-introduction"]
+  },
+  {
+    "id": "q-3.3-02", "objective": "3.3", "skills": ["3.3.2"], "type": "single", "difficulty": 3,
+    "scenario": "Un pipeline Azure DevOps doit déployer dans le namespace `app-prod` d'un cluster AKS **privé** intégré à Entra avec Azure RBAC pour Kubernetes. Il ne doit stocker aucun secret.",
+    "stem": "Quelle configuration respecte le moindre privilège ?",
+    "options": [
+      { "id": "a", "text": "Agent auto-hébergé (ou Managed DevOps Pool) dans un réseau qui atteint le serveur d'API privé, connexion par workload identity federation, rôle Azure Kubernetes Service Cluster User et rôle AKS RBAC Writer limité au namespace.", "correct": true, "why": "Réseau, identité sans secret et autorisation minimale sont configurés séparément, comme le recommande Microsoft." },
+      { "id": "b", "text": "Agent hébergé par Microsoft avec les identifiants cluster-admin stockés dans une variable secrète.", "correct": false, "why": "Les agents hébergés ne sont pas pris en charge avec un cluster privé, et cluster-admin est excessif." },
+      { "id": "c", "text": "Rôle Owner sur le cluster pour l'identité du pipeline.", "correct": false, "why": "Bien trop large." },
+      { "id": "d", "text": "Désactiver le cluster privé et autoriser toutes les IP.", "correct": false, "why": "Affaiblit la sécurité au lieu de configurer correctement l'accès." }
+    ],
+    "explanation": "Cluster User Role : récupère la kubeconfig sans droits sur l'API. AKS RBAC Writer au namespace : droits de déploiement. Identité fédérée : aucun secret.",
+    "lesson": "3.3#s-3-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/aks/concepts-security"]
+  },
+  {
+    "id": "q-3.3-03", "objective": "3.3", "skills": ["3.3.2"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelles **deux** mesures limitent l'accès au serveur d'API d'un cluster AKS ?",
+    "options": [
+      { "id": "a", "text": "Des plages d'adresses IP autorisées sur le serveur d'API.", "correct": true, "why": "Limite les réseaux sources qui peuvent joindre l'API publique." },
+      { "id": "b", "text": "Un cluster privé.", "correct": true, "why": "Le serveur d'API n'est joignable que depuis le réseau virtuel (et réseaux connectés)." },
+      { "id": "c", "text": "Des network policies Kubernetes.", "correct": false, "why": "Elles filtrent le trafic entre pods, pas l'accès au serveur d'API." },
+      { "id": "d", "text": "Le chiffrement d'etcd avec KMS.", "correct": false, "why": "Protège les secrets au repos, pas l'accès réseau à l'API." },
+      { "id": "e", "text": "Le rôle AcrPull sur le registre.", "correct": false, "why": "Concerne le tirage d'images, pas l'API Kubernetes." }
+    ],
+    "explanation": "Accès réseau à l'API : IP autorisées ou cluster privé (et intégration VNet du serveur d'API). Autorisation : Entra + Azure RBAC pour Kubernetes.",
+    "lesson": "3.3#s-3-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/aks/concepts-security"]
+  },
+  {
+    "id": "q-3.3-04", "objective": "3.3", "skills": ["3.3.3"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Plusieurs développeurs de Brisemer utilisent le même compte admin d'Azure Container Registry pour pousser des images. L'audit ne peut pas savoir qui a poussé quoi.",
+    "stem": "Que recommandez-vous ?",
+    "options": [
+      { "id": "a", "text": "Désactiver l'utilisateur admin ; les développeurs utilisent `az acr login` avec leur identité Entra et un rôle adapté ; les pipelines utilisent une identité managée ou un service principal.", "correct": true, "why": "L'admin est un compte unique partagé sans RBAC ; les identités Entra donnent traçabilité et moindre privilège." },
+      { "id": "b", "text": "Régénérer les deux mots de passe admin chaque semaine.", "correct": false, "why": "Le compte reste partagé et non traçable." },
+      { "id": "c", "text": "Créer un jeton à portée de dépôt partagé par tous.", "correct": false, "why": "Reste un secret partagé, sans intégration Entra." },
+      { "id": "d", "text": "Rendre le registre public en lecture.", "correct": false, "why": "Sans rapport, et affaiblit la sécurité." }
+    ],
+    "explanation": "L'admin ACR est désactivé par défaut, a tous les droits push/pull, apparaît comme un seul utilisateur. Jeton `az acr login` : 3 heures.",
+    "lesson": "3.3#s-3-3-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication"]
+  },
+  {
+    "id": "q-3.3-05", "objective": "3.3", "skills": ["3.3.4"], "type": "single", "difficulty": 2,
+    "scenario": "Une API interne de Brisemer tourne dans Azure Container Apps. Elle ne doit avoir **aucun point d'accès public**, sa sortie Internet doit passer par l'Azure Firewall du hub, et elle doit tirer ses images d'ACR sans secret.",
+    "stem": "Quelle configuration ?",
+    "options": [
+      { "id": "a", "text": "Environnement workload profiles dans un VNet existant, accessibilité Internal, UDR vers Azure Firewall, identité managée avec AcrPull.", "correct": true, "why": "Internal = ILB sans exposition publique ; workload profiles prend en charge les UDR ; identité managée pour ACR." },
+      { "id": "b", "text": "Environnement Consumption only avec UDR vers le pare-feu.", "correct": false, "why": "Le type Consumption only ne prend pas en charge les UDR." },
+      { "id": "c", "text": "Environnement External avec restrictions IP.", "correct": false, "why": "Garde un point d'accès public." },
+      { "id": "d", "text": "Utilisateur admin ACR stocké en secret de l'application.", "correct": false, "why": "Secret partagé : à éviter au profit d'une identité managée." }
+    ],
+    "explanation": "Workload profiles : UDR, NAT Gateway, private endpoints, sous-réseau /27 min. Internal : IP privée de l'ILB, accès public Disabled.",
+    "lesson": "3.3#s-3-3-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/container-apps/networking", "https://learn.microsoft.com/en-us/azure/container-apps/managed-identity"]
+  },
+  {
+    "id": "q-3.3-06", "objective": "3.3", "skills": ["3.3.5"], "type": "single", "difficulty": 2,
+    "scenario": "Une Function App HTTP de Brisemer est protégée par des clés de fonction. Le RSSI veut savoir **qui** l'appelle et n'autoriser que les employés, sans modifier le code.",
+    "stem": "Que configurez-vous ?",
+    "options": [
+      { "id": "a", "text": "App Service Authentication (Easy Auth) avec Microsoft Entra ID, en exigeant l'authentification.", "correct": true, "why": "Authentifie l'appelant avant le code, sans développement." },
+      { "id": "b", "text": "Régénérer les clés de fonction.", "correct": false, "why": "Les clés ne disent pas qui appelle." },
+      { "id": "c", "text": "Passer le niveau d'autorisation à anonymous.", "correct": false, "why": "Supprime même la protection par clé." },
+      { "id": "d", "text": "Activer CORS avec un joker.", "correct": false, "why": "CORS ne fait pas d'authentification, et le joker est déconseillé." }
+    ],
+    "explanation": "Couches documentées : HTTPS, clés, Easy Auth, APIM, réseau virtuel, isolation (ASE). Seule l'authentification positive permet des décisions selon l'identité.",
+    "lesson": "3.3#s-3-3-5",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-functions/security-concepts"]
+  },
+  {
+    "id": "q-3.3-07", "objective": "3.3", "skills": ["3.3.6"], "type": "single", "difficulty": 3,
+    "scenario": "Une Logic App Consumption de Brisemer reçoit des bons de commande par un déclencheur Request. L'URL de rappel (avec sa SAS) a fuité dans un ticket. Le partenaire peut obtenir des jetons Entra.",
+    "stem": "Quelle remédiation durable ?",
+    "options": [
+      { "id": "a", "text": "Régénérer la clé d'accès, ajouter une politique d'autorisation OAuth Entra ID (iss et aud), désactiver la SAS, et restreindre les IP entrantes autorisées.", "correct": true, "why": "Invalide l'URL divulguée et remplace la SAS par une authentification Entra, avec une couche réseau." },
+      { "id": "b", "text": "Activer secure inputs et outputs sur le déclencheur.", "correct": false, "why": "Masque l'historique mais n'empêche pas les appels avec l'URL divulguée." },
+      { "id": "c", "text": "Donner au partenaire le rôle Logic App Operator.", "correct": false, "why": "Rôle de gestion, sans rapport avec l'appel du déclencheur." },
+      { "id": "d", "text": "Supprimer et recréer le déclencheur sans autre changement.", "correct": false, "why": "Remet une URL SAS équivalente, sans authentification forte." }
+    ],
+    "explanation": "Déclencheur Request : régénérer les clés, URL expirante, OAuth Entra (sasAuthenticationPolicy Disabled si souhaité), IP autorisées.",
+    "lesson": "3.3#s-3-3-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/logic-apps/set-up-security-permissions"]
+  },
+  {
+    "id": "q-3.3-08", "objective": "3.3", "skills": ["3.3.7"], "type": "multiple", "difficulty": 2,
+    "scenario": "Un audit d'une application App Service de Brisemer relève : HTTP accepté, publication par FTP avec identifiants basiques, chaîne de connexion SQL dans les paramètres d'application.",
+    "stem": "Quelles **trois** corrections appliquez-vous ?",
+    "options": [
+      { "id": "a", "text": "Activer HTTPS only et TLS 1.2 minimum.", "correct": true, "why": "HTTPS only n'est pas activé par défaut ; TLS 1.2 est le minimum recommandé." },
+      { "id": "b", "text": "Désactiver l'authentification basique (FTP et SCM) et FTP, ou n'autoriser que FTPS.", "correct": true, "why": "Recommandation explicite de Microsoft pour le déploiement." },
+      { "id": "c", "text": "Remplacer la chaîne de connexion par une identité managée (ou une référence Key Vault).", "correct": true, "why": "Évite le secret dans la configuration." },
+      { "id": "d", "text": "Activer le débogage à distance pour diagnostiquer.", "correct": false, "why": "À laisser désactivé hors débogage actif." },
+      { "id": "e", "text": "Ajouter un CORS `*`.", "correct": false, "why": "Déconseillé et sans lien avec les constats." }
+    ],
+    "explanation": "App Service : HTTPS only, TLS min, basic auth désactivée, FTPS, identité managée, références Key Vault, restrictions d'accès, private endpoints, Easy Auth, Defender for App Service.",
+    "lesson": "3.3#s-3-3-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/app-service/overview-security"]
+  },
+  {
+    "id": "q-3.3-09", "objective": "3.3", "skills": ["3.3.8"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer publie un site mondial derrière Azure Front Door **Standard** et veut activer le Default Rule Set géré du WAF ainsi que le Bot Manager.",
+    "stem": "Que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "Passer au tier Front Door Premium : Standard ne prend en charge que les règles personnalisées.", "correct": true, "why": "Documenté : WAF complet natif sur Premium, règles personnalisées seulement sur Standard." },
+      { "id": "b", "text": "Activer le mode Prevention sur la politique actuelle.", "correct": false, "why": "Le mode ne débloque pas les jeux de règles gérés." },
+      { "id": "c", "text": "Associer la politique à un Application Gateway.", "correct": false, "why": "Une politique Front Door ne s'associe pas à un Application Gateway ; et ce serait régional." },
+      { "id": "d", "text": "Créer une règle de limitation de débit.", "correct": false, "why": "Règle personnalisée, ne remplace pas le DRS ni le Bot Manager." }
+    ],
+    "explanation": "Front Door WAF : global, à la périphérie. Custom rules traitées avant les règles gérées. Modes Detection et Prevention. Actions Allow, Block, Log, Redirect, Anomaly score (DRS 2.0+).",
+    "lesson": "3.3#s-3-3-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/web-application-firewall/afds/afds-overview"]
+  },
+  {
+    "id": "q-3.3-10", "objective": "3.3", "skills": ["3.3.9"], "type": "single", "difficulty": 2,
+    "scenario": "L'API de suivi des colis de Brisemer est publiée via API Management. Seules les applications clientes enregistrées dans Entra et disposant du rôle applicatif `Suivi.Lecture` doivent pouvoir l'appeler.",
+    "stem": "Quelle politique placez-vous en `inbound` ?",
+    "options": [
+      { "id": "a", "text": "validate-jwt (ou validate-azure-ad-token) vérifiant audience, émetteur et le claim roles = Suivi.Lecture.", "correct": true, "why": "La validation du jeton Entra avec claims requis est la méthode documentée." },
+      { "id": "b", "text": "Une clé d'abonnement APIM obligatoire.", "correct": false, "why": "Identifie un abonnement, pas une application Entra ni un rôle." },
+      { "id": "c", "text": "ip-filter limité aux IP des clients.", "correct": false, "why": "Complément réseau, pas une autorisation par rôle." },
+      { "id": "d", "text": "authentication-managed-identity.", "correct": false, "why": "Sert à l'authentification d'APIM vers le backend, pas à valider l'appelant." }
+    ],
+    "explanation": "Entrée : validate-jwt ou validate-azure-ad-token. Sortie vers le backend : authentication-managed-identity ou certificat client. Backend accessible uniquement depuis APIM.",
+    "lesson": "3.3#s-3-3-9",
+    "sources": ["https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-protect-backend-with-aad", "https://learn.microsoft.com/en-us/azure/api-management/validate-jwt-policy"]
+  },
+  {
+    "id": "q-3.3-11", "objective": "3.3", "skills": ["3.3.8", "3.3.7"], "type": "order", "difficulty": 2,
+    "scenario": "Brisemer place un WAF Application Gateway devant une application App Service en production, sans casser le trafic légitime.",
+    "stem": "Dans quel ordre procédez-vous ?",
+    "options": [
+      { "id": "a", "text": "Créer la politique WAF avec le jeu de règles géré, en mode Detection, et activer les journaux.", "why": "On observe sans bloquer." },
+      { "id": "b", "text": "Analyser les journaux WAF pendant une période représentative et créer les exclusions nécessaires.", "why": "On traite les faux positifs avant d'appliquer." },
+      { "id": "c", "text": "Passer la politique en mode Prevention.", "why": "Le blocage arrive une fois les faux positifs traités." },
+      { "id": "d", "text": "Restreindre l'accès à l'App Service pour n'accepter que le trafic venant de l'Application Gateway.", "why": "Empêche de contourner le WAF en appelant l'app directement." }
+    ],
+    "explanation": "Detection puis Prevention ; et toujours fermer le chemin direct vers l'application (restrictions d'accès ou private endpoint).",
+    "lesson": "3.3#s-3-3-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/web-application-firewall/ag/ag-overview", "https://learn.microsoft.com/en-us/azure/app-service/overview-security"]
+  }
+]
