@@ -177,7 +177,7 @@
             { "id": "3.2.6", "text": "Configure Defender for Servers settings, including vulnerability scanning, and endpoint detection and response (EDR)", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/integration-defender-for-endpoint"] },
             { "id": "3.2.7", "text": "Implement and manage agentless scanning for VMs in Defender for Servers", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-agentless-data-collection"] },
             { "id": "3.2.8", "text": "Configure security features on a VM, including secure boot, virtual Trusted Platform Module (vTPM), integrity monitoring, and security type", "docs": ["https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch"] },
-            { "id": "3.2.9", "text": "Enforce security configuration of Azure-managed servers by using Azure Machine Configuration", "docs": ["https://learn.microsoft.com/en-us/azure/governance/machine-configuration/overview"] }
+            { "id": "3.2.9", "text": "Enforce security configuration of Azure-managed servers by using Azure Machine Configuration", "docs": ["https://learn.microsoft.com/en-us/azure/governance/machine-configuration/overview/01-overview-concepts"] }
           ]
         },
         {

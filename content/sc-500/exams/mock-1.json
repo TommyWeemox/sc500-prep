@@ -1,0 +1,708 @@
+{
+  "id": "mock-1",
+  "title": "Examen blanc 1",
+  "durationMinutes": 120,
+  "description": "50 questions originales réparties selon les pondérations officielles (D1 24 %, D2 28 %, D3 24 %, D4 24 %). Seuil indicatif : 70 %.",
+  "questions": [
+    {
+      "id": "mb1-01", "objective": "1.1", "skills": ["1.1.1"], "type": "single", "difficulty": 2,
+      "scenario": "Chez Brisemer, les quatre administrateurs globaux sont devenus éligibles dans PIM, avec approbation exigée pour l'activation, mais personne n'a été désigné comme approbateur.",
+      "stem": "Quel est le risque principal ?",
+      "options": [
+        { "id": "a", "text": "Plus personne ne peut approuver une activation : les approbateurs par défaut sont les administrateurs actifs de ces rôles, et il n'y en a plus.", "correct": true, "why": "Cas de verrouillage documenté ; il faut désigner des approbateurs et garder des comptes d'urgence actifs." },
+        { "id": "b", "text": "Les administrateurs pourront s'auto-approuver.", "correct": false, "why": "L'auto-approbation n'est pas possible." },
+        { "id": "c", "text": "PIM bascule automatiquement les rôles en actif permanent.", "correct": false, "why": "Ce comportement n'existe que lors de l'expiration de licence pour les attributions actives limitées." },
+        { "id": "d", "text": "Aucun risque : Microsoft Support approuve à leur place.", "correct": false, "why": "Le support n'est pas approbateur PIM." }
+      ],
+      "explanation": "Désignez au moins un approbateur (deux recommandés) et gardez des comptes d'urgence actifs, exclus des politiques bloquantes.",
+      "lesson": "1.1#s-1-1-1",
+      "sources": ["https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"]
+    },
+    {
+      "id": "mb1-02", "objective": "1.1", "skills": ["1.1.1"], "type": "single", "difficulty": 2,
+      "scenario": "Un pipeline de déploiement utilise une identité managée. Un auditeur demande de rendre son rôle Contributor « éligible dans PIM, comme pour les humains ».",
+      "stem": "Que répondez-vous ?",
+      "options": [
+        { "id": "a", "text": "Ce n'est pas adapté : une identité managée ne peut pas faire l'activation. On réduit plutôt la portée et les permissions de son rôle.", "correct": true, "why": "Les attributions éligibles concernent des utilisateurs et groupes capables d'activer." },
+        { "id": "b", "text": "On crée l'attribution éligible au niveau de la ressource depuis Access control (IAM).", "correct": false, "why": "Depuis IAM, l'éligible se crée au niveau groupe d'administration, abonnement ou groupe de ressources, et l'identité ne pourrait pas activer." },
+        { "id": "c", "text": "On exige le MFA à l'activation pour l'identité managée.", "correct": false, "why": "Une identité managée ne fait pas de MFA." },
+        { "id": "d", "text": "On convertit l'identité managée en compte utilisateur.", "correct": false, "why": "Mauvaise pratique : on réintroduirait un secret." }
+      ],
+      "explanation": "PIM vise les comptes qui activent. Pour les charges de travail : moindre privilège, portée restreinte, revue des attributions.",
+      "lesson": "1.1#s-1-1-1",
+      "sources": ["https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-resource-roles-assign-roles"]
+    },
+    {
+      "id": "mb1-03", "objective": "1.1", "skills": ["1.1.2"], "type": "single", "difficulty": 2,
+      "scenario": "Avant d'imposer une politique d'accès conditionnel qui bloque les protocoles d'authentification hérités, le RSSI veut mesurer qui serait bloqué pendant deux semaines, sans aucun impact.",
+      "stem": "Quel mode utilisez-vous ?",
+      "options": [
+        { "id": "a", "text": "Report-only.", "correct": true, "why": "La politique est évaluée et journalisée sans être appliquée." },
+        { "id": "b", "text": "What If.", "correct": false, "why": "Simulation ponctuelle pour un cas donné, pas une mesure sur deux semaines." },
+        { "id": "c", "text": "Activer la politique sur un seul utilisateur de test.", "correct": false, "why": "Ne mesure pas l'impact sur la population réelle." },
+        { "id": "d", "text": "Security defaults.", "correct": false, "why": "Ensemble fixe, sans mode d'observation." }
+      ],
+      "explanation": "Report-only pour mesurer, What If pour un diagnostic ponctuel, puis activation progressive.",
+      "lesson": "1.1#s-1-1-2",
+      "sources": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-report-only"]
+    },
+    {
+      "id": "mb1-04", "objective": "1.1", "skills": ["1.1.3"], "type": "single", "difficulty": 2,
+      "scenario": "Les administrateurs de Brisemer doivent utiliser une méthode résistante au phishing. Certains proposent Microsoft Authenticator en phone sign-in, « puisque c'est passwordless ».",
+      "stem": "Que répondez-vous ?",
+      "options": [
+        { "id": "a", "text": "Non : phone sign-in est passwordless mais pas résistant au phishing ; il faut des passkeys (FIDO2, y compris dans Authenticator), Windows Hello for Business ou une authentification par certificat.", "correct": true, "why": "La force Phishing-resistant MFA n'inclut pas le phone sign-in." },
+        { "id": "b", "text": "Oui, tout passwordless est résistant au phishing.", "correct": false, "why": "Passwordless et résistant au phishing ne sont pas synonymes." },
+        { "id": "c", "text": "Il suffit d'ajouter le number matching.", "correct": false, "why": "Améliore la résistance à la fatigue MFA, pas au phishing en temps réel." },
+        { "id": "d", "text": "Utiliser des codes SMS.", "correct": false, "why": "Le SMS est la méthode la plus faible." }
+      ],
+      "explanation": "Imposer par accès conditionnel avec la force d'authentification Phishing-resistant MFA.",
+      "lesson": "1.1#s-1-1-3",
+      "sources": ["https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-strengths"]
+    },
+    {
+      "id": "mb1-05", "objective": "1.1", "skills": ["1.1.5", "1.1.6"], "type": "multiple", "difficulty": 3,
+      "scenario": "Une Function App de Brisemer lit des fichiers dans les sites SharePoint de tous les services, la nuit, sans utilisateur connecté. Elle utilise aujourd'hui un secret client stocké en clair dans ses paramètres.",
+      "stem": "Quelles **deux** affirmations sont exactes ?",
+      "options": [
+        { "id": "a", "text": "Il faut une permission Microsoft Graph de type application (par exemple Sites.Read.All), qui exige le consentement d'un administrateur.", "correct": true, "why": "Sans utilisateur connecté, l'accès est applicatif ; ces permissions exigent un consentement administrateur." },
+        { "id": "b", "text": "Une identité managée permet de supprimer le secret client.", "correct": true, "why": "L'identité managée obtient ses jetons sans secret géré par l'équipe." },
+        { "id": "c", "text": "Une permission déléguée Files.Read.All suffit et lit tous les fichiers du tenant.", "correct": false, "why": "Déléguée, elle est limitée à ce que l'utilisateur connecté peut lire, et il n'y a pas d'utilisateur." },
+        { "id": "d", "text": "Il suffit que chaque utilisateur consente individuellement.", "correct": false, "why": "Pas d'utilisateur dans ce flux ; consentement administrateur requis." }
+      ],
+      "explanation": "Délégué = au nom de l'utilisateur ; application = au nom de l'application, souvent sur tout le tenant.",
+      "lesson": "1.1#s-1-1-5",
+      "sources": ["https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview", "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"]
+    },
+    {
+      "id": "mb1-06", "objective": "1.2", "skills": ["1.2.2"], "type": "single", "difficulty": 2,
+      "scenario": "Un coffre Key Vault a été créé avec une rétention soft-delete de 7 jours. La conformité exige désormais 90 jours.",
+      "stem": "Que faites-vous ?",
+      "options": [
+        { "id": "a", "text": "Créer un nouveau coffre avec 90 jours de rétention et y migrer les objets : la rétention se fixe à la création.", "correct": true, "why": "La durée de rétention n'est pas modifiable après création." },
+        { "id": "b", "text": "Modifier la rétention dans les propriétés du coffre.", "correct": false, "why": "Impossible après création." },
+        { "id": "c", "text": "Activer la purge protection, qui porte la rétention à 90 jours.", "correct": false, "why": "La purge protection empêche la purge, elle ne change pas la durée." },
+        { "id": "d", "text": "Désactiver puis réactiver le soft-delete.", "correct": false, "why": "Le soft-delete ne se désactive pas." }
+      ],
+      "explanation": "Soft-delete activé par défaut, 7 à 90 jours (90 par défaut). Purge protection désactivée par défaut, irréversible une fois activée.",
+      "lesson": "1.2#s-1-2-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview"]
+    },
+    {
+      "id": "mb1-07", "objective": "1.2", "skills": ["1.2.3"], "type": "single", "difficulty": 2,
+      "scenario": "L'équipe d'exploitation de Brisemer doit pouvoir gérer le coffre (réseau, diagnostics, étiquettes) sans jamais lire les secrets. Le coffre utilise le modèle RBAC.",
+      "stem": "Quel rôle attribuez-vous ?",
+      "options": [
+        { "id": "a", "text": "Key Vault Contributor.", "correct": true, "why": "Plan de gestion seulement ; en modèle RBAC, il ne donne pas accès aux données du coffre." },
+        { "id": "b", "text": "Key Vault Secrets Officer.", "correct": false, "why": "Donne accès aux secrets." },
+        { "id": "c", "text": "Key Vault Administrator.", "correct": false, "why": "Plan de données complet, secrets compris." },
+        { "id": "d", "text": "Owner du coffre.", "correct": false, "why": "Bien trop large : il peut s'attribuer un rôle de données." }
+      ],
+      "explanation": "Avec le modèle access policy, un Contributor pourrait s'ajouter une policy et lire les secrets : raison majeure de passer à RBAC.",
+      "lesson": "1.2#s-1-2-3",
+      "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"]
+    },
+    {
+      "id": "mb1-08", "objective": "1.2", "skills": ["1.2.4"], "type": "single", "difficulty": 2,
+      "scenario": "Après activation du pare-feu Key Vault (accès limité à un sous-réseau), un administrateur Owner voit le coffre dans le portail depuis son poste, mais obtient une erreur en listant les secrets.",
+      "stem": "Quelle est la cause ?",
+      "options": [
+        { "id": "a", "text": "Le pare-feu s'applique aussi au portail : son poste n'est pas dans une source autorisée.", "correct": true, "why": "L'accès aux données passe par le pare-feu, quel que soit le rôle." },
+        { "id": "b", "text": "Il lui manque le rôle Owner sur l'abonnement.", "correct": false, "why": "Le problème est réseau, pas RBAC." },
+        { "id": "c", "text": "Les secrets ont été supprimés par le soft-delete.", "correct": false, "why": "Aucune suppression dans le scénario." },
+        { "id": "d", "text": "Le coffre doit être en SKU Premium.", "correct": false, "why": "Le SKU ne conditionne pas cet accès." }
+      ],
+      "explanation": "Solutions : ajouter son IP publique, passer par un réseau autorisé ou un private endpoint.",
+      "lesson": "1.2#s-1-2-4",
+      "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/network-security"]
+    },
+    {
+      "id": "mb1-09", "objective": "1.2", "skills": ["1.2.7"], "type": "single", "difficulty": 2,
+      "scenario": "Defender for Key Vault signale un accès aux secrets depuis une IP Tor, par l'identité d'une application connue. L'analyste propose de fermer l'alerte car l'application est légitime.",
+      "stem": "Que recommandez-vous ?",
+      "options": [
+        { "id": "a", "text": "Ne pas fermer : vérifier avec le propriétaire de l'application, envisager un vol d'identifiant, faire tourner les secrets exposés si nécessaire.", "correct": true, "why": "Defender for Key Vault vise justement les identifiants volés utilisés depuis des sources anormales." },
+        { "id": "b", "text": "Fermer l'alerte et créer une règle de suppression permanente pour cette application.", "correct": false, "why": "Masquerait une compromission réelle." },
+        { "id": "c", "text": "Désactiver Defender for Key Vault pour réduire le bruit.", "correct": false, "why": "Supprime la détection." },
+        { "id": "d", "text": "Passer le coffre en mode access policy.", "correct": false, "why": "Sans rapport avec l'alerte." }
+      ],
+      "explanation": "Une règle de suppression ne se crée qu'après avoir confirmé une activité légitime.",
+      "lesson": "1.2#s-1-2-7",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-key-vault-introduction"]
+    },
+    {
+      "id": "mb1-10", "objective": "1.3", "skills": ["1.3.1"], "type": "order", "difficulty": 2,
+      "scenario": "Brisemer veut interdire les comptes de stockage autorisant l'accès public anonyme, sans casser la production.",
+      "stem": "Dans quel ordre procédez-vous ?",
+      "options": [
+        { "id": "a", "text": "Affecter la politique avec l'effet audit.", "why": "On mesure la non-conformité sans rien bloquer." },
+        { "id": "b", "text": "Analyser les ressources non conformes et corriger ou créer des exemptions documentées.", "why": "On traite l'existant avant de bloquer." },
+        { "id": "c", "text": "Passer l'effet à deny.", "why": "Le blocage arrive quand le parc est propre." },
+        { "id": "d", "text": "Surveiller la conformité et les refus de déploiement.", "why": "On vérifie que le blocage n'empêche pas de déploiement légitime." }
+      ],
+      "explanation": "Recommandation Microsoft : commencer par audit ou auditIfNotExists, puis deny, modify ou deployIfNotExists.",
+      "lesson": "1.3#s-1-3-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"]
+    },
+    {
+      "id": "mb1-11", "objective": "1.3", "skills": ["1.3.4"], "type": "single", "difficulty": 1,
+      "scenario": "Le groupe de ressources du hub réseau de Brisemer ne doit pas pouvoir être supprimé par erreur, mais les équipes doivent continuer à modifier les règles du pare-feu.",
+      "stem": "Quel verrou posez-vous ?",
+      "options": [
+        { "id": "a", "text": "CanNotDelete.", "correct": true, "why": "Empêche la suppression, autorise les modifications." },
+        { "id": "b", "text": "ReadOnly.", "correct": false, "why": "Bloquerait aussi les modifications de règles." },
+        { "id": "c", "text": "Un rôle personnalisé avec NotActions sur delete.", "correct": false, "why": "NotActions n'est pas un refus : d'autres rôles pourraient supprimer." },
+        { "id": "d", "text": "Une exemption Azure Policy.", "correct": false, "why": "Sans rapport avec la suppression." }
+      ],
+      "explanation": "ReadOnly casse souvent l'exploitation ; CanNotDelete répond à la suppression accidentelle.",
+      "lesson": "1.3#s-1-3-4",
+      "sources": ["https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"]
+    },
+    {
+      "id": "mb1-12", "objective": "1.3", "skills": ["1.3.8"], "type": "single", "difficulty": 3,
+      "scenario": "Le RSSI craint qu'un administrateur de sauvegarde compromis réduise seul la rétention et désactive le soft delete du coffre Recovery Services.",
+      "stem": "Quelle mesure répond précisément à ce risque ?",
+      "options": [
+        { "id": "a", "text": "Multi-user authorization avec un Resource Guard géré par l'équipe sécurité, idéalement dans un autre abonnement ou tenant.", "correct": true, "why": "Les opérations critiques exigent alors un droit sur le Resource Guard que l'administrateur n'a pas." },
+        { "id": "b", "text": "Un verrou CanNotDelete sur le coffre.", "correct": false, "why": "N'empêche pas de réduire la rétention." },
+        { "id": "c", "text": "Le chiffrement par clé gérée par le client.", "correct": false, "why": "Protège la confidentialité, pas contre ces opérations." },
+        { "id": "d", "text": "Un private endpoint sur le coffre.", "correct": false, "why": "Contrôle réseau, sans effet sur un administrateur légitime compromis." }
+      ],
+      "explanation": "Pour rendre impossible la suppression des points de restauration avant expiration : immutable vault verrouillé.",
+      "lesson": "1.3#s-1-3-8",
+      "sources": ["https://learn.microsoft.com/en-us/azure/backup/multi-user-authorization-concept"]
+    },
+    {
+      "id": "mb1-13", "objective": "2.1", "skills": ["2.1.1"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer veut appliquer l'accès conditionnel aux accès à ses comptes de stockage et rendre toute autorisation traçable à une identité.",
+      "stem": "Quel paramètre du compte est indispensable ?",
+      "options": [
+        { "id": "a", "text": "Interdire l'autorisation par clé partagée (allowSharedKeyAccess = false).", "correct": true, "why": "Seules Entra ID et les user delegation SAS restent possibles, ce qui permet l'accès conditionnel." },
+        { "id": "b", "text": "Activer le versioning des blobs.", "correct": false, "why": "Protection des données, pas de l'autorisation." },
+        { "id": "c", "text": "Passer en stockage Premium.", "correct": false, "why": "Sans rapport." },
+        { "id": "d", "text": "Activer le soft delete des conteneurs.", "correct": false, "why": "Sans rapport avec l'autorisation." }
+      ],
+      "explanation": "Inventorier d'abord les usages de la clé grâce aux journaux, car l'interdire casse les SAS de compte et de service.",
+      "lesson": "2.1#s-2-1-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/shared-key-authorization-prevent"]
+    },
+    {
+      "id": "mb1-14", "objective": "2.1", "skills": ["2.1.2"], "type": "single", "difficulty": 3,
+      "scenario": "Un compte de stockage autorisait l'IP publique de sortie d'un sous-réseau applicatif. Après l'activation d'un service endpoint Microsoft.Storage sur ce sous-réseau, l'application reçoit des 403.",
+      "stem": "Pourquoi, et comment corriger ?",
+      "options": [
+        { "id": "a", "text": "Le trafic sort désormais avec une IP privée : il faut une règle de réseau virtuel pour ce sous-réseau.", "correct": true, "why": "Avec un service endpoint, la règle IP publique ne correspond plus." },
+        { "id": "b", "text": "Le service endpoint désactive l'accès Entra ID.", "correct": false, "why": "Il ne touche pas à l'autorisation." },
+        { "id": "c", "text": "Il faut ajouter l'IP privée du sous-réseau dans les règles IP.", "correct": false, "why": "Les règles IP du pare-feu de stockage n'acceptent pas les plages privées." },
+        { "id": "d", "text": "Le compte doit être déplacé dans le même groupe de ressources.", "correct": false, "why": "Sans rapport." }
+      ],
+      "explanation": "Pare-feu de stockage : règles VNet, règles IP publiques, instances de ressources, services de confiance.",
+      "lesson": "2.1#s-2-1-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"]
+    },
+    {
+      "id": "mb1-15", "objective": "2.1", "skills": ["2.1.3"], "type": "single", "difficulty": 2,
+      "scenario": "Des transporteurs partenaires déposent des bordereaux PDF dans un conteneur. Brisemer veut détecter les fichiers malveillants dès le dépôt et les déplacer automatiquement en quarantaine, avec un budget plafonné.",
+      "stem": "Que configurez-vous ?",
+      "options": [
+        { "id": "a", "text": "Defender for Storage avec malware scanning on-upload, un plafond mensuel en Go, et une réponse automatisée via Event Grid.", "correct": true, "why": "Analyse au téléversement, coût maîtrisé, automatisation de la quarantaine." },
+        { "id": "b", "text": "Defender for Servers sur la VM de traitement.", "correct": false, "why": "N'analyse pas les blobs au dépôt." },
+        { "id": "c", "text": "Une politique de cycle de vie.", "correct": false, "why": "Gère l'âge des données, pas les malwares." },
+        { "id": "d", "text": "L'immutabilité du conteneur.", "correct": false, "why": "Empêche la modification, pas le dépôt de malware." }
+      ],
+      "explanation": "Malware scanning facturé au Go, avec un plafond configurable par compte.",
+      "lesson": "2.1#s-2-1-3",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-introduction"]
+    },
+    {
+      "id": "mb1-16", "objective": "2.1", "skills": ["2.1.4"], "type": "single", "difficulty": 3,
+      "scenario": "Trois partenaires accèdent à un conteneur par SAS de service. L'un d'eux est compromis. Il faut révoquer son accès immédiatement sans perturber les deux autres.",
+      "stem": "Quelle conception l'aurait permis, et que faites-vous ?",
+      "options": [
+        { "id": "a", "text": "Une stored access policy par partenaire, référencée par sa SAS : supprimer la policy du partenaire compromis.", "correct": true, "why": "La révocation ne touche que les SAS liées à cette policy." },
+        { "id": "b", "text": "Régénérer la clé du compte.", "correct": false, "why": "Révoque toutes les SAS signées par cette clé, donc les trois partenaires." },
+        { "id": "c", "text": "Supprimer le conteneur.", "correct": false, "why": "Impact sur tous." },
+        { "id": "d", "text": "Attendre l'expiration de la SAS.", "correct": false, "why": "Pas immédiat." }
+      ],
+      "explanation": "User delegation SAS : révoquer la clé de délégation. La génération de SAS n'est pas auditée.",
+      "lesson": "2.1#s-2-1-4",
+      "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet"]
+    },
+    {
+      "id": "mb1-17", "objective": "2.1", "skills": ["2.1.4"], "type": "multiple", "difficulty": 2,
+      "scenario": null,
+      "stem": "Quelles **deux** affirmations sur les SAS sont exactes ?",
+      "options": [
+        { "id": "a", "text": "Une user delegation SAS est signée avec des identifiants Entra ID.", "correct": true, "why": "Elle s'appuie sur une clé de délégation obtenue avec Entra." },
+        { "id": "b", "text": "La génération d'une SAS n'est pas auditée par Azure Storage.", "correct": true, "why": "Quiconque détient la clé peut en créer sans trace." },
+        { "id": "c", "text": "Une SAS de compte peut référencer une stored access policy.", "correct": false, "why": "Seules les SAS de service le peuvent." },
+        { "id": "d", "text": "Interdire la clé partagée laisse fonctionner les SAS de service.", "correct": false, "why": "Elles sont signées avec la clé : elles cessent de fonctionner." }
+      ],
+      "explanation": "Préférer user delegation SAS courtes, en HTTPS, avec le minimum de permissions.",
+      "lesson": "2.1#s-2-1-4",
+      "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"]
+    },
+    {
+      "id": "mb1-18", "objective": "2.2", "skills": ["2.2.1"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer veut que les administrateurs de base de données (DBA) ne puissent pas lire les numéros de carte de paiement stockés dans Azure SQL Database, même avec des droits élevés sur la base.",
+      "stem": "Quelle fonctionnalité choisissez-vous ?",
+      "options": [
+        { "id": "a", "text": "Always Encrypted.", "correct": true, "why": "Chiffrement côté client : la base ne voit jamais les données en clair." },
+        { "id": "b", "text": "Transparent Data Encryption.", "correct": false, "why": "Chiffre au repos ; un utilisateur légitime lit en clair." },
+        { "id": "c", "text": "Dynamic Data Masking.", "correct": false, "why": "Masquage d'affichage, contournable par un privilégié." },
+        { "id": "d", "text": "Le pare-feu du serveur SQL.", "correct": false, "why": "Contrôle réseau, sans effet sur un DBA autorisé." }
+      ],
+      "explanation": "TDE est activé par défaut. Un export BACPAC n'est pas chiffré par TDE.",
+      "lesson": "2.2#s-2-2-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/security-overview"]
+    },
+    {
+      "id": "mb1-19", "objective": "2.2", "skills": ["2.2.1"], "type": "single", "difficulty": 2,
+      "scenario": "Le RSSI veut supprimer toute authentification SQL (logins avec mot de passe) sur un serveur Azure SQL et gérer l'administration par un groupe Entra.",
+      "stem": "Que configurez-vous ?",
+      "options": [
+        { "id": "a", "text": "Un groupe Entra comme administrateur Entra du serveur et l'option Microsoft Entra-only authentication.", "correct": true, "why": "Entra-only désactive toute authentification SQL ; un groupe évite un administrateur unique." },
+        { "id": "b", "text": "Supprimer le login administrateur SQL.", "correct": false, "why": "Impossible ; on le neutralise avec Entra-only." },
+        { "id": "c", "text": "Le rôle Azure SQL DB Contributor au groupe.", "correct": false, "why": "Plan de gestion, sans effet sur l'authentification à la base." },
+        { "id": "d", "text": "Activer TDE avec BYOK.", "correct": false, "why": "Chiffrement, pas authentification." }
+      ],
+      "explanation": "Les identités Entra doivent ensuite être créées dans les bases (CREATE USER FROM EXTERNAL PROVIDER).",
+      "lesson": "2.2#s-2-2-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-azure-ad-only-authentication"]
+    },
+    {
+      "id": "mb1-20", "objective": "2.2", "skills": ["2.2.2"], "type": "single", "difficulty": 3,
+      "scenario": "Brisemer doit envoyer l'audit d'une Azure SQL Managed Instance vers le workspace Sentinel.",
+      "stem": "Comment procédez-vous ?",
+      "options": [
+        { "id": "a", "text": "Paramètre de diagnostic avec la catégorie SQLSecurityAuditEvents vers le workspace, puis un audit serveur T-SQL TO EXTERNAL_MONITOR.", "correct": true, "why": "Méthode documentée pour Managed Instance vers Log Analytics." },
+        { "id": "b", "text": "Activer l'audit dans le portail comme pour SQL Database, cible Log Analytics.", "correct": false, "why": "Asymétrie : sur MI, l'audit se configure en T-SQL." },
+        { "id": "c", "text": "Installer AMA sur la Managed Instance.", "correct": false, "why": "Pas d'agent sur un service PaaS." },
+        { "id": "d", "text": "Activer Defender for SQL, qui envoie l'audit.", "correct": false, "why": "Defender détecte, il ne configure pas l'audit." }
+      ],
+      "explanation": "Alternative : TO URL vers un conteneur de stockage.",
+      "lesson": "2.2#s-2-2-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/auditing-configure"]
+    },
+    {
+      "id": "mb1-21", "objective": "2.2", "skills": ["2.2.3"], "type": "single", "difficulty": 2,
+      "scenario": "Un SQL Server on-premises de Brisemer doit être protégé par Defender for Cloud.",
+      "stem": "Quel plan activez-vous, et avec quel prérequis ?",
+      "options": [
+        { "id": "a", "text": "Defender for SQL Servers on machines, avec le serveur connecté par Azure Arc.", "correct": true, "why": "Plan dédié aux SQL Server sur machines, y compris Arc." },
+        { "id": "b", "text": "Defender for Open-Source Relational Databases.", "correct": false, "why": "Pour PostgreSQL, MySQL, MariaDB, et pas sur Arc." },
+        { "id": "c", "text": "Defender for Azure SQL Databases.", "correct": false, "why": "Pour les services PaaS Azure SQL." },
+        { "id": "d", "text": "Defender for Storage.", "correct": false, "why": "Sans rapport." }
+      ],
+      "explanation": "Defender for Databases regroupe plusieurs plans selon le type de base et d'hébergement.",
+      "lesson": "2.2#s-2-2-3",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-sql-introduction"]
+    },
+    {
+      "id": "mb1-22", "objective": "2.3", "skills": ["2.3.2"], "type": "single", "difficulty": 2,
+      "scenario": "Le RSSI veut garantir que les flux de l'outil de supervision central atteignent toujours les VM, même si une équipe applicative écrit un NSG trop strict.",
+      "stem": "Que configurez-vous dans Azure Virtual Network Manager ?",
+      "options": [
+        { "id": "a", "text": "Une security admin rule Always Allow.", "correct": true, "why": "Le trafic est autorisé sans évaluation par les NSG." },
+        { "id": "b", "text": "Une security admin rule Allow.", "correct": false, "why": "Le trafic serait ensuite évalué par les NSG, qui pourraient le bloquer." },
+        { "id": "c", "text": "Une security admin rule Deny.", "correct": false, "why": "Effet inverse." },
+        { "id": "d", "text": "Une règle NSG de priorité 100 dans chaque NSG.", "correct": false, "why": "Les équipes pourraient la modifier." }
+      ],
+      "explanation": "Les security admin rules sont évaluées avant les NSG : Allow laisse décider les NSG, Always Allow et Deny court-circuitent.",
+      "lesson": "2.3#s-2-3-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-security-admins"]
+    },
+    {
+      "id": "mb1-23", "objective": "2.3", "skills": ["2.3.5"], "type": "single", "difficulty": 2,
+      "scenario": "Des commerciaux nomades doivent accéder à un serveur de fichiers interne, avec MFA et appareil conforme, sans VPN et sans exposer de port entrant.",
+      "stem": "Quelle solution ?",
+      "options": [
+        { "id": "a", "text": "Microsoft Entra Private Access : client Global Secure Access, connecteur, application per-app avec accès conditionnel.", "correct": true, "why": "Accès privé ZTNA, conditionnel, sans port entrant." },
+        { "id": "b", "text": "Un VPN point à site avec authentification par certificat.", "correct": false, "why": "Reste un VPN, sans contrôle d'appareil natif." },
+        { "id": "c", "text": "Publier le partage via une IP publique et un NSG.", "correct": false, "why": "Expose un port entrant." },
+        { "id": "d", "text": "Azure Bastion.", "correct": false, "why": "Pour l'administration RDP/SSH de VM, pas pour l'accès aux fichiers des utilisateurs." }
+      ],
+      "explanation": "Quick Access pour un démarrage rapide, applications per-app pour des politiques fines.",
+      "lesson": "2.3#s-2-3-5",
+      "sources": ["https://learn.microsoft.com/en-us/entra/global-secure-access/concept-private-access"]
+    },
+    {
+      "id": "mb1-24", "objective": "2.3", "skills": ["2.3.6"], "type": "single", "difficulty": 2,
+      "scenario": "Un private endpoint a été créé pour le compte de stockage de Brisemer. Un audit montre que le compte reste joignable depuis Internet.",
+      "stem": "Pourquoi ?",
+      "options": [
+        { "id": "a", "text": "Un private endpoint n'éteint pas l'accès public : il faut désactiver l'accès réseau public sur le compte.", "correct": true, "why": "Les deux chemins coexistent tant que l'accès public est autorisé." },
+        { "id": "b", "text": "Le DNS privé est mal configuré.", "correct": false, "why": "Cela affecterait la résolution interne, pas l'accès public." },
+        { "id": "c", "text": "Il faut un Private Link service.", "correct": false, "why": "Sert à publier son propre service." },
+        { "id": "d", "text": "Le NSG du sous-réseau du private endpoint est trop permissif.", "correct": false, "why": "N'agit pas sur l'endpoint public du compte." }
+      ],
+      "explanation": "Private endpoint : IP privée vers une ressource, zone DNS privée privatelink, accès public à fermer explicitement.",
+      "lesson": "2.3#s-2-3-6",
+      "sources": ["https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"]
+    },
+    {
+      "id": "mb1-25", "objective": "2.3", "skills": ["2.3.8"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer doit inspecter le trafic HTTPS sortant de ses spokes et détecter les intrusions par signatures.",
+      "stem": "Quel SKU d'Azure Firewall ?",
+      "options": [
+        { "id": "a", "text": "Premium.", "correct": true, "why": "Seul Premium offre l'inspection TLS sortante et l'IDPS." },
+        { "id": "b", "text": "Standard.", "correct": false, "why": "Pas d'inspection TLS ni d'IDPS." },
+        { "id": "c", "text": "Basic.", "correct": false, "why": "Fonctionnalités et débit limités." },
+        { "id": "d", "text": "N'importe lequel, avec une Firewall Policy.", "correct": false, "why": "Ces fonctions dépendent du SKU." }
+      ],
+      "explanation": "Premium : TLS inspection, IDPS, URL filtering.",
+      "lesson": "2.3#s-2-3-8",
+      "sources": ["https://learn.microsoft.com/en-us/azure/firewall/choose-firewall-sku"]
+    },
+    {
+      "id": "mb1-26", "objective": "2.3", "skills": ["2.3.9"], "type": "single", "difficulty": 2,
+      "scenario": "Une VM n'arrive pas à joindre un serveur sur le port 443. L'ingénieur veut savoir quelle règle NSG bloque ce flux précis.",
+      "stem": "Quel outil Network Watcher ?",
+      "options": [
+        { "id": "a", "text": "IP flow verify (ou NSG diagnostics).", "correct": true, "why": "Indique si un flux 5-tuple est autorisé et quelle règle décide." },
+        { "id": "b", "text": "Next hop.", "correct": false, "why": "Indique le routage, pas le filtrage." },
+        { "id": "c", "text": "VNet flow logs.", "correct": false, "why": "Journalisation a posteriori, pas un diagnostic ciblé immédiat." },
+        { "id": "d", "text": "Packet capture sur la passerelle VPN.", "correct": false, "why": "Hors sujet." }
+      ],
+      "explanation": "Effective security rules montre l'ensemble des règles appliquées à une carte.",
+      "lesson": "2.3#s-2-3-9",
+      "sources": ["https://learn.microsoft.com/en-us/azure/network-watcher/ip-flow-verify-overview"]
+    },
+    {
+      "id": "mb1-27", "objective": "3.1", "skills": ["3.1.1"], "type": "single", "difficulty": 2,
+      "scenario": "Avant le déploiement de Microsoft 365 Copilot, Brisemer veut empêcher immédiatement Copilot de faire remonter le contenu de 20 sites sensibles, le temps de revoir leurs permissions.",
+      "stem": "Quelle mesure transitoire est adaptée, et quelle est sa limite ?",
+      "options": [
+        { "id": "a", "text": "Restricted Content Discovery sur ces sites : Copilot ne les fait plus remonter, mais les permissions restent inchangées.", "correct": true, "why": "Mesure de masquage, pas de correction des droits." },
+        { "id": "b", "text": "Supprimer les 20 sites.", "correct": false, "why": "Destructeur et disproportionné." },
+        { "id": "c", "text": "Une politique d'accès conditionnel bloquant Copilot pour tous.", "correct": false, "why": "Bloque Copilot entièrement." },
+        { "id": "d", "text": "Defender for AI Services.", "correct": false, "why": "Protège les applications IA Azure, pas Microsoft 365 Copilot." }
+      ],
+      "explanation": "Corriger ensuite avec les rapports Data access governance, Restricted access control et Site access review.",
+      "lesson": "3.1#s-3-1-1",
+      "sources": ["https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports"]
+    },
+    {
+      "id": "mb1-28", "objective": "3.1", "skills": ["3.1.4"], "type": "single", "difficulty": 3,
+      "scenario": "Un agent autonome de Brisemer agit avec sa propre identité d'agent (accès application seule). Le RSSI veut bloquer automatiquement cet agent s'il est jugé compromis par ID Protection.",
+      "stem": "Que configurez-vous ?",
+      "options": [
+        { "id": "a", "text": "Une politique d'accès conditionnel ciblant l'identité d'agent (ou son blueprint) avec la condition agent risk et le contrôle Block.", "correct": true, "why": "Accès application seule : on cible l'identité d'agent ; la condition de risque d'agent vient d'ID Protection." },
+        { "id": "b", "text": "Une politique ciblant tous les utilisateurs avec le risque utilisateur élevé.", "correct": false, "why": "« Tous les utilisateurs » n'inclut pas les identités d'agents." },
+        { "id": "c", "text": "Un guardrail Foundry.", "correct": false, "why": "Filtre le contenu, ne bloque pas une identité." },
+        { "id": "d", "text": "Supprimer la licence de l'agent.", "correct": false, "why": "Pas une réponse automatique au risque." }
+      ],
+      "explanation": "Licence : Microsoft 365 E7, ou Agent 365 avec Entra ID P1 ou Microsoft 365 E3.",
+      "lesson": "3.1#s-3-1-4",
+      "sources": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"]
+    },
+    {
+      "id": "mb1-29", "objective": "3.1", "skills": ["3.1.7"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer veut placer un AI Gateway devant sa ressource Foundry en réutilisant l'instance API Management existante, de niveau Developer (classique), dans un autre abonnement.",
+      "stem": "Est-ce possible ?",
+      "options": [
+        { "id": "a", "text": "Non : l'instance existante doit être de niveau v2 et dans le même tenant et le même abonnement ; sinon créer une instance Basic v2.", "correct": true, "why": "Conditions documentées pour réutiliser une instance APIM." },
+        { "id": "b", "text": "Oui, tout niveau d'APIM convient.", "correct": false, "why": "Les niveaux classiques ne conviennent pas." },
+        { "id": "c", "text": "Oui, si l'on active Defender for APIs.", "correct": false, "why": "Sans rapport avec la compatibilité." },
+        { "id": "d", "text": "Non, l'AI Gateway n'utilise pas API Management.", "correct": false, "why": "Il repose sur API Management." }
+      ],
+      "explanation": "Rôle requis : API Management Service Contributor. Limites de jetons par projet : 429 (TPM), 403 (quota).",
+      "lesson": "3.1#s-3-1-7",
+      "sources": ["https://learn.microsoft.com/en-us/azure/foundry/configuration/enable-ai-api-management-gateway-portal"]
+    },
+    {
+      "id": "mb1-30", "objective": "3.1", "skills": ["3.1.9"], "type": "single", "difficulty": 2,
+      "scenario": "Un déploiement de modèle Foundry n'a pas de guardrail personnalisé.",
+      "stem": "Quelle protection s'applique ?",
+      "options": [
+        { "id": "a", "text": "Le guardrail par défaut Microsoft.DefaultV2.", "correct": true, "why": "Défaut des déploiements de modèles." },
+        { "id": "b", "text": "Aucune protection.", "correct": false, "why": "Un guardrail par défaut s'applique." },
+        { "id": "c", "text": "Defender for AI Services, qui joue le rôle de guardrail.", "correct": false, "why": "Détection d'attaques, pas filtrage par défaut du modèle." },
+        { "id": "d", "text": "Le guardrail de l'agent le plus récent du projet.", "correct": false, "why": "Pas de tel héritage." }
+      ],
+      "explanation": "Un guardrail d'agent remplace celui du modèle pour cet agent.",
+      "lesson": "3.1#s-3-1-9",
+      "sources": ["https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview"]
+    },
+    {
+      "id": "mb1-31", "objective": "3.1", "skills": ["3.1.8"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer teste Defender for AI Services en période d'essai sur une application de transcription audio et de génération de texte.",
+      "stem": "Quelle affirmation est exacte ?",
+      "options": [
+        { "id": "a", "text": "La protection porte sur le texte ; l'essai dure 30 jours avec un plafond de 75 milliards de jetons.", "correct": true, "why": "Couverture texte uniquement, essai documenté." },
+        { "id": "b", "text": "L'audio est analysé comme le texte.", "correct": false, "why": "Texte uniquement." },
+        { "id": "c", "text": "L'essai est illimité en jetons.", "correct": false, "why": "Plafond de 75 milliards." },
+        { "id": "d", "text": "Le plan s'active par ressource Foundry uniquement par un Contributor.", "correct": false, "why": "Activation par un Owner de l'abonnement." }
+      ],
+      "explanation": "Détections : Prompt Shields, threat intelligence, alertes corrélées dans Defender XDR.",
+      "lesson": "3.1#s-3-1-8",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/ai-threat-protection"]
+    },
+    {
+      "id": "mb1-32", "objective": "3.2", "skills": ["3.2.1"], "type": "single", "difficulty": 2,
+      "scenario": "Des VM chiffrées par Azure Disk Encryption doivent être conservées au-delà de 2028.",
+      "stem": "Que recommandez-vous ?",
+      "options": [
+        { "id": "a", "text": "Planifier la migration vers encryption at host, sauvegardes comprises, avant le retrait d'ADE le 15 septembre 2028.", "correct": true, "why": "Après le retrait, les disques ADE ne se déverrouilleront plus au redémarrage." },
+        { "id": "b", "text": "Rien : ADE reste pris en charge.", "correct": false, "why": "Retrait annoncé." },
+        { "id": "c", "text": "Ajouter un verrou ReadOnly sur les disques.", "correct": false, "why": "Sans rapport." },
+        { "id": "d", "text": "Désactiver le chiffrement côté serveur.", "correct": false, "why": "Le SSE est toujours actif et n'est pas en cause." }
+      ],
+      "explanation": "Encryption at host chiffre aussi disque temporaire, caches et flux, sans CPU de la VM.",
+      "lesson": "3.2#s-3-2-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"]
+    },
+    {
+      "id": "mb1-33", "objective": "3.2", "skills": ["3.2.2"], "type": "single", "difficulty": 2,
+      "scenario": "L'équipe réseau veut déployer Azure Bastion dans le hub de Brisemer et propose un sous-réseau « snet-bastion » en /27.",
+      "stem": "Que corrigez-vous ?",
+      "options": [
+        { "id": "a", "text": "Le sous-réseau doit s'appeler AzureBastionSubnet et faire au minimum /26.", "correct": true, "why": "Nom et taille imposés." },
+        { "id": "b", "text": "Rien, tout nom et toute taille conviennent.", "correct": false, "why": "Nom et taille sont imposés." },
+        { "id": "c", "text": "Le sous-réseau doit être en /24 exactement.", "correct": false, "why": "/26 minimum, pas une taille fixe." },
+        { "id": "d", "text": "Il faut un Bastion par spoke.", "correct": false, "why": "Un Bastion du hub atteint les VM des spokes appairés." }
+      ],
+      "explanation": "IP publique Standard statique requise (sauf Developer et private-only).",
+      "lesson": "3.2#s-3-2-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"]
+    },
+    {
+      "id": "mb1-34", "objective": "3.2", "skills": ["3.2.7"], "type": "single", "difficulty": 2,
+      "scenario": "Le RSSI veut détecter des clés privées et mots de passe oubliés en clair sur les disques de 200 VM Azure et AWS, sans rien installer.",
+      "stem": "Quelle capacité ?",
+      "options": [
+        { "id": "a", "text": "Le scan de secrets sans agent, avec Defender CSPM ou Defender for Servers Plan 2.", "correct": true, "why": "Analyse des instantanés de disques, multicloud, sans agent." },
+        { "id": "b", "text": "Defender for Key Vault.", "correct": false, "why": "Surveille les accès aux coffres, pas les disques." },
+        { "id": "c", "text": "Machine Configuration en mode audit.", "correct": false, "why": "Exige une extension." },
+        { "id": "d", "text": "Defender for Servers Plan 1.", "correct": false, "why": "Pas d'analyse sans agent en P1." }
+      ],
+      "explanation": "Les disques chiffrés par clé client exigent des permissions Key Vault supplémentaires pour le scanner.",
+      "lesson": "3.2#s-3-2-7",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-agentless-data-collection"]
+    },
+    {
+      "id": "mb1-35", "objective": "3.2", "skills": ["3.2.9"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer veut seulement savoir quels serveurs Linux autorisent les connexions sans mot de passe, sans rien modifier pour l'instant.",
+      "stem": "Quel mode Machine Configuration ?",
+      "options": [
+        { "id": "a", "text": "Audit.", "correct": true, "why": "Rapporte l'état sans modifier." },
+        { "id": "b", "text": "Apply and Monitor.", "correct": false, "why": "Applique la configuration." },
+        { "id": "c", "text": "Apply and Autocorrect.", "correct": false, "why": "Applique et corrige la dérive." },
+        { "id": "d", "text": "Deny.", "correct": false, "why": "Effet Azure Policy, pas un mode Machine Configuration." }
+      ],
+      "explanation": "Prérequis : extension et identité managée (initiative de prérequis).",
+      "lesson": "3.2#s-3-2-9",
+      "sources": ["https://learn.microsoft.com/en-us/azure/governance/machine-configuration/overview/01-overview-concepts"]
+    },
+    {
+      "id": "mb1-36", "objective": "3.3", "skills": ["3.3.3"], "type": "single", "difficulty": 2,
+      "scenario": "Un développeur se connecte à Azure Container Registry avec az acr login. Deux heures plus tard il pousse sans problème, mais le lendemain matin son push échoue.",
+      "stem": "Pourquoi ?",
+      "options": [
+        { "id": "a", "text": "Le jeton obtenu par az acr login est valable 3 heures : il faut se reconnecter.", "correct": true, "why": "Durée documentée du jeton." },
+        { "id": "b", "text": "L'utilisateur admin a été désactivé.", "correct": false, "why": "Il n'utilise pas le compte admin." },
+        { "id": "c", "text": "Le registre est passé en lecture seule la nuit.", "correct": false, "why": "Aucun mécanisme de ce type." },
+        { "id": "d", "text": "Defender for Containers a bloqué l'image.", "correct": false, "why": "Le scénario décrit une expiration d'authentification." }
+      ],
+      "explanation": "Les pipelines utilisent une identité managée ou un principal de service plutôt qu'un jeton interactif.",
+      "lesson": "3.3#s-3-3-3",
+      "sources": ["https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication"]
+    },
+    {
+      "id": "mb1-37", "objective": "3.3", "skills": ["3.3.8"], "type": "single", "difficulty": 3,
+      "scenario": "Une politique WAF Front Door contient une règle personnalisée qui autorise l'IP d'un scanner interne, et le Default Rule Set en mode Prevention.",
+      "stem": "Dans quel ordre sont-elles évaluées ?",
+      "options": [
+        { "id": "a", "text": "Les règles personnalisées d'abord, puis les règles gérées.", "correct": true, "why": "Ordre documenté du WAF Front Door." },
+        { "id": "b", "text": "Les règles gérées d'abord.", "correct": false, "why": "Ordre inverse." },
+        { "id": "c", "text": "Dans un ordre aléatoire.", "correct": false, "why": "L'ordre est déterministe." },
+        { "id": "d", "text": "Seules les règles gérées s'appliquent en Prevention.", "correct": false, "why": "Les règles personnalisées s'appliquent aussi." }
+      ],
+      "explanation": "Le Default Rule Set et le Bot Manager exigent le tier Premium.",
+      "lesson": "3.3#s-3-3-8",
+      "sources": ["https://learn.microsoft.com/en-us/azure/web-application-firewall/afds/afds-overview"]
+    },
+    {
+      "id": "mb1-38", "objective": "3.3", "skills": ["3.3.6"], "type": "single", "difficulty": 2,
+      "scenario": "Une Logic App de Brisemer manipule des numéros d'IBAN. Les opérateurs qui consultent l'historique d'exécution ne doivent pas voir ces valeurs.",
+      "stem": "Que configurez-vous ?",
+      "options": [
+        { "id": "a", "text": "Secure inputs et secure outputs sur les actions concernées.", "correct": true, "why": "Masque les entrées et sorties dans l'historique." },
+        { "id": "b", "text": "Une restriction d'IP entrantes.", "correct": false, "why": "Contrôle les appelants, pas l'historique." },
+        { "id": "c", "text": "Une politique OAuth Entra sur le déclencheur.", "correct": false, "why": "Authentifie les appelants, sans masquer l'historique." },
+        { "id": "d", "text": "Supprimer l'historique chaque nuit.", "correct": false, "why": "Contournement, données visibles dans la journée." }
+      ],
+      "explanation": "Logic Apps : sécurité des déclencheurs, de l'historique, des connexions et des paramètres.",
+      "lesson": "3.3#s-3-3-6",
+      "sources": ["https://learn.microsoft.com/en-us/azure/logic-apps/set-up-security-permissions"]
+    },
+    {
+      "id": "mb1-39", "objective": "4.1", "skills": ["4.1.1"], "type": "single", "difficulty": 2,
+      "scenario": "Le RSSI veut que chaque recommandation de sévérité élevée reçoive automatiquement un propriétaire et une échéance, avec relances.",
+      "stem": "Quelle fonctionnalité et quel plan ?",
+      "options": [
+        { "id": "a", "text": "Les règles de gouvernance, avec Defender CSPM.", "correct": true, "why": "Gouvernance réservée à Defender CSPM." },
+        { "id": "b", "text": "Le workflow automation, avec Foundational CSPM.", "correct": false, "why": "Déclenche une Logic App, sans suivi natif de propriétaires et échéances." },
+        { "id": "c", "text": "Le secure score.", "correct": false, "why": "Mesure, sans affectation." },
+        { "id": "d", "text": "Azure Policy avec l'effet modify.", "correct": false, "why": "Modifie des ressources, n'affecte pas de responsables." }
+      ],
+      "explanation": "Gouvernance : périmètre, conditions, propriétaire, échéance, notifications.",
+      "lesson": "4.1#s-4-1-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-cloud-security-posture-management"]
+    },
+    {
+      "id": "mb1-40", "objective": "4.1", "skills": ["4.1.2"], "type": "single", "difficulty": 2,
+      "scenario": "Un responsable conformité veut conserver l'historique mensuel de la conformité réglementaire de Brisemer, alors que le tableau ne montre que l'état courant.",
+      "stem": "Que configurez-vous ?",
+      "options": [
+        { "id": "a", "text": "L'export continu des données de conformité (flux ou instantanés hebdomadaires) vers un workspace Log Analytics.", "correct": true, "why": "Garde l'historique et permet des rapports." },
+        { "id": "b", "text": "Un verrou sur le tableau de bord.", "correct": false, "why": "N'existe pas et ne garde rien." },
+        { "id": "c", "text": "Defender EASM.", "correct": false, "why": "Surface externe, pas l'historique de conformité." },
+        { "id": "d", "text": "L'attestation manuelle de chaque contrôle chaque mois.", "correct": false, "why": "Concerne les contrôles manuels seulement." }
+      ],
+      "explanation": "Autre option ponctuelle : Download report (PDF/CSV).",
+      "lesson": "4.1#s-4-1-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard"]
+    },
+    {
+      "id": "mb1-41", "objective": "4.1", "skills": ["4.1.4"], "type": "single", "difficulty": 2,
+      "scenario": "Après avoir activé Defender for Containers sur un connecteur AWS existant, l'équipe constate que la couverture EKS ne fonctionne pas.",
+      "stem": "Quelle action est probablement nécessaire ?",
+      "options": [
+        { "id": "a", "text": "Mettre à jour la pile CloudFormation avec le template régénéré, car le nouveau plan demande de nouvelles ressources et permissions.", "correct": true, "why": "Activer un plan après coup peut exiger une mise à jour du template." },
+        { "id": "b", "text": "Recréer l'abonnement Azure.", "correct": false, "why": "Disproportionné et inutile." },
+        { "id": "c", "text": "Installer AMA sur chaque nœud EKS.", "correct": false, "why": "Ce n'est pas le mécanisme d'onboarding." },
+        { "id": "d", "text": "Passer l'intervalle d'analyse à 1 heure.", "correct": false, "why": "Intervalles possibles : 4, 6, 12 ou 24 h, et sans rapport." }
+      ],
+      "explanation": "Santé du connecteur : Environment settings > Connectivity status.",
+      "lesson": "4.1#s-4-1-4",
+      "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/quickstart-onboard-aws"]
+    },
+    {
+      "id": "mb1-42", "objective": "4.1", "skills": ["4.1.6"], "type": "single", "difficulty": 2,
+      "scenario": "Un prestataire MSSP veut gérer la ressource Defender EASM de Brisemer depuis son propre tenant via Azure Lighthouse.",
+      "stem": "Est-ce possible ?",
+      "options": [
+        { "id": "a", "text": "Non : Defender EASM ne prend pas en charge l'accès inter-tenants, même via Lighthouse ; il faut s'authentifier dans le tenant de la ressource.", "correct": true, "why": "Limite documentée." },
+        { "id": "b", "text": "Oui, avec le rôle Reader délégué.", "correct": false, "why": "L'accès inter-tenants n'est pas pris en charge." },
+        { "id": "c", "text": "Oui, si la ressource est en France Central.", "correct": false, "why": "La région n'y change rien." },
+        { "id": "d", "text": "Oui, après la période d'essai.", "correct": false, "why": "Sans rapport." }
+      ],
+      "explanation": "Rôles : Owner/Contributor gèrent, Reader consulte.",
+      "lesson": "4.1#s-4-1-6",
+      "sources": ["https://learn.microsoft.com/en-us/azure/external-attack-surface-management/overview"]
+    },
+    {
+      "id": "mb1-43", "objective": "4.2", "skills": ["4.2.1"], "type": "single", "difficulty": 2,
+      "scenario": "Brisemer veut regrouper journaux opérationnels (100 Go/jour) et journaux de sécurité (10 Go/jour) dans le workspace Sentinel « pour simplifier ».",
+      "stem": "Quel impact principal devez-vous signaler ?",
+      "options": [
+        { "id": "a", "text": "Toutes les données d'un workspace Sentinel sont facturées au tarif Sentinel, y compris les journaux opérationnels.", "correct": true, "why": "Critère de coût documenté pour séparer opérationnel et sécurité." },
+        { "id": "b", "text": "Les requêtes deviendront lentes au-delà de 100 Go.", "correct": false, "why": "Le volume ne limite pas les performances." },
+        { "id": "c", "text": "Sentinel refuse les tables opérationnelles.", "correct": false, "why": "Il les accepte." },
+        { "id": "d", "text": "La rétention sera limitée à 30 jours.", "correct": false, "why": "Faux ; un workspace Sentinel inclut même 90 jours." }
+      ],
+      "explanation": "À l'inverse, combiner peut faire atteindre un commitment tier : il faut chiffrer les deux options.",
+      "lesson": "4.2#s-4-2-1",
+      "sources": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/workspace-design"]
+    },
+    {
+      "id": "mb1-44", "objective": "4.2", "skills": ["4.2.2"], "type": "single", "difficulty": 2,
+      "scenario": "Un ingénieur doit installer des solutions du content hub et créer des règles d'analyse, sans pouvoir modifier les playbooks Logic Apps.",
+      "stem": "Quel rôle, et à quelle portée ?",
+      "options": [
+        { "id": "a", "text": "Microsoft Sentinel Contributor sur le groupe de ressources du workspace.", "correct": true, "why": "Gère contenu et règles ; ne donne pas Logic App Contributor." },
+        { "id": "b", "text": "Microsoft Sentinel Responder sur le workspace.", "correct": false, "why": "Ne gère pas le content hub ni les règles." },
+        { "id": "c", "text": "Owner de l'abonnement.", "correct": false, "why": "Trop large, et permettrait de modifier les playbooks." },
+        { "id": "d", "text": "Log Analytics Reader.", "correct": false, "why": "Lecture seule." }
+      ],
+      "explanation": "Attribuer au groupe de ressources couvre workspace et ressources liées.",
+      "lesson": "4.2#s-4-2-2",
+      "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/roles"]
+    },
+    {
+      "id": "mb1-45", "objective": "4.2", "skills": ["4.2.5"], "type": "single", "difficulty": 2,
+      "scenario": "Un forwarder rsyslog collecte le CEF de répartiteurs de charge. La DCR CEF via AMA est réglée sur la facility local4 au niveau minimal LOG_WARNING.",
+      "stem": "Quels niveaux sont collectés pour local4 ?",
+      "options": [
+        { "id": "a", "text": "LOG_WARNING et tous les niveaux plus graves (ERR, CRIT, ALERT, EMERG).", "correct": true, "why": "Le niveau choisi est un minimum." },
+        { "id": "b", "text": "LOG_WARNING uniquement.", "correct": false, "why": "Les niveaux plus graves sont aussi collectés." },
+        { "id": "c", "text": "Tous les niveaux, y compris DEBUG.", "correct": false, "why": "Les niveaux moins graves sont exclus." },
+        { "id": "d", "text": "Aucun, car le CEF n'utilise pas de facility.", "correct": false, "why": "Le CEF transite en Syslog avec une facility." }
+      ],
+      "explanation": "Résultat dans CommonSecurityLog.",
+      "lesson": "4.2#s-4-2-5",
+      "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-cef-syslog-ama"]
+    },
+    {
+      "id": "mb1-46", "objective": "4.2", "skills": ["4.2.8"], "type": "single", "difficulty": 3,
+      "scenario": "La règle d'automatisation n° 1 abaisse la sévérité des incidents d'un environnement de test de Medium à Low. La règle n° 2 assigne l'astreinte aux incidents de sévérité Medium ou plus.",
+      "stem": "Un incident de test Medium est créé. Que se passe-t-il ?",
+      "options": [
+        { "id": "a", "text": "La règle 1 le passe en Low ; la règle 2 voit l'état modifié et ne l'assigne pas à l'astreinte.", "correct": true, "why": "Les règles s'exécutent dans l'ordre et chacune voit l'état laissé par la précédente." },
+        { "id": "b", "text": "Les deux règles voient l'état initial : il est assigné puis passé en Low.", "correct": false, "why": "L'évaluation se fait sur l'état courant." },
+        { "id": "c", "text": "Les règles s'exécutent en parallèle, le résultat est aléatoire.", "correct": false, "why": "Toujours séquentielles." },
+        { "id": "d", "text": "La règle 2 s'exécute en premier car elle est plus récente.", "correct": false, "why": "C'est le numéro d'ordre qui compte." }
+      ],
+      "explanation": "Les règles de création passent avant les règles de mise à jour.",
+      "lesson": "4.2#s-4-2-8",
+      "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules"]
+    },
+    {
+      "id": "mb1-47", "objective": "4.2", "skills": ["4.2.9", "4.2.7"], "type": "multiple", "difficulty": 2,
+      "scenario": null,
+      "stem": "Quelles **deux** affirmations sur les tables et la rétention d'un workspace sont exactes ?",
+      "options": [
+        { "id": "a", "text": "La rétention totale d'une table peut atteindre 12 ans.", "correct": true, "why": "4 383 jours au maximum." },
+        { "id": "b", "text": "Une table personnalisée porte le suffixe _CL.", "correct": true, "why": "Suffixe obligatoire." },
+        { "id": "c", "text": "La rétention analytique peut atteindre 7 ans.", "correct": false, "why": "730 jours au maximum." },
+        { "id": "d", "text": "Réduire la rétention totale supprime les données immédiatement.", "correct": false, "why": "Délai de 30 jours avant suppression." }
+      ],
+      "explanation": "Au-delà de la rétention analytique : search jobs, restauration ou data lake.",
+      "lesson": "4.2#s-4-2-9",
+      "sources": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"]
+    },
+    {
+      "id": "mb1-48", "objective": "4.3", "skills": ["4.3.2"], "type": "single", "difficulty": 2,
+      "scenario": "Un analyste partage une session Security Copilot contenant des données Intune avec un collègue qui n'a aucun rôle Intune.",
+      "stem": "Que voit le collègue ?",
+      "options": [
+        { "id": "a", "text": "Toute la session en lecture seule, y compris les réponses issues d'Intune : l'accès au plugin n'est pas réévalué à la lecture.", "correct": true, "why": "Comportement documenté des sessions partagées." },
+        { "id": "b", "text": "Rien, faute de rôle Intune.", "correct": false, "why": "L'accès n'est pas réévalué pour une session partagée." },
+        { "id": "c", "text": "La session, et il peut y ajouter des prompts.", "correct": false, "why": "Les sessions partagées sont en lecture seule." },
+        { "id": "d", "text": "Seulement les prompts, pas les réponses.", "correct": false, "why": "Prompts et réponses sont inclus." }
+      ],
+      "explanation": "Le collègue doit être Copilot contributor du même tenant. Attention à ce que l'on partage.",
+      "lesson": "4.3#s-4-3-2",
+      "sources": ["https://learn.microsoft.com/en-us/copilot/security/authentication"]
+    },
+    {
+      "id": "mb1-49", "objective": "4.3", "skills": ["4.3.3"], "type": "single", "difficulty": 2,
+      "scenario": "Un analyste active le plugin Microsoft Sentinel dans Security Copilot, mais ses prompts n'interrogent aucun workspace.",
+      "stem": "Que lui manque-t-il probablement ?",
+      "options": [
+        { "id": "a", "text": "La configuration personnelle du plugin (engrenage Set up : workspace, abonnement) ; ce plugin se configure par utilisateur.", "correct": true, "why": "Les plugins avec bouton Set up se configurent par utilisateur." },
+        { "id": "b", "text": "Le rôle Copilot owner.", "correct": false, "why": "La configuration du plugin ne l'exige pas." },
+        { "id": "c", "text": "Un plugin personnalisé YAML.", "correct": false, "why": "Le plugin préinstallé suffit une fois configuré." },
+        { "id": "d", "text": "Une capacité dans le workspace Sentinel.", "correct": false, "why": "Les SCU sont dans Security Copilot, pas dans Sentinel." }
+      ],
+      "explanation": "Il lui faut aussi un rôle Sentinel (on-behalf-of).",
+      "lesson": "4.3#s-4-3-3",
+      "sources": ["https://learn.microsoft.com/en-us/copilot/security/manage-plugins"]
+    },
+    {
+      "id": "mb1-50", "objective": "4.3", "skills": ["4.3.4"], "type": "single", "difficulty": 2,
+      "scenario": "Un agent Security Copilot configuré avec un compte utilisateur existant continue de fonctionner alors que cet utilisateur a changé de poste et garde des droits trop larges.",
+      "stem": "Quelle correction recommandez-vous ?",
+      "options": [
+        { "id": "a", "text": "Éditer l'agent pour lui donner une agent identity dédiée avec les seules permissions nécessaires.", "correct": true, "why": "L'agent n'hérite plus des droits d'une personne." },
+        { "id": "b", "text": "Augmenter les SCU de l'agent.", "correct": false, "why": "Sans rapport." },
+        { "id": "c", "text": "Restreindre tous les plugins aux owners.", "correct": false, "why": "Effet de bord sur tous les utilisateurs, sans régler l'identité." },
+        { "id": "d", "text": "Supprimer le workspace.", "correct": false, "why": "Disproportionné." }
+      ],
+      "explanation": "Owners et contributors peuvent éditer l'agent (identité, paramètres), le mettre en pause ou gérer sa mémoire.",
+      "lesson": "4.3#s-4-3-4",
+      "sources": ["https://learn.microsoft.com/en-us/copilot/security/agents-manage"]
+    }
+  ]
+}
