@@ -111,7 +111,7 @@ export function buildPlan(input: PlanInput): Plan {
     while (cap > 0.01 && queue.length) {
       const item = queue[0];
       const h = Math.min(cap, item.left);
-      if (h > 0.01) {
+      if (round(h) > 0) {
         week.items.push({ kind: 'lesson', objective: item.id, hours: round(h), label: input.titles.get(item.id) ?? item.id, continued: item.started });
         week.hours += h;
       }
@@ -124,7 +124,7 @@ export function buildPlan(input: PlanInput): Plan {
   // Ce qui reste (plan trop court) est ajouté à la dernière semaine d'apprentissage.
   const lastLearn = weeks[Math.max(0, learnWeeks - 1)];
   for (const item of queue) {
-    if (item.left > 0.01) {
+    if (round(item.left) > 0) {
       lastLearn.items.push({ kind: 'lesson', objective: item.id, hours: round(item.left), label: input.titles.get(item.id) ?? item.id, continued: item.started });
       lastLearn.hours += item.left;
     }

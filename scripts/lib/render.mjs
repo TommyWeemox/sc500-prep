@@ -38,6 +38,10 @@ export function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function decodeEntities(s) {
+  return s.replace(/&(amp|lt|gt|quot|#39);/g, (_, e) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" })[e]);
+}
+
 const VERIFY_RE = /\(à vérifier\)/g;
 const markVerify = (html) => html.replace(VERIFY_RE, '<mark class="verify" title="Point non confirmé par Microsoft Learn au moment de la rédaction">à vérifier</mark>');
 
@@ -68,7 +72,7 @@ export function createRenderer() {
           }
         }
         const inner = this.parser.parseInline(tokens);
-        const plain = inner.replace(/<[^>]+>/g, '');
+        const plain = decodeEntities(inner.replace(/<[^>]+>/g, ''));
         const id = uniqueId(explicit ?? slugify(plain));
         if (depth <= 3) headings.push({ id, depth, text: plain });
         return `<h${depth} id="${id}">${inner}</h${depth}>\n`;

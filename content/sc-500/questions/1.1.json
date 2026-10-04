@@ -1,0 +1,219 @@
+[
+  {
+    "id": "q-1.1-01",
+    "objective": "1.1",
+    "skills": ["1.1.1"],
+    "type": "single",
+    "diagnostic": true,
+    "difficulty": 2,
+    "scenario": "Chez Brisemer Logistique, six ingénieurs d'exploitation ont le rôle **Contributor** en permanence sur l'abonnement de production. Le RSSI veut qu'ils n'aient plus aucun droit au quotidien, qu'ils demandent l'accès pour 4 heures au plus, avec une justification et un numéro de ticket, et que le chef d'équipe approuve chaque demande. L'entreprise dispose de licences Microsoft Entra ID P2.",
+    "stem": "Quelle solution répond à toutes ces exigences ?",
+    "options": [
+      { "id": "a", "text": "Dans PIM (Azure resources), remplacer les attributions par des attributions **éligibles** Contributor, et régler le rôle : durée maximale d'activation 4 h, justification, ticket et approbation par le chef d'équipe.", "correct": true, "why": "PIM supprime l'accès permanent (attribution éligible) et ses role settings couvrent exactement durée, justification, ticket et approbation." },
+      { "id": "b", "text": "Créer une politique d'accès conditionnel qui exige la MFA pour l'application Microsoft Azure Management.", "correct": false, "why": "La MFA renforce la connexion mais les ingénieurs garderaient Contributor en permanence : ni limite de durée, ni approbation." },
+      { "id": "c", "text": "Créer un rôle RBAC personnalisé avec moins d'actions que Contributor et l'attribuer de façon permanente.", "correct": false, "why": "Un rôle personnalisé réduit le périmètre des actions, pas la durée. L'accès resterait permanent et sans approbation." },
+      { "id": "d", "text": "Programmer une revue d'accès mensuelle sur l'attribution Contributor.", "correct": false, "why": "Une revue d'accès détecte les accès inutiles a posteriori ; elle ne fournit pas d'accès juste-à-temps avec approbation." }
+    ],
+    "explanation": "Le besoin combine **juste-à-temps** (pas d'accès au quotidien), **durée bornée**, **justification**, **ticket** et **approbation** : c'est la définition des role settings PIM appliqués à une attribution éligible. La durée maximale d'activation peut aller de 1 à 24 heures.",
+    "lesson": "1.1#s-1-1-1",
+    "sources": [
+      "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure",
+      "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-change-default-settings"
+    ]
+  },
+  {
+    "id": "q-1.1-02",
+    "objective": "1.1",
+    "skills": ["1.1.1", "1.1.2"],
+    "type": "single",
+    "difficulty": 3,
+    "scenario": "Les administrateurs de Brisemer sont éligibles au rôle **Global Administrator**. Le réglage PIM « On activation, require multifactor authentication » est activé. Un audit montre qu'un administrateur connecté le matin avec une notification push Authenticator a pu activer le rôle l'après-midi sans nouvelle vérification. La sécurité exige désormais une **clé FIDO2** à **chaque** activation.",
+    "stem": "Que devez-vous configurer ?",
+    "options": [
+      { "id": "a", "text": "Une politique d'accès conditionnel ciblant un **contexte d'authentification**, avec l'authentication strength Phishing-resistant MFA et une fréquence de connexion « Every time », puis le réglage PIM « On activation, require Microsoft Entra Conditional Access authentication context » sur ce contexte.", "correct": true, "why": "C'est la méthode documentée pour imposer une méthode précise et une réauthentification à chaque activation." },
+      { "id": "b", "text": "Garder « require multifactor authentication » et réduire la durée maximale d'activation à 1 heure.", "correct": false, "why": "Le réglage MFA peut être satisfait par une MFA antérieure dans la session, et il n'impose pas de méthode. La durée ne change rien." },
+      { "id": "c", "text": "Une politique d'accès conditionnel qui cible le rôle d'annuaire Global Administrator et exige l'authentication strength Phishing-resistant MFA.", "correct": false, "why": "Pendant l'activation, l'utilisateur n'a pas encore le rôle : la politique ne s'applique qu'au jeton suivant. Elle ne contrôle donc pas l'activation elle-même." },
+      { "id": "d", "text": "Désactiver Microsoft Authenticator dans la Authentication methods policy pour le groupe des administrateurs.", "correct": false, "why": "Cela change les méthodes disponibles pour toutes les connexions et n'impose ni FIDO2 ni réauthentification à l'activation." }
+    ],
+    "explanation": "Le réglage MFA de PIM peut être satisfait par une authentification forte faite plus tôt dans la session. Pour imposer une méthode et une réauthentification, Microsoft documente l'association **contexte d'authentification + authentication strength + sign-in frequency Every time**. La politique doit exister avant d'être référencée dans PIM.",
+    "lesson": "1.1#s-1-1-1",
+    "sources": [
+      "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-change-default-settings",
+      "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-strengths"
+    ]
+  },
+  {
+    "id": "q-1.1-03",
+    "objective": "1.1",
+    "skills": ["1.1.1"],
+    "type": "multiple",
+    "difficulty": 2,
+    "scenario": null,
+    "stem": "La licence Microsoft Entra ID P2 d'un tenant qui utilise PIM expire sans être renouvelée. Quelles **deux** conséquences sont documentées par Microsoft ?",
+    "options": [
+      { "id": "a", "text": "Les attributions éligibles sont supprimées.", "correct": true, "why": "Sans licence, plus personne ne peut activer : Microsoft supprime les attributions éligibles." },
+      { "id": "b", "text": "Les attributions actives limitées dans le temps deviennent actives permanentes.", "correct": true, "why": "C'est documenté : elles n'expirent plus à la date prévue, ce qui va contre l'objectif de PIM." },
+      { "id": "c", "text": "Toutes les attributions de rôles, permanentes comprises, sont supprimées.", "correct": false, "why": "Les attributions actives permanentes ne sont pas affectées." },
+      { "id": "d", "text": "Les attributions éligibles deviennent actives permanentes.", "correct": false, "why": "Elles sont supprimées, pas converties." },
+      { "id": "e", "text": "Les réglages PIM sont conservés et redeviennent actifs automatiquement au renouvellement.", "correct": false, "why": "Microsoft indique que les paramètres de configuration PIM sont supprimés." }
+    ],
+    "explanation": "À l'expiration : les attributions actives permanentes restent, les actives limitées deviennent permanentes, les éligibles disparaissent, les revues d'accès en cours se terminent et la configuration PIM est supprimée. Surveillez les renouvellements de licence.",
+    "lesson": "1.1#s-1-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"]
+  },
+  {
+    "id": "q-1.1-04",
+    "objective": "1.1",
+    "skills": ["1.1.2"],
+    "type": "order",
+    "difficulty": 2,
+    "scenario": "Brisemer veut exiger une méthode résistante au phishing pour tous les administrateurs, sans risquer de bloquer l'accès au tenant le jour du déploiement.",
+    "stem": "Dans quel ordre procédez-vous ?",
+    "options": [
+      { "id": "a", "text": "Créer deux comptes d'accès d'urgence cloud-only avec une passkey FIDO2 et les placer dans un groupe dédié.", "why": "Les comptes d'urgence sont le filet de sécurité : ils doivent exister avant toute politique restrictive." },
+      { "id": "b", "text": "Créer la politique en mode Report-only, en excluant le groupe des comptes d'urgence.", "why": "Report-only évalue sans appliquer ; l'exclusion protège l'accès d'urgence." },
+      { "id": "c", "text": "Analyser les résultats Report-only et l'outil What If pour repérer les administrateurs qui seraient bloqués.", "why": "On corrige les cas non conformes (méthode non enregistrée) avant l'application." },
+      { "id": "d", "text": "Passer la politique à On.", "why": "L'application intervient en dernier, une fois l'impact connu." }
+    ],
+    "explanation": "Ordre recommandé : filet de sécurité d'abord (comptes d'urgence exclus), puis Report-only, analyse, et enfin activation. Les comptes d'urgence restent exclus des politiques qui bloquent ou restreignent la connexion.",
+    "lesson": "1.1#s-1-1-2",
+    "sources": [
+      "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access",
+      "https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview"
+    ]
+  },
+  {
+    "id": "q-1.1-05",
+    "objective": "1.1",
+    "skills": ["1.1.2"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Une PME cliente de Brisemer possède uniquement des licences **Microsoft Entra ID P1**. Elle souhaite bloquer automatiquement les connexions que Microsoft Entra ID Protection juge à **risque élevé**.",
+    "stem": "Que doit-elle faire ?",
+    "options": [
+      { "id": "a", "text": "Acquérir des licences Microsoft Entra ID P2 pour les utilisateurs concernés, puis créer une politique d'accès conditionnel avec la condition Sign-in risk = High et le contrôle Block.", "correct": true, "why": "Les politiques fondées sur le risque exigent ID Protection, une fonctionnalité P2." },
+      { "id": "b", "text": "Créer dès maintenant la politique avec la condition Sign-in risk, P1 suffit.", "correct": false, "why": "P1 couvre l'accès conditionnel mais pas les conditions de risque, qui dépendent d'ID Protection (P2)." },
+      { "id": "c", "text": "Activer les security defaults.", "correct": false, "why": "Les security defaults imposent une base (MFA), sans politique personnalisée fondée sur le risque." },
+      { "id": "d", "text": "Créer une named location regroupant les pays à risque et bloquer ces pays.", "correct": false, "why": "Le blocage géographique n'est pas le risque de connexion calculé par ID Protection (identifiants divulgués, voyage impossible...)." }
+    ],
+    "explanation": "Accès conditionnel : P1. Conditions **Sign-in risk** et **User risk** : ID Protection, donc P2.",
+    "lesson": "1.1#s-1-1-2",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview"]
+  },
+  {
+    "id": "q-1.1-06",
+    "objective": "1.1",
+    "skills": ["1.1.3"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelle méthode est **passwordless** mais **ne satisfait pas** l'authentication strength intégrée Phishing-resistant MFA ?",
+    "options": [
+      { "id": "a", "text": "Microsoft Authenticator en connexion par téléphone (phone sign-in).", "correct": true, "why": "Elle figure dans Passwordless MFA strength, mais pas dans Phishing-resistant MFA strength." },
+      { "id": "b", "text": "Une clé de sécurité FIDO2.", "correct": false, "why": "Passwordless et résistante au phishing : elle satisfait les trois forces intégrées." },
+      { "id": "c", "text": "Windows Hello for Business.", "correct": false, "why": "Résistante au phishing selon Microsoft, et incluse dans la force Phishing-resistant MFA." },
+      { "id": "d", "text": "Certificate-based authentication (multifacteur).", "correct": false, "why": "La CBA multifacteur fait partie de la force Phishing-resistant MFA." }
+    ],
+    "explanation": "« Sans mot de passe » et « résistant au phishing » sont deux propriétés distinctes. Les méthodes résistantes exigent une interaction entre la méthode et la surface de connexion (FIDO2, WHfB, CBA, passkeys).",
+    "lesson": "1.1#s-1-1-3",
+    "sources": [
+      "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-strengths",
+      "https://learn.microsoft.com/en-us/entra/identity/authentication/overview-authentication"
+    ]
+  },
+  {
+    "id": "q-1.1-07",
+    "objective": "1.1",
+    "skills": ["1.1.3"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Brisemer recrute trois administrateurs. La politique interne interdit qu'ils aient un jour un mot de passe : leur première connexion doit servir à enregistrer une passkey FIDO2.",
+    "stem": "Quel identifiant leur remettez-vous pour la première connexion ?",
+    "options": [
+      { "id": "a", "text": "Un Temporary Access Pass (TAP).", "correct": true, "why": "Le TAP est un code limité dans le temps, utilisable comme premier facteur, conçu pour l'amorçage de méthodes sans mot de passe." },
+      { "id": "b", "text": "Un mot de passe temporaire à changer à la première connexion.", "correct": false, "why": "Contraire à l'exigence : l'utilisateur aurait un mot de passe." },
+      { "id": "c", "text": "Un code OTP envoyé par e-mail.", "correct": false, "why": "L'OTP e-mail sert au SSPR des membres et à la connexion des invités, pas à la première connexion d'un membre." },
+      { "id": "d", "text": "L'activation des security defaults.", "correct": false, "why": "Les security defaults imposent l'enregistrement MFA mais ne fournissent aucun identifiant de première connexion." }
+    ],
+    "explanation": "Le Temporary Access Pass est utilisable comme premier facteur et comme MFA. C'est la méthode d'amorçage recommandée pour enregistrer une passkey sans jamais créer de mot de passe.",
+    "lesson": "1.1#s-1-1-3",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/authentication/overview-authentication"]
+  },
+  {
+    "id": "q-1.1-08",
+    "objective": "1.1",
+    "skills": ["1.1.4"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Brisemer utilise une application SaaS multitenant développée par un éditeur externe. Un administrateur a donné son consentement il y a un an. Aujourd'hui, seuls les membres du groupe **Finance** doivent pouvoir s'y connecter.",
+    "stem": "Où et comment configurez-vous cette restriction ?",
+    "options": [
+      { "id": "a", "text": "Dans **Enterprise applications** du tenant Brisemer : activer « Assignment required » sur l'application et affecter le groupe Finance.", "correct": true, "why": "Le service principal local contrôle qui peut accéder à l'application dans ce tenant." },
+      { "id": "b", "text": "Dans **App registrations** du tenant Brisemer : modifier le manifeste de l'application.", "correct": false, "why": "L'application object d'une app multitenant vit dans le tenant de l'éditeur ; Brisemer ne possède que le service principal." },
+      { "id": "c", "text": "Révoquer le consentement administrateur accordé à l'application.", "correct": false, "why": "Cela casse l'application pour tout le monde, Finance compris." },
+      { "id": "d", "text": "Classer les permissions de l'application comme « low impact ».", "correct": false, "why": "Les permission classifications concernent le consentement, pas qui peut se connecter." }
+    ],
+    "explanation": "Application object = modèle global dans le tenant d'origine (ici chez l'éditeur). Service principal = instance locale dans chaque tenant consommateur, gérée dans Enterprise applications : c'est là qu'on règle l'affectation obligatoire, les utilisateurs et groupes, et qu'on voit les consentements.",
+    "lesson": "1.1#s-1-1-4",
+    "sources": [
+      "https://learn.microsoft.com/en-us/entra/identity-platform/app-objects-and-service-principals",
+      "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent"
+    ]
+  },
+  {
+    "id": "q-1.1-09",
+    "objective": "1.1",
+    "skills": ["1.1.5"],
+    "type": "multiple",
+    "difficulty": 2,
+    "scenario": "Après un incident de consent phishing, Brisemer veut que les utilisateurs puissent encore utiliser seuls des applications d'éditeurs vérifiés qui ne demandent que des permissions de base (profil, e-mail). Pour toute autre application, ils doivent pouvoir **demander** une validation au lieu d'être simplement bloqués.",
+    "stem": "Quelles **deux** actions mettez-vous en place ?",
+    "options": [
+      { "id": "a", "text": "Régler le consentement utilisateur sur « Allow user consent for apps from verified publishers, for selected permissions » et classer les permissions de base comme low impact.", "correct": true, "why": "C'est la politique microsoft-user-default-low : éditeurs vérifiés, permissions classées à faible impact." },
+      { "id": "b", "text": "Activer le admin consent workflow.", "correct": true, "why": "Il permet aux utilisateurs de demander l'approbation d'un administrateur pour les applications qu'ils ne peuvent pas accepter eux-mêmes." },
+      { "id": "c", "text": "Régler le consentement utilisateur sur « Do not allow user consent ».", "correct": false, "why": "Les utilisateurs ne pourraient plus utiliser seuls les applications vérifiées, contrairement à l'exigence." },
+      { "id": "d", "text": "Accorder le consentement administrateur pour toute l'organisation à chaque application demandée.", "correct": false, "why": "Cela élargit l'exposition au lieu de la réduire, sans aucun contrôle." },
+      { "id": "e", "text": "Exiger la MFA par accès conditionnel pour toutes les applications.", "correct": false, "why": "Le consent phishing n'exige aucun mot de passe volé : la MFA ne l'empêche pas." }
+    ],
+    "explanation": "Combinaison recommandée : consentement limité aux éditeurs vérifiés et aux permissions à faible impact, plus un circuit de demande vers l'administrateur. Les changements n'affectent que les futurs consentements : révoquez aussi les consentements accordés à l'application malveillante.",
+    "lesson": "1.1#s-1-1-5",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent"]
+  },
+  {
+    "id": "q-1.1-10",
+    "objective": "1.1",
+    "skills": ["1.1.6"],
+    "type": "single",
+    "diagnostic": true,
+    "difficulty": 2,
+    "scenario": "Un pipeline recrée chaque nuit un Virtual Machine Scale Set et deux Function Apps. Toutes ces ressources doivent lire le même conteneur de blobs. L'équipe sécurité veut accorder le droit **une seule fois**, **avant** le déploiement, et ne stocker **aucun secret**.",
+    "stem": "Que recommandez-vous ?",
+    "options": [
+      { "id": "a", "text": "Une identité managée **affectée par l'utilisateur**, avec le rôle Storage Blob Data Reader sur le conteneur, attachée à chaque ressource par le pipeline.", "correct": true, "why": "Cycle de vie indépendant, partageable, droits accordés en amont, aucun secret." },
+      { "id": "b", "text": "Une identité managée **système** sur chaque ressource, avec le rôle attribué après chaque déploiement.", "correct": false, "why": "Une identité système disparaît avec la ressource : il faudrait réattribuer le rôle à chaque recréation." },
+      { "id": "c", "text": "Une app registration avec un client secret stocké dans Key Vault.", "correct": false, "why": "Fonctionne, mais introduit un secret à gérer et à faire tourner, ce que l'exigence exclut." },
+      { "id": "d", "text": "La clé du compte de stockage dans les paramètres d'application.", "correct": false, "why": "Secret à longue durée de vie, donnant un accès complet au compte : contraire au moindre privilège." }
+    ],
+    "explanation": "Microsoft cite précisément ces cas pour l'identité **user-assigned** : plusieurs ressources partageant une identité, ressources recréées souvent avec des permissions stables, préautorisation pendant le provisionnement.",
+    "lesson": "1.1#s-1-1-6",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"]
+  },
+  {
+    "id": "q-1.1-11",
+    "objective": "1.1",
+    "skills": ["1.1.5"],
+    "type": "single",
+    "difficulty": 1,
+    "scenario": null,
+    "stem": "Un service d'archivage tourne la nuit, sans utilisateur connecté, et doit lire toutes les boîtes aux lettres via Microsoft Graph. Quel type de permission lui faut-il, et qui peut y consentir ?",
+    "options": [
+      { "id": "a", "text": "Une permission d'application ; seul un administrateur peut y consentir.", "correct": true, "why": "Sans utilisateur, on utilise des app roles (permissions d'application), qui exigent le consentement d'un admin." },
+      { "id": "b", "text": "Une permission déléguée ; chaque utilisateur consent pour sa propre boîte.", "correct": false, "why": "Une permission déléguée exige un utilisateur connecté, absent ici." },
+      { "id": "c", "text": "Une permission déléguée ; un administrateur consent pour toute l'organisation.", "correct": false, "why": "Même avec consentement admin, une permission déléguée agit au nom d'un utilisateur connecté." },
+      { "id": "d", "text": "Une permission d'application ; l'utilisateur propriétaire de l'app registration peut y consentir.", "correct": false, "why": "Les permissions d'application exigent un administrateur (ou le propriétaire du service principal de l'API exposée, pas celui du client)." }
+    ],
+    "explanation": "Délégué = au nom d'un utilisateur, accès limité à ce qu'il peut faire. Application = sans utilisateur, accès à tout ce que couvre la permission, consentement **administrateur** uniquement. Dans Graph, le résultat est un `appRoleAssignment`.",
+    "lesson": "1.1#s-1-1-5",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview"]
+  }
+]

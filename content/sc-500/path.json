@@ -1,0 +1,19 @@
+{
+  "profile": "Profil : ingénieur réseau et sécurité, à l'aise sur Azure hybride (hub-and-spoke, ExpressRoute, Bicep), pare-feu, SIEM et conformité NIST ; moins solide sur l'identité, Defender for Cloud, Key Vault, les conteneurs et la sécurité des workloads IA. Le réseau passe en rappel rapide, tout le reste est approfondi. Fil rouge : un projet d'accès privilégié Just-in-Time avec PIM, chez une entreprise fictive.",
+  "order": ["1.1", "1.3", "1.2", "2.1", "2.2", "2.3", "3.2", "3.3", "4.1", "3.1", "4.2", "4.3"],
+  "objectives": {
+    "1.1": { "depth": "approfondi", "hours": 14, "why": "Point faible déclaré et socle de tout le reste : PIM, accès conditionnel, identités managées et consentement reviennent dans presque tous les domaines. C'est aussi le cœur du fil rouge Just-in-Time." },
+    "1.3": { "depth": "approfondi", "hours": 10, "why": "RBAC, rôles personnalisés et Azure Policy prolongent directement l'identité. Votre culture NIST aide pour la conformité, mais les mécanismes Azure (effets de policy, portée, verrous) sont à maîtriser." },
+    "1.2": { "depth": "approfondi", "hours": 8, "why": "Point faible déclaré. S'appuie sur RBAC (modèle d'accès Key Vault) et prépare le chiffrement des disques, du stockage et de SQL." },
+    "2.1": { "depth": "approfondi", "hours": 6, "why": "Le pare-feu de stockage vous parlera ; l'autorisation des données (Entra ID, SAS, clés partagées) et Defender for Storage sont nouveaux." },
+    "2.2": { "depth": "approfondi", "hours": 5, "why": "Objectif court mais précis : authentification Entra, TDE, audit et Defender for SQL. Réutilise Key Vault et les private endpoints." },
+    "2.3": { "depth": "rappel", "hours": 6, "why": "Votre terrain : NSG, Azure Firewall, VPN, Private Link. Survol rapide, mais attention aux nouveautés du guide : Virtual Network Manager (security admin rules), Virtual WAN sécurisé, Entra Private Access." },
+    "3.2": { "depth": "approfondi", "hours": 9, "why": "Defender for Servers, JIT VM, Bastion, Arc et Trusted Launch : beaucoup de réglages précis et un recouvrement avec le domaine 4." },
+    "3.3": { "depth": "approfondi", "hours": 11, "why": "Point faible déclaré (conteneurs). AKS, ACR, Container Apps, Functions, App Service, WAF et APIM : large et souvent piégeux." },
+    "4.1": { "depth": "approfondi", "hours": 8, "why": "Point faible déclaré. Defender CSPM, plans de protection, multicloud, Defender Vulnerability Management et EASM. À voir avant l'IA, qui s'appuie sur Defender for Cloud." },
+    "3.1": { "depth": "approfondi", "hours": 12, "why": "Point faible déclaré et domaine le plus neuf : Purview DSPM, Entra Agent ID, AI Gateway, guardrails Foundry, Defender for AI. Placé après l'identité et Defender for Cloud dont il dépend." },
+    "4.2": { "depth": "rappel", "hours": 7, "why": "Votre expérience SIEM couvre les concepts (collecte, syslog/CEF, rétention, automatisation). À approfondir : data collection rules, AMA, rôles Sentinel, content hub, data lake." },
+    "4.3": { "depth": "approfondi", "hours": 5, "why": "Petit objectif mais entièrement nouveau : workspaces, rôles, plugins et agents Security Copilot." }
+  },
+  "finalReview": { "minWeeks": 1, "ratio": 0.15 }
+}

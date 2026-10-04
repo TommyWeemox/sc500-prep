@@ -1,6 +1,8 @@
 /// <reference types="vitest/config" />
+import fs from 'node:fs';
+import path from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
-import { buildAll } from './scripts/lib/build.mjs';
+import { buildAll, OUT_DIR } from './scripts/lib/build.mjs';
 
 /** Compile content/ en public/data/ au démarrage et à chaque modification en dev. */
 function contentPlugin(): Plugin {
@@ -10,6 +12,16 @@ function contentPlugin(): Plugin {
       buildAll();
     },
     configureServer(server) {
+      // Sert public/data directement : l'index des fichiers publics de Vite ne suit pas
+      // la suppression puis recréation du dossier à chaque recompilation du contenu.
+      server.middlewares.use('/data', (req, res, next) => {
+        const rel = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
+        const file = path.resolve(OUT_DIR, rel);
+        if (!file.startsWith(path.resolve(OUT_DIR)) || !fs.existsSync(file) || !fs.statSync(file).isFile()) return next();
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-store');
+        fs.createReadStream(file).pipe(res);
+      });
       server.watcher.add('content');
       server.watcher.on('all', (_event, file) => {
         if (!/[\\/]content[\\/]/.test(file)) return;
@@ -30,7 +42,7 @@ export default defineConfig({
   plugins: [contentPlugin()],
   build: {
     target: 'es2022',
-    chunkSizeWarningLimit: 900,
+    chunkSizeWarningLimit: 1600,
   },
   test: {
     environment: 'jsdom',

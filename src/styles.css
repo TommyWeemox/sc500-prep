@@ -181,7 +181,7 @@ ul.bars li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(80px,
 .lesson-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: start; }
 .toc { position: sticky; top: 110px; font-size: 0.88rem; max-height: calc(100vh - 130px); overflow: auto; }
 .toc-title { font-weight: 700; margin: 1rem 0 0.4rem; }
-.toc ol { padding-left: 1.1rem; margin: 0; }
+.toc ol { padding-left: 1.7rem; margin: 0; }
 .toc li { margin: 0.3rem 0; }
 .toc a { color: var(--muted); text-decoration: none; }
 .toc a:hover { color: var(--accent); }
@@ -194,7 +194,8 @@ ul.bars li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(80px,
 .model { margin-top: 12px; padding: 12px 16px; background: var(--ok-soft); border-radius: 8px; }
 .skills li, .sources li { margin: 0.3rem 0; }
 
-.prose { max-width: 78ch; overflow-wrap: break-word; }
+.prose { max-width: 82ch; overflow-wrap: break-word; }
+.prose .code, .prose .diagram, .prose .table-wrap { max-width: 100%; }
 .prose > :first-child { margin-top: 0; }
 .prose h2 { padding-top: 0.6rem; border-top: 1px solid var(--border); }
 .prose h2:first-child { border-top: 0; }
