@@ -1,0 +1,206 @@
+[
+  {
+    "id": "q-1.2-01",
+    "objective": "1.2",
+    "skills": ["1.2.2"],
+    "type": "single",
+    "diagnostic": true,
+    "difficulty": 2,
+    "scenario": "Brisemer chiffre un compte de stockage avec une clé gérée par le client stockée dans `kv-brisemer-prod-01`. Un audit exige qu'un administrateur malveillant ne puisse pas détruire définitivement cette clé, même avec des droits élevés, avant au moins 90 jours.",
+    "stem": "Que devez-vous vérifier ou configurer sur le coffre ?",
+    "options": [
+      { "id": "a", "text": "Activer la purge protection, avec une rétention de 90 jours fixée à la création du coffre.", "correct": true, "why": "Avec purge protection, aucun objet supprimé ne peut être purgé avant la fin de la rétention, quel que soit le rôle." },
+      { "id": "b", "text": "Activer le soft-delete.", "correct": false, "why": "Le soft-delete est déjà actif par défaut et ne suffit pas : un utilisateur avec la permission de purge peut purger immédiatement." },
+      { "id": "c", "text": "Poser un verrou ReadOnly sur le coffre.", "correct": false, "why": "Les verrous protègent le plan de contrôle ; ils ne garantissent pas la non-purge des clés et bloqueraient des opérations légitimes." },
+      { "id": "d", "text": "Retirer le rôle Key Vault Purge Operator à tous les utilisateurs.", "correct": false, "why": "D'autres principaux (propriétaire de l'abonnement, rôles avec la permission purge) pourraient encore purger. Seule la purge protection l'interdit techniquement." }
+    ],
+    "explanation": "Le soft-delete rend la suppression réversible ; la **purge protection** empêche la suppression définitive avant la fin de la rétention (7 à 90 jours, 90 par défaut). C'est aussi une exigence de la plupart des services qui chiffrent avec une clé client.",
+    "lesson": "1.2#s-1-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview"]
+  },
+  {
+    "id": "q-1.2-02",
+    "objective": "1.2",
+    "skills": ["1.2.3"],
+    "type": "single",
+    "diagnostic": true,
+    "difficulty": 2,
+    "scenario": "Une Function App de Brisemer utilise une identité managée. Elle doit lire la chaîne de connexion stockée comme secret dans un coffre en modèle Azure RBAC. Elle ne doit ni créer ni modifier de secret, ni utiliser les clés.",
+    "stem": "Quel rôle attribuez-vous à l'identité managée, et à quelle portée ?",
+    "options": [
+      { "id": "a", "text": "Key Vault Secrets User, sur le coffre.", "correct": true, "why": "Ce rôle permet de lire la valeur des secrets, rien de plus ; la portée du coffre est celle recommandée par Microsoft." },
+      { "id": "b", "text": "Key Vault Secrets Officer, sur le coffre.", "correct": false, "why": "Ce rôle permet aussi de créer, modifier et supprimer des secrets : trop large." },
+      { "id": "c", "text": "Key Vault Reader, sur le coffre.", "correct": false, "why": "Key Vault Reader lit les métadonnées mais jamais la valeur d'un secret." },
+      { "id": "d", "text": "Key Vault Contributor, sur le groupe de ressources.", "correct": false, "why": "Rôle du plan de contrôle : il ne donne aucun accès aux données du coffre." }
+    ],
+    "explanation": "Lecture de valeur = **Secrets User**. Gestion = **Secrets Officer**. Métadonnées = **Reader**. Gestion du coffre sans données = **Contributor**.",
+    "lesson": "1.2#s-1-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"]
+  },
+  {
+    "id": "q-1.2-03",
+    "objective": "1.2",
+    "skills": ["1.2.3"],
+    "type": "single",
+    "difficulty": 3,
+    "scenario": "Un coffre ancien de Brisemer utilise encore le modèle **access policy**. Un développeur qui a le rôle **Contributor** sur le groupe de ressources a pu lire des secrets de production sans qu'aucune access policy ne lui ait été donnée par l'équipe sécurité.",
+    "stem": "Quelle explication et quelle correction sont les plus justes ?",
+    "options": [
+      { "id": "a", "text": "Contributor peut modifier les access policies du coffre (plan de contrôle) et s'en ajouter une ; il faut basculer le coffre en Azure RBAC après avoir créé les attributions de rôles de données équivalentes.", "correct": true, "why": "C'est le risque documenté du modèle access policy, et la bascule invalide toutes les access policies : il faut préparer les rôles avant." },
+      { "id": "b", "text": "Contributor inclut nativement la lecture des secrets ; il faut le remplacer par Reader.", "correct": false, "why": "Contributor ne lit pas les données directement ; il s'est donné l'accès en modifiant une access policy." },
+      { "id": "c", "text": "Le pare-feu du coffre était désactivé ; il suffit de l'activer.", "correct": false, "why": "Le réseau n'explique pas l'autorisation ; un poste autorisé pourrait toujours abuser du même mécanisme." },
+      { "id": "d", "text": "Basculer immédiatement le coffre en Azure RBAC, sans autre préparation.", "correct": false, "why": "La bascule invalide toutes les access policies : sans attributions équivalentes, les applications perdent l'accès (panne)." }
+    ],
+    "explanation": "Avec les access policies, les droits sur les données se configurent depuis le plan de contrôle, donc tout **Contributor** peut s'octroyer l'accès. Avec RBAC, le plan de contrôle et le plan de données sont séparés. Microsoft avertit que passer en RBAC invalide les access policies existantes.",
+    "lesson": "1.2#s-1-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"]
+  },
+  {
+    "id": "q-1.2-04",
+    "objective": "1.2",
+    "skills": ["1.2.4"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Une VM de Brisemer dans le sous-réseau `10.20.1.0/24` doit atteindre un coffre dont le pare-feu est en « Selected networks ». Un ingénieur ajoute `10.20.1.0/24` dans les règles IP du pare-feu, sans succès.",
+    "stem": "Pourquoi, et que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "Les règles IP n'acceptent que des adresses publiques ; il faut activer le service endpoint Microsoft.KeyVault sur le sous-réseau et ajouter une règle de réseau virtuel, ou utiliser un private endpoint.", "correct": true, "why": "Les plages RFC 1918 sont refusées dans les règles IP ; l'accès depuis un VNet passe par une règle VNet ou un private endpoint." },
+      { "id": "b", "text": "Il faut cocher « Allow trusted Microsoft services to bypass this firewall ».", "correct": false, "why": "Une VM n'est pas un « trusted service » au sens de la liste Key Vault : cette exception ne la concerne pas." },
+      { "id": "c", "text": "Il faut attendre 24 heures que la règle se propage.", "correct": false, "why": "La règle n'est tout simplement pas valide : une adresse privée ne peut pas figurer dans les règles IP." },
+      { "id": "d", "text": "Il faut ajouter l'adresse IP de la VM en /32 au lieu du sous-réseau.", "correct": false, "why": "Même en /32, une adresse privée reste refusée dans les règles IP." }
+    ],
+    "explanation": "Limites documentées du pare-feu Key Vault : règles IP réservées aux **IPv4 publiques**, au plus 1 000 règles IPv4 et 200 règles de réseau virtuel. Depuis un VNet : **service endpoint + règle VNet**, ou **private endpoint**.",
+    "lesson": "1.2#s-1-2-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/network-security"]
+  },
+  {
+    "id": "q-1.2-05",
+    "objective": "1.2",
+    "skills": ["1.2.4", "1.2.1"],
+    "type": "single",
+    "difficulty": 3,
+    "scenario": "Le coffre de production a `publicNetworkAccess = Disabled` et un private endpoint. Le pipeline Bicep, qui s'exécute sur un agent hébergé hors du VNet, crée un secret via une ressource `Microsoft.KeyVault/vaults/secrets`. Le déploiement réussit.",
+    "stem": "Comment expliquer ce résultat ?",
+    "options": [
+      { "id": "a", "text": "Le déploiement ARM/Bicep passe par le plan de contrôle (management.azure.com), qui n'est pas soumis au pare-feu du coffre.", "correct": true, "why": "Microsoft précise que les règles du pare-feu ne s'appliquent qu'au plan de données." },
+      { "id": "b", "text": "Azure DevOps fait partie des services de confiance qui contournent le pare-feu.", "correct": false, "why": "Microsoft cite justement Azure DevOps comme absent de la liste des services de confiance." },
+      { "id": "c", "text": "La désactivation de l'accès public ne prend effet qu'après 24 heures.", "correct": false, "why": "Aucun délai de ce type n'est documenté ; l'explication est la séparation des plans." },
+      { "id": "d", "text": "Le private endpoint publie automatiquement le coffre sur Internet pour les déploiements.", "correct": false, "why": "Un private endpoint n'expose rien sur Internet." }
+    ],
+    "explanation": "Le pare-feu Key Vault protège le **plan de données** (`<coffre>.vault.azure.net`). Les opérations ARM, y compris la création de secrets par template, passent par le **plan de contrôle**. Contrôlez donc aussi qui peut déployer (RBAC, Policy).",
+    "lesson": "1.2#s-1-2-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/network-security"]
+  },
+  {
+    "id": "q-1.2-06",
+    "objective": "1.2",
+    "skills": ["1.2.6"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Lors d'un incident, Brisemer découvre une chaîne de connexion SQL en clair dans un script sur une VM. Le RSSI veut détecter ce type de secret sur toutes les VM Azure et AWS, **sans installer d'agent**, et voir les chemins d'attaque qui en découlent.",
+    "stem": "Que mettez-vous en place ?",
+    "options": [
+      { "id": "a", "text": "Le scan de secrets sans agent de Defender for Cloud, avec le plan Defender CSPM.", "correct": true, "why": "Machine scanning agentless sur VM multicloud, avec résultats dans recommandations, cloud security explorer et attack paths." },
+      { "id": "b", "text": "Defender for Key Vault sur tous les coffres.", "correct": false, "why": "Defender for Key Vault surveille l'accès aux coffres, pas le contenu des disques de VM." },
+      { "id": "c", "text": "Une politique Azure Policy qui audite les VM sans extension Key Vault.", "correct": false, "why": "Cela n'inspecte pas le contenu des disques à la recherche de secrets." },
+      { "id": "d", "text": "Le plan Defender for Servers Plan 1.", "correct": false, "why": "Le scan de secrets machine est documenté avec Defender CSPM ou Defender for Servers **Plan 2**, pas Plan 1." }
+    ],
+    "explanation": "Machine scanning : **Defender CSPM** ou **Defender for Servers Plan 2**. Cloud deployment et dépôts de code : **Defender CSPM**. Les attack paths exigent Defender CSPM.",
+    "lesson": "1.2#s-1-2-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/secrets-scanning"]
+  },
+  {
+    "id": "q-1.2-07",
+    "objective": "1.2",
+    "skills": ["1.2.7"],
+    "type": "order",
+    "difficulty": 2,
+    "scenario": "Defender for Key Vault lève une alerte : des secrets de production ont été lus depuis une adresse IP inconnue, par une application que l'équipe ne reconnaît pas.",
+    "stem": "Dans quel ordre traitez-vous l'alerte, selon la démarche recommandée par Microsoft ?",
+    "options": [
+      { "id": "a", "text": "Identifier la source (application, utilisateur, IP) et contacter son propriétaire.", "why": "On qualifie d'abord : ne jamais fermer une alerte parce que l'identité semble connue." },
+      { "id": "b", "text": "Contenir : activer le pare-feu du coffre et retirer ou restreindre le principal suspect.", "why": "On coupe l'accès avant d'analyser plus loin." },
+      { "id": "c", "text": "Mesurer l'impact : lister les secrets accédés et les horodatages (page Security, journaux de diagnostic).", "why": "On sait ainsi quels secrets sont compromis." },
+      { "id": "d", "text": "Faire tourner immédiatement les secrets accédés et faire auditer les applications qui les utilisent.", "why": "La rotation rend les valeurs volées inutilisables." }
+    ],
+    "explanation": "Démarche documentée : **identifier**, **réagir** (pare-feu, retrait du principal), **mesurer l'impact**, **agir** (rotation, audit des usages).",
+    "lesson": "1.2#s-1-2-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-key-vault-introduction"]
+  },
+  {
+    "id": "q-1.2-08",
+    "objective": "1.2",
+    "skills": ["1.2.5"],
+    "type": "multiple",
+    "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelles **deux** affirmations sur les objets Key Vault sont exactes ?",
+    "options": [
+      { "id": "a", "text": "Créer un certificat crée aussi une clé et un secret adressables du même nom.", "correct": true, "why": "Les certificats reposent sur une clé et un secret, créés avec le même nom." },
+      { "id": "b", "text": "Chaque modification d'un objet crée une nouvelle version ; sans version dans l'URL, on obtient la version courante.", "correct": true, "why": "C'est le modèle de versionnement documenté." },
+      { "id": "c", "text": "Un coffre Standard peut stocker des clés protégées par HSM.", "correct": false, "why": "Les clés protégées par HSM nécessitent le SKU Premium (ou Managed HSM)." },
+      { "id": "d", "text": "Managed HSM stocke clés, secrets et certificats.", "correct": false, "why": "Managed HSM ne prend en charge que les clés (protégées par HSM)." },
+      { "id": "e", "text": "Key Vault reste la méthode recommandée pour gérer les clés de comptes de stockage.", "correct": false, "why": "Cette fonctionnalité est dépréciée ; Microsoft recommande l'autorisation Entra ID pour Storage." }
+    ],
+    "explanation": "Clés (logiciel ou HSM), secrets et certificats dans un coffre ; seulement des clés HSM dans Managed HSM. Les certificats ajoutent le renouvellement automatique, les clés une politique de rotation.",
+    "lesson": "1.2#s-1-2-5",
+    "sources": [
+      "https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates",
+      "https://learn.microsoft.com/en-us/azure/key-vault/general/overview"
+    ]
+  },
+  {
+    "id": "q-1.2-09",
+    "objective": "1.2",
+    "skills": ["1.2.1", "1.2.2"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Un coffre de test a été supprimé hier. L'équipe veut recréer immédiatement un coffre portant **exactement le même nom** dans la même région.",
+    "stem": "Que se passe-t-il ?",
+    "options": [
+      { "id": "a", "text": "La création échoue tant que le coffre supprimé est en rétention ; il faut le récupérer, ou le purger si la purge protection n'est pas activée.", "correct": true, "why": "Le nom reste réservé pendant la rétention du soft-delete." },
+      { "id": "b", "text": "La création réussit et écrase le coffre supprimé.", "correct": false, "why": "Un nom de coffre soft-deleted ne peut pas être réutilisé pendant la rétention." },
+      { "id": "c", "text": "La création réussit si on choisit le SKU Premium.", "correct": false, "why": "Le SKU n'a aucun lien avec la réservation du nom." },
+      { "id": "d", "text": "La création réussit, mais sans les secrets de l'ancien coffre.", "correct": false, "why": "La création elle-même échoue." }
+    ],
+    "explanation": "Pendant la rétention (7 à 90 jours), le nom du coffre supprimé reste pris. Récupération (`az keyvault recover`) ou purge (impossible avec purge protection avant la fin de la rétention).",
+    "lesson": "1.2#s-1-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview"]
+  },
+  {
+    "id": "q-1.2-10",
+    "objective": "1.2",
+    "skills": ["1.2.4"],
+    "type": "single",
+    "difficulty": 3,
+    "scenario": "Brisemer associe un coffre à un **Network Security Perimeter** en mode « Secure by perimeter ». L'exception « Allow trusted Microsoft services » est cochée. Un service Azure de confiance qui accédait au coffre est désormais refusé.",
+    "stem": "Quelle est la cause ?",
+    "options": [
+      { "id": "a", "text": "En mode Secure by perimeter, le contournement des services de confiance est ignoré : il faut une règle d'accès explicite dans le périmètre.", "correct": true, "why": "Documenté : le périmètre prend le pas sur le bypass des services de confiance." },
+      { "id": "b", "text": "Les services de confiance ne fonctionnent jamais quand l'accès public est désactivé.", "correct": false, "why": "Au contraire : avec publicNetworkAccess = Disabled, le bypass reste actif. C'est le mode périmètre qui le supprime." },
+      { "id": "c", "text": "Le service doit utiliser un private endpoint, qui est soumis aux règles du périmètre.", "correct": false, "why": "Le trafic par private endpoint n'est pas soumis aux règles du périmètre." },
+      { "id": "d", "text": "Le périmètre est en mode Transition et bloque tout.", "correct": false, "why": "Le mode Transition journalise sans bloquer." }
+    ],
+    "explanation": "Accès public désactivé : les services de confiance passent encore. **Secure by perimeter** : seuls les accès autorisés par les règles du périmètre passent, private endpoints exceptés.",
+    "lesson": "1.2#s-1-2-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/network-security"]
+  },
+  {
+    "id": "q-1.2-11",
+    "objective": "1.2",
+    "skills": ["1.2.7", "1.2.3"],
+    "type": "single",
+    "difficulty": 1,
+    "scenario": null,
+    "stem": "L'équipe d'exploitation doit gérer les coffres (réseau, tags, diagnostics) sans jamais voir le contenu des secrets. Les coffres utilisent Azure RBAC. Quel rôle convient ?",
+    "options": [
+      { "id": "a", "text": "Key Vault Contributor.", "correct": true, "why": "Plan de contrôle uniquement : gestion du coffre, aucun accès aux données en modèle RBAC." },
+      { "id": "b", "text": "Key Vault Administrator.", "correct": false, "why": "Donne toutes les opérations sur les données, donc la lecture des secrets." },
+      { "id": "c", "text": "Key Vault Secrets Officer.", "correct": false, "why": "Gestion complète des secrets, valeurs comprises." },
+      { "id": "d", "text": "Owner sur le coffre.", "correct": false, "why": "Owner peut s'attribuer n'importe quel rôle de données : contraire au besoin." }
+    ],
+    "explanation": "Key Vault Contributor = plan de contrôle. Attention : en modèle access policy, il pourrait s'ajouter l'accès aux données. En RBAC, non.",
+    "lesson": "1.2#s-1-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"]
+  }
+]

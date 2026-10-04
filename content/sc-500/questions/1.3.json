@@ -1,0 +1,213 @@
+[
+  {
+    "id": "q-1.3-01",
+    "objective": "1.3",
+    "skills": ["1.3.1"],
+    "type": "single",
+    "diagnostic": true,
+    "difficulty": 2,
+    "scenario": "Brisemer impose que tous les coffres Key Vault envoient leurs journaux vers l'espace Log Analytics central. Des dizaines de coffres existent déjà sans paramètre de diagnostic, et de nouveaux sont créés chaque semaine.",
+    "stem": "Quelle approche couvre les coffres existants **et** futurs ?",
+    "options": [
+      { "id": "a", "text": "Une affectation Azure Policy avec l'effet deployIfNotExists et une identité managée ayant les rôles requis, puis une tâche de remédiation pour les coffres existants.", "correct": true, "why": "deployIfNotExists corrige les nouvelles ressources ; la tâche de remédiation traite l'existant." },
+      { "id": "b", "text": "Une affectation avec l'effet deny sur les coffres sans diagnostic.", "correct": false, "why": "Deny bloque les nouveaux coffres non conformes mais ne corrige pas les existants." },
+      { "id": "c", "text": "Une affectation avec l'effet auditIfNotExists.", "correct": false, "why": "Elle mesure la non-conformité sans rien corriger." },
+      { "id": "d", "text": "Un verrou ReadOnly sur les groupes de ressources des coffres.", "correct": false, "why": "Un verrou ne crée aucun paramètre de diagnostic et bloquerait les modifications." }
+    ],
+    "explanation": "deployIfNotExists déploie la ressource liée manquante (ici le paramètre de diagnostic). L'affectation porte une **identité managée** ; les ressources existantes se corrigent par une **tâche de remédiation**.",
+    "lesson": "1.3#s-1-3-1",
+    "sources": [
+      "https://learn.microsoft.com/en-us/azure/governance/policy/overview",
+      "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"
+    ]
+  },
+  {
+    "id": "q-1.3-02",
+    "objective": "1.3",
+    "skills": ["1.3.1"],
+    "type": "single",
+    "difficulty": 3,
+    "scenario": "Une affectation au groupe d'administration `mg-brisemer` refuse (deny) tout type de ressource hors d'une liste autorisée. L'équipe réseau, dans l'abonnement `sub-connectivity`, doit pouvoir déployer des Azure Firewall, absents de la liste. Un ingénieur crée sur `sub-connectivity` une seconde affectation plus permissive, qui autorise Azure Firewall. Le déploiement est toujours refusé.",
+    "stem": "Que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "Exclure `sub-connectivity` de l'affectation du groupe d'administration (notScopes), puis y assigner la version permissive.", "correct": true, "why": "Azure Policy est un système de refus explicite : seul le retrait de la portée de l'affectation qui refuse lève le blocage." },
+      { "id": "b", "text": "Donner le rôle Owner à l'équipe réseau sur l'abonnement.", "correct": false, "why": "Policy s'applique même aux Owner : une permission RBAC ne contourne pas un deny." },
+      { "id": "c", "text": "Augmenter la priorité de l'affectation de l'abonnement.", "correct": false, "why": "Il n'existe pas de priorité : toutes les affectations sont évaluées et le plus restrictif l'emporte." },
+      { "id": "d", "text": "Changer l'effet de la seconde affectation en modify.", "correct": false, "why": "La seconde affectation n'est pas en cause ; c'est le deny hérité qui bloque." }
+    ],
+    "explanation": "Les affectations se cumulent (« cumulative most restrictive »). Microsoft cite exactement ce cas : il faut **exclure** la portée enfant de l'affectation parente, puis assigner la définition plus permissive à l'enfant.",
+    "lesson": "1.3#s-1-3-1",
+    "sources": [
+      "https://learn.microsoft.com/en-us/azure/governance/policy/overview",
+      "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"
+    ]
+  },
+  {
+    "id": "q-1.3-03",
+    "objective": "1.3",
+    "skills": ["1.3.2"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Le RSSI de Brisemer veut suivre la conformité ISO 27001 de ses abonnements Azure dans Defender for Cloud. Aujourd'hui, seul le niveau gratuit (Foundational CSPM) est actif, et le tableau Regulatory compliance n'affiche que le Microsoft cloud security benchmark.",
+    "stem": "Quelle est la condition préalable pour ajouter le standard ISO 27001 ?",
+    "options": [
+      { "id": "a", "text": "Activer au moins un plan payant de Defender for Cloud sur l'abonnement.", "correct": true, "why": "Les standards non par défaut s'ajoutent quand au moins un plan payant est activé." },
+      { "id": "b", "text": "Créer une initiative Azure Policy personnalisée reprenant les contrôles ISO.", "correct": false, "why": "Inutile : le standard existe ; la condition est un plan payant." },
+      { "id": "c", "text": "Attribuer le rôle Security Reader aux auditeurs.", "correct": false, "why": "Security Reader ne voit même pas les données de conformité Policy ; et ce n'est pas la condition d'ajout." },
+      { "id": "d", "text": "Connecter l'abonnement à Microsoft Purview Compliance Manager.", "correct": false, "why": "L'intégration Purview reflète les standards ajoutés ; elle ne remplace pas la condition de plan." }
+    ],
+    "explanation": "MCSB est actif par défaut. Les autres standards (ISO, PCI DSS, NIST...) exigent **au moins un plan payant**. Pour gérer les standards, il faut Resource Policy Contributor et Security Admin.",
+    "lesson": "1.3#s-1-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard"]
+  },
+  {
+    "id": "q-1.3-04",
+    "objective": "1.3",
+    "skills": ["1.3.3"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Brisemer veut une recommandation Defender for Cloud **maison** : signaler tout compte de stockage qui n'a pas le tag `classification`. La règle doit apparaître avec les recommandations intégrées, sur Azure et AWS.",
+    "stem": "Que faut-il ?",
+    "options": [
+      { "id": "a", "text": "Une recommandation personnalisée écrite en KQL dans un standard personnalisé, avec le plan Defender CSPM.", "correct": true, "why": "Les recommandations personnalisées (KQL, toutes clouds) exigent Defender CSPM." },
+      { "id": "b", "text": "Une alerte Microsoft Sentinel planifiée.", "correct": false, "why": "Ce serait une alerte SIEM, pas une recommandation de posture dans Defender for Cloud." },
+      { "id": "c", "text": "Un verrou CanNotDelete sur les comptes sans tag.", "correct": false, "why": "Un verrou n'évalue pas une condition et ne crée pas de recommandation." },
+      { "id": "d", "text": "Le standard MCSB par défaut, qui contient déjà ce contrôle.", "correct": false, "why": "Une exigence propre à l'entreprise (tag classification) n'est pas dans MCSB." }
+    ],
+    "explanation": "Standards personnalisés + recommandations personnalisées en **KQL**, disponibles pour tous les clouds avec **Defender CSPM**. Elles apparaissent avec les recommandations intégrées dans le tableau de conformité.",
+    "lesson": "1.3#s-1-3-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/security-policy-concept"]
+  },
+  {
+    "id": "q-1.3-05",
+    "objective": "1.3",
+    "skills": ["1.3.4"],
+    "type": "single",
+    "diagnostic": true,
+    "difficulty": 2,
+    "scenario": "Pour protéger son compte de stockage d'archives, Brisemer a posé un verrou **ReadOnly** sur le compte. Le lendemain, une application qui récupère les clés du compte via l'API ARM échoue, et un développeur a pourtant supprimé un blob sans difficulté.",
+    "stem": "Quelle explication est correcte ?",
+    "options": [
+      { "id": "a", "text": "Le verrou bloque les opérations du plan de contrôle, dont List Keys (POST), mais ne protège pas les données du plan de données comme les blobs.", "correct": true, "why": "Les verrous ne s'appliquent qu'au plan de contrôle ; List Keys est un POST bloqué par ReadOnly." },
+      { "id": "b", "text": "Le développeur a le rôle Owner, qui contourne les verrous.", "correct": false, "why": "Les verrous s'appliquent à tous, Owner compris. La suppression du blob passe par le plan de données." },
+      { "id": "c", "text": "Le verrou ReadOnly met quelques heures à s'appliquer aux blobs.", "correct": false, "why": "Il ne s'appliquera jamais aux opérations du plan de données." },
+      { "id": "d", "text": "Il fallait un verrou CanNotDelete pour protéger les blobs.", "correct": false, "why": "CanNotDelete agit aussi sur le plan de contrôle : il ne protège pas les blobs." }
+    ],
+    "explanation": "Verrous = **plan de contrôle** (management.azure.com). Pour protéger les données : soft delete des blobs, immutabilité, versioning, RBAC sur les données. Effet de bord documenté : ReadOnly bloque List Keys.",
+    "lesson": "1.3#s-1-3-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"]
+  },
+  {
+    "id": "q-1.3-06",
+    "objective": "1.3",
+    "skills": ["1.3.5", "1.3.7"],
+    "type": "single",
+    "difficulty": 1,
+    "scenario": "L'équipe IAM de Brisemer doit pouvoir attribuer des rôles sur un abonnement, sans pouvoir créer, modifier ni supprimer de ressources.",
+    "stem": "Quel rôle intégré attribuez-vous ?",
+    "options": [
+      { "id": "a", "text": "User Access Administrator.", "correct": true, "why": "Il gère les accès (attributions de rôles) sans gérer les ressources." },
+      { "id": "b", "text": "Owner.", "correct": false, "why": "Owner gère aussi toutes les ressources : trop large." },
+      { "id": "c", "text": "Contributor.", "correct": false, "why": "Contributor gère les ressources mais ne peut pas attribuer de rôles." },
+      { "id": "d", "text": "Security Admin.", "correct": false, "why": "Rôle Defender for Cloud (politiques de sécurité, alertes), pas l'attribution de rôles RBAC." }
+    ],
+    "explanation": "Owner = ressources + accès. Contributor = ressources. User Access Administrator = accès. Le rôle Role Based Access Control Administrator permet aussi d'attribuer des rôles, avec des conditions pour limiter lesquels.",
+    "lesson": "1.3#s-1-3-5",
+    "sources": ["https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"]
+  },
+  {
+    "id": "q-1.3-07",
+    "objective": "1.3",
+    "skills": ["1.3.6"],
+    "type": "multiple",
+    "difficulty": 3,
+    "scenario": "Brisemer crée un rôle Azure personnalisé « Lecteur de blobs Finance » contenant des `DataActions` de lecture de blobs. Il veut l'attribuer à plusieurs abonnements.",
+    "stem": "Quelles **deux** affirmations sont exactes ?",
+    "options": [
+      { "id": "a", "text": "Le rôle ne peut pas être attribué au niveau d'un groupe d'administration, parce qu'il contient des DataActions.", "correct": true, "why": "Documenté : un rôle avec DataActions n'est pas attribuable à la portée d'un groupe d'administration." },
+      { "id": "b", "text": "On peut mettre un groupe d'administration dans AssignableScopes et attribuer ensuite le rôle aux abonnements de ce groupe.", "correct": true, "why": "Documenté : la définition peut viser un groupe d'administration, l'attribution se fait aux abonnements dessous." },
+      { "id": "c", "text": "On peut utiliser `/` (racine) dans AssignableScopes pour le rendre disponible partout.", "correct": false, "why": "La racine `/` est interdite dans AssignableScopes." },
+      { "id": "d", "text": "Mettre une action dans NotActions empêche tout utilisateur ayant ce rôle de l'effectuer, même si un autre rôle l'accorde.", "correct": false, "why": "NotActions n'est pas un refus : un autre rôle peut accorder l'action." },
+      { "id": "e", "text": "On peut lister plusieurs groupes d'administration dans AssignableScopes.", "correct": false, "why": "Un seul groupe d'administration est autorisé dans AssignableScopes." }
+    ],
+    "explanation": "Limites clés des rôles personnalisés Azure : 5 000 par tenant, pas de racine ni de joker dans les portées, un seul groupe d'administration, DataActions non attribuables au niveau groupe d'administration, NotActions n'est pas un refus.",
+    "lesson": "1.3#s-1-3-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"]
+  },
+  {
+    "id": "q-1.3-08",
+    "objective": "1.3",
+    "skills": ["1.3.6"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Le support applicatif de Brisemer doit pouvoir renouveler les secrets et certificats d'**une seule** app registration (« app-portail-clients »), sans être Application Administrator du tenant. Le tenant a des licences Entra ID P1.",
+    "stem": "Quelle solution respecte le moindre privilège ?",
+    "options": [
+      { "id": "a", "text": "Un rôle Microsoft Entra personnalisé avec `microsoft.directory/applications/credentials/update`, attribué à la portée de cette app registration.", "correct": true, "why": "Les rôles Entra personnalisés peuvent être limités à une app registration précise et nécessitent P1 ou P2." },
+      { "id": "b", "text": "Un rôle Azure personnalisé avec l'action `Microsoft.Web/sites/write`.", "correct": false, "why": "Les identifiants d'une app registration sont des objets d'annuaire, pas des ressources ARM." },
+      { "id": "c", "text": "Le rôle intégré Application Administrator sur tout le tenant.", "correct": false, "why": "Donne la gestion de toutes les applications : trop large." },
+      { "id": "d", "text": "Rendre les membres du support propriétaires de toutes les app registrations.", "correct": false, "why": "Contraire au besoin (une seule application) et difficile à gouverner." }
+    ],
+    "explanation": "Rôles Entra personnalisés : licence **P1 ou P2**, création par un **Privileged Role Administrator**, permissions parmi les catégories ouvertes (app registrations, enterprise apps, consentement, appareils, utilisateurs, groupes), portée annuaire ou **app registration**.",
+    "lesson": "1.3#s-1-3-6",
+    "sources": ["https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/custom-create"]
+  },
+  {
+    "id": "q-1.3-09",
+    "objective": "1.3",
+    "skills": ["1.3.7"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Brisemer a des centaines de service principals et d'identités managées sur Azure, et des rôles IAM sur AWS. Le RSSI veut une analyse **continue** des identités inactives ou sur-provisionnées, avec les chemins d'attaque qu'elles ouvrent.",
+    "stem": "Quelle capacité utilisez-vous ?",
+    "options": [
+      { "id": "a", "text": "Les capacités CIEM de Defender for Cloud, incluses dans le plan Defender CSPM.", "correct": true, "why": "Analyse multicloud des permissions effectives et de l'usage, avec recommandations et attack paths." },
+      { "id": "b", "text": "Une revue d'accès Microsoft Entra unique.", "correct": false, "why": "Utile mais ponctuelle, et limitée à Entra : ni AWS, ni analyse d'usage continue." },
+      { "id": "c", "text": "Un verrou CanNotDelete sur les abonnements.", "correct": false, "why": "Aucun rapport avec les droits des identités." },
+      { "id": "d", "text": "Le standard MCSB en mode audit uniquement.", "correct": false, "why": "MCSB ne fournit pas à lui seul l'analyse des permissions effectives et de l'usage des identités." }
+    ],
+    "explanation": "CIEM (Defender CSPM) couvre Entra ID, AWS IAM et Google Cloud IAM : identités inactives, admins trop nombreux, permissions à réduire selon l'usage réel, et corrélation avec les attack paths.",
+    "lesson": "1.3#s-1-3-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/permissions-management"]
+  },
+  {
+    "id": "q-1.3-10",
+    "objective": "1.3",
+    "skills": ["1.3.8"],
+    "type": "multiple",
+    "difficulty": 2,
+    "scenario": "Après une attaque par rançongiciel chez un partenaire, Brisemer veut que son coffre Recovery Services atteigne le niveau de sécurité **Excellent** d'Azure Backup.",
+    "stem": "Quelles **deux** mesures sont nécessaires ?",
+    "options": [
+      { "id": "a", "text": "Activer l'immutabilité verrouillée (ou le soft delete always-on).", "correct": true, "why": "Condition « irréversible » du niveau Excellent." },
+      { "id": "b", "text": "Activer la multi-user authorization (MUA) avec un Resource Guard.", "correct": true, "why": "Seconde condition du niveau Excellent." },
+      { "id": "c", "text": "Chiffrer les sauvegardes avec une clé gérée par le client.", "correct": false, "why": "Bonne pratique, mais ce n'est pas une condition du niveau Excellent." },
+      { "id": "d", "text": "Poser un verrou CanNotDelete sur le groupe de ressources créé par Azure Backup.", "correct": false, "why": "Documenté comme source d'échecs de sauvegarde (nettoyage des points de restauration impossible)." },
+      { "id": "e", "text": "Attribuer Backup Reader à toute l'équipe d'exploitation.", "correct": false, "why": "Réduit les droits mais ne fait pas partie des conditions du niveau." }
+    ],
+    "explanation": "Excellent = immutabilité **verrouillée** ou soft delete **always-on**, **et** MUA. Good = l'un des deux premiers. Fair = MUA seule.",
+    "lesson": "1.3#s-1-3-8",
+    "sources": [
+      "https://learn.microsoft.com/en-us/azure/backup/security-overview",
+      "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+    ]
+  },
+  {
+    "id": "q-1.3-11",
+    "objective": "1.3",
+    "skills": ["1.3.9"],
+    "type": "single",
+    "difficulty": 2,
+    "scenario": "Les équipes de Brisemer déploient en Bicep et Terraform depuis GitHub. La sécurité veut détecter les erreurs de configuration **dans les templates**, avant tout déploiement, et voir les résultats dans Defender for Cloud.",
+    "stem": "Que mettez-vous en place ?",
+    "options": [
+      { "id": "a", "text": "L'action GitHub Microsoft Security DevOps avec la catégorie IaC, sur un dépôt connecté à Defender for Cloud.", "correct": true, "why": "Elle exécute Template Analyzer, Checkov et Terrascan, et les résultats remontent dans DevOps security." },
+      { "id": "b", "text": "Une Azure Policy deny sur les ressources non conformes.", "correct": false, "why": "Policy agit au déploiement, pas sur le code avant déploiement. C'est un complément, pas la réponse." },
+      { "id": "c", "text": "Defender for Servers sur les agents de build.", "correct": false, "why": "Protège des serveurs, n'analyse pas des templates IaC." },
+      { "id": "d", "text": "Le scan de secrets agentless des machines.", "correct": false, "why": "Cherche des secrets sur des disques de VM, pas des erreurs de configuration IaC." }
+    ],
+    "explanation": "Shift-left : **Microsoft Security DevOps** (GitHub action ou extension Azure DevOps), `categories: 'IaC'`. Template Analyzer couvre ARM et Bicep ; Checkov et Terrascan couvrent notamment Terraform et Kubernetes.",
+    "lesson": "1.3#s-1-3-9",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/iac-vulnerabilities"]
+  }
+]
