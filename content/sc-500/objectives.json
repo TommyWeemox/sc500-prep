@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "cert": {
+    "id": "sc-500",
+    "code": "SC-500",
+    "title": "Microsoft Certified: Cloud and AI Security Engineer Associate",
+    "examTitle": "Implementing End-to-End Security Controls for Cloud and AI Workloads",
+    "level": "Intermediate",
+    "durationMinutes": 120,
+    "passingScore": 700,
+    "links": {
+      "certification": "https://learn.microsoft.com/en-us/credentials/certifications/cloud-and-ai-security-engineer-associate/",
+      "studyGuide": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-500",
+      "course": "https://learn.microsoft.com/en-us/training/courses/sc-500t00",
+      "sandbox": "https://go.microsoft.com/fwlink/?linkid=2226877"
+    },
+    "notes": [
+      "Score minimal de 700 (source : guide d'étude).",
+      "Durée de 120 minutes, examen surveillé, composants interactifs possibles (source : page de la certification).",
+      "La plupart des questions portent sur des fonctionnalités GA ; des fonctionnalités en préversion peuvent apparaître si elles sont couramment utilisées (source : guide d'étude).",
+      "Practice Assessment officiel non disponible au 2026-10-04 (source : page de la certification)."
+    ]
+  },
+  "source": {
+    "url": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-500",
+    "msDate": "2026-04-26",
+    "pageUpdated": "2026-07-31",
+    "retrieved": "2026-10-04"
+  },
+  "domains": [
+    {
+      "id": "d1",
+      "title": "Manage identity, access, and governance",
+      "titleFr": "Gérer l'identité, l'accès et la gouvernance",
+      "weight": { "min": 20, "max": 25 },
+      "objectives": [
+        {
+          "id": "1.1",
+          "slug": "entra-access",
+          "title": "Secure access to resources by using Microsoft Entra ID",
+          "titleFr": "Sécuriser l'accès aux ressources avec Microsoft Entra ID",
+          "learningPath": { "title": "Secure Access to Resources by Using Microsoft Entra", "url": "https://learn.microsoft.com/en-us/training/paths/secure-access-resources-entra/" },
+          "skills": [
+            { "id": "1.1.1", "text": "Implement and configure Privileged Identity Management (PIM)", "docs": ["https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"] },
+            { "id": "1.1.2", "text": "Implement conditional access policies", "docs": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview"] },
+            { "id": "1.1.3", "text": "Implement and configure authentication methods, including multifactor authentication (MFA) and passwordless", "docs": ["https://learn.microsoft.com/en-us/entra/identity/authentication/overview-authentication", "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2"] },
+            { "id": "1.1.4", "text": "Implement and configure identity for applications, including enterprise applications and app registrations", "docs": ["https://learn.microsoft.com/en-us/entra/identity-platform/app-objects-and-service-principals"] },
+            { "id": "1.1.5", "text": "Manage OAuth permission grants and consent settings", "docs": ["https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview", "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent"] },
+            { "id": "1.1.6", "text": "Implement and configure managed identities for Azure resources", "docs": ["https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"] }
+          ]
+        },
+        {
+          "id": "1.2",
+          "slug": "key-vault",
+          "title": "Secure secrets and keys by using Azure Key Vault",
+          "titleFr": "Sécuriser secrets et clés avec Azure Key Vault",
+          "learningPath": { "title": "Secure Azure Key Vault with defense in depth for the Cloud and AI Workloads", "url": "https://learn.microsoft.com/en-us/training/paths/configure-key-vault-security/" },
+          "skills": [
+            { "id": "1.2.1", "text": "Deploy Key Vault", "docs": ["https://learn.microsoft.com/en-us/azure/key-vault/general/overview"] },
+            { "id": "1.2.2", "text": "Configure Key Vault settings", "docs": ["https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview"] },
+            { "id": "1.2.3", "text": "Configure access to Key Vault", "docs": ["https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"] },
+            { "id": "1.2.4", "text": "Configure firewall settings on Key Vault", "docs": ["https://learn.microsoft.com/en-us/azure/key-vault/general/network-security"] },
+            { "id": "1.2.5", "text": "Manage keys, secrets, and certificates", "docs": ["https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates"] },
+            { "id": "1.2.6", "text": "Scan for secrets by using Defender Cloud Security Posture Management (Defender CSPM)", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/secrets-scanning"] },
+            { "id": "1.2.7", "text": "Implement Defender for Key Vault", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-key-vault-introduction"] }
+          ]
+        },
+        {
+          "id": "1.3",
+          "slug": "governance",
+          "title": "Implement governance to enforce security and regulatory compliance",
+          "titleFr": "Mettre en place la gouvernance pour la sécurité et la conformité réglementaire",
+          "learningPath": { "title": "Enforce Security Governance and Regulatory Compliance", "url": "https://learn.microsoft.com/en-us/training/paths/security-governance-compliance/" },
+          "skills": [
+            { "id": "1.3.1", "text": "Implement and configure security controls by using Azure Policy, including built-in and custom policy definitions", "docs": ["https://learn.microsoft.com/en-us/azure/governance/policy/overview"] },
+            { "id": "1.3.2", "text": "Evaluate regulatory compliance by using Microsoft Defender for Cloud", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard"] },
+            { "id": "1.3.3", "text": "Implement and configure security controls in Defender for Cloud, including security standards and recommendations", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/security-policy-concept"] },
+            { "id": "1.3.4", "text": "Implement resource locks", "docs": ["https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"] },
+            { "id": "1.3.5", "text": "Manage Azure built-in role assignments", "docs": ["https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"] },
+            { "id": "1.3.6", "text": "Manage custom roles, including Azure roles and Microsoft Entra roles", "docs": ["https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles", "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/custom-create"] },
+            { "id": "1.3.7", "text": "Evaluate and remediate overprivileged access assignments by using Azure role-based access control (RBAC)", "docs": ["https://learn.microsoft.com/en-us/azure/role-based-access-control/best-practices", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/permissions-management"] },
+            { "id": "1.3.8", "text": "Configure security controls for backup protection by using Azure Backup security features", "docs": ["https://learn.microsoft.com/en-us/azure/backup/security-overview", "https://learn.microsoft.com/en-us/azure/backup/multi-user-authorization-concept", "https://learn.microsoft.com/en-us/azure/backup/backup-azure-immutable-vault-concept"] },
+            { "id": "1.3.9", "text": "Implement and configure security controls by using infrastructure as code", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/iac-vulnerabilities", "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d2",
+      "title": "Secure storage, databases, and networking",
+      "titleFr": "Sécuriser le stockage, les bases de données et le réseau",
+      "weight": { "min": 25, "max": 30 },
+      "objectives": [
+        {
+          "id": "2.1",
+          "slug": "storage",
+          "title": "Implement security for storage accounts",
+          "titleFr": "Sécuriser les comptes de stockage",
+          "learningPath": { "title": "Implement Security for Azure Storage for the Cloud and AI Security Engineer", "url": "https://learn.microsoft.com/en-us/training/paths/implement-azure-storage-security/" },
+          "skills": [
+            { "id": "2.1.1", "text": "Implement and configure security for storage accounts", "docs": ["https://learn.microsoft.com/en-us/azure/storage/blobs/security-recommendations"] },
+            { "id": "2.1.2", "text": "Configure Azure Storage firewall rules", "docs": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"] },
+            { "id": "2.1.3", "text": "Implement Defender for Storage threat protection configurations", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-introduction"] },
+            { "id": "2.1.4", "text": "Manage access to storage, including access policies", "docs": ["https://learn.microsoft.com/en-us/azure/storage/common/authorize-data-access", "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview", "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"] }
+          ]
+        },
+        {
+          "id": "2.2",
+          "slug": "databases",
+          "title": "Implement security for databases",
+          "titleFr": "Sécuriser les bases de données",
+          "learningPath": { "title": "Implement Security for Azure SQL Databases for the Cloud and AI Security Engineer", "url": "https://learn.microsoft.com/en-us/training/paths/implement-azure-sql-database-security/" },
+          "skills": [
+            { "id": "2.2.1", "text": "Implement platform-level security configurations in Azure SQL", "docs": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/security-overview", "https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-overview"] },
+            { "id": "2.2.2", "text": "Configure database auditing for Azure SQL Database and Azure SQL Managed Instance", "docs": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview", "https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/auditing-configure"] },
+            { "id": "2.2.3", "text": "Configure Defender for Databases protection across Azure database services", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-sql-introduction", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-databases-introduction"] }
+          ]
+        },
+        {
+          "id": "2.3",
+          "slug": "network",
+          "title": "Implement security for Azure network services",
+          "titleFr": "Sécuriser les services réseau Azure",
+          "learningPath": { "title": "Implement Network Security Controls in Azure", "url": "https://learn.microsoft.com/en-us/training/paths/implement-network-security-controls-azure/" },
+          "skills": [
+            { "id": "2.3.1", "text": "Implement and manage network security groups (NSGs) and application security groups (ASGs)", "docs": ["https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview", "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"] },
+            { "id": "2.3.2", "text": "Implement and configure network access policies by using Azure Virtual Network Manager", "docs": ["https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-security-admins"] },
+            { "id": "2.3.3", "text": "Configure security for an Azure Virtual WAN", "docs": ["https://learn.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub", "https://learn.microsoft.com/en-us/azure/virtual-wan/how-to-routing-policies"] },
+            { "id": "2.3.4", "text": "Implement and configure security for virtual private network (VPN) connections", "docs": ["https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways", "https://learn.microsoft.com/en-us/azure/vpn-gateway/ipsec-ike-policy-howto", "https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-entra-gateway"] },
+            { "id": "2.3.5", "text": "Implement and configure Microsoft Entra Private Access", "docs": ["https://learn.microsoft.com/en-us/entra/global-secure-access/concept-private-access"] },
+            { "id": "2.3.6", "text": "Configure Azure private endpoints to secure access to Azure platform as a service (PaaS) resources", "docs": ["https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview", "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns"] },
+            { "id": "2.3.7", "text": "Configure Azure Private Link services to secure access to network resources", "docs": ["https://learn.microsoft.com/en-us/azure/private-link/private-link-service-overview"] },
+            { "id": "2.3.8", "text": "Implement and configure Azure Firewall", "docs": ["https://learn.microsoft.com/en-us/azure/firewall/overview", "https://learn.microsoft.com/en-us/azure/firewall/choose-firewall-sku"] },
+            { "id": "2.3.9", "text": "Evaluate effective security rules by using Azure Network Watcher diagnostics", "docs": ["https://learn.microsoft.com/en-us/azure/network-watcher/effective-security-rules-overview", "https://learn.microsoft.com/en-us/azure/network-watcher/ip-flow-verify-overview"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d3",
+      "title": "Secure compute",
+      "titleFr": "Sécuriser le calcul",
+      "weight": { "min": 20, "max": 25 },
+      "objectives": [
+        {
+          "id": "3.1",
+          "slug": "ai-security",
+          "title": "Implement security for AI",
+          "titleFr": "Sécuriser l'IA",
+          "learningPath": { "title": "Implement Security for AI", "url": "https://learn.microsoft.com/en-us/training/paths/implement-ai-security/" },
+          "skills": [
+            { "id": "3.1.1", "text": "Identify overexposure of data in SharePoint", "docs": ["https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports"] },
+            { "id": "3.1.2", "text": "Identify risks related to Microsoft Copilot and AI apps by using Microsoft Purview Data Security Posture Management (DSPM)", "docs": ["https://learn.microsoft.com/en-us/purview/dspm-for-ai"] },
+            { "id": "3.1.3", "text": "Enable and configure real-time protection for Microsoft Copilot Studio agents", "docs": ["https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-real-time-protection", "https://learn.microsoft.com/en-us/microsoft-copilot-studio/external-security-provider"] },
+            { "id": "3.1.4", "text": "Implement conditional access for Microsoft Entra Agent ID", "docs": ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"] },
+            { "id": "3.1.5", "text": "Analyze blast radius for security risks related to Entra Agent ID by using Defender XDR", "docs": ["https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-detection-protection"] },
+            { "id": "3.1.6", "text": "Manage Entra Agent ID access", "docs": ["https://learn.microsoft.com/en-us/entra/agent-id/manage-agent-identities-admin", "https://learn.microsoft.com/en-us/entra/agent-id/agent-access-packages", "https://learn.microsoft.com/en-us/entra/agent-id/agent-owners-sponsors-managers"] },
+            { "id": "3.1.7", "text": "Configure and deploy AI Gateway in Azure API Management for Microsoft Foundry", "docs": ["https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities", "https://learn.microsoft.com/en-us/azure/foundry/configuration/enable-ai-api-management-gateway-portal"] },
+            { "id": "3.1.8", "text": "Enable Defender for AI Service in Cloud Workload Protection in Defender for Cloud", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/ai-threat-protection"] },
+            { "id": "3.1.9", "text": "Configure guardrails for agent security in Foundry", "docs": ["https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview"] },
+            { "id": "3.1.10", "text": "Monitor AI security by using the Data and AI security dashboard in Defender for Cloud", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/data-aware-security-dashboard-overview"] },
+            { "id": "3.1.11", "text": "Manage agents in Microsoft 365 admin center", "docs": ["https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry", "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview"] }
+          ]
+        },
+        {
+          "id": "3.2",
+          "slug": "servers-vms",
+          "title": "Implement security for servers and virtual machines (VMs)",
+          "titleFr": "Sécuriser les serveurs et les machines virtuelles",
+          "learningPath": { "title": "Implement Security for Servers and Virtual Machines", "url": "https://learn.microsoft.com/en-us/training/paths/server-vm-security/" },
+          "skills": [
+            { "id": "3.2.1", "text": "Implement and configure disk encryption", "docs": ["https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"] },
+            { "id": "3.2.2", "text": "Plan and implement Azure Bastion", "docs": ["https://learn.microsoft.com/en-us/azure/bastion/bastion-overview", "https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"] },
+            { "id": "3.2.3", "text": "Enable and enforce use of just-in-time (JIT) VM access", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-overview"] },
+            { "id": "3.2.4", "text": "Extend security controls to hybrid and multicloud servers by using Azure Arc", "docs": ["https://learn.microsoft.com/en-us/azure/azure-arc/servers/overview", "https://learn.microsoft.com/en-us/azure/azure-arc/servers/security-overview"] },
+            { "id": "3.2.5", "text": "Onboard servers to Defender for Servers in Defender for Cloud, including hybrid and multicloud scenarios", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-overview", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/plan-defender-for-servers"] },
+            { "id": "3.2.6", "text": "Configure Defender for Servers settings, including vulnerability scanning, and endpoint detection and response (EDR)", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/integration-defender-for-endpoint"] },
+            { "id": "3.2.7", "text": "Implement and manage agentless scanning for VMs in Defender for Servers", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-agentless-data-collection"] },
+            { "id": "3.2.8", "text": "Configure security features on a VM, including secure boot, virtual Trusted Platform Module (vTPM), integrity monitoring, and security type", "docs": ["https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch"] },
+            { "id": "3.2.9", "text": "Enforce security configuration of Azure-managed servers by using Azure Machine Configuration", "docs": ["https://learn.microsoft.com/en-us/azure/governance/machine-configuration/overview"] }
+          ]
+        },
+        {
+          "id": "3.3",
+          "slug": "app-platform",
+          "title": "Implement security for application platform services",
+          "titleFr": "Sécuriser les services de plateforme applicative",
+          "learningPath": { "title": "Secure Azure Application Platform Services for the Cloud and AI Security Engineer", "url": "https://learn.microsoft.com/en-us/training/paths/secure-application-platform-services/" },
+          "skills": [
+            { "id": "3.3.1", "text": "Detect misconfigurations and runtime risks in container workloads by using Defender for Containers", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-containers-introduction"] },
+            { "id": "3.3.2", "text": "Implement and configure security controls for Azure Kubernetes Service (AKS)", "docs": ["https://learn.microsoft.com/en-us/azure/aks/concepts-security", "https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview"] },
+            { "id": "3.3.3", "text": "Implement and configure security controls for Azure Container Registry", "docs": ["https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication", "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-private-endpoints"] },
+            { "id": "3.3.4", "text": "Implement and configure security controls for Azure Container Instances and Azure Container Apps", "docs": ["https://learn.microsoft.com/en-us/azure/container-apps/networking", "https://learn.microsoft.com/en-us/azure/container-apps/managed-identity", "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-vnet"] },
+            { "id": "3.3.5", "text": "Implement and configure security controls for Azure Functions, including authentication and network access", "docs": ["https://learn.microsoft.com/en-us/azure/azure-functions/security-concepts"] },
+            { "id": "3.3.6", "text": "Implement and configure security controls for Azure Logic Apps", "docs": ["https://learn.microsoft.com/en-us/azure/logic-apps/set-up-security-permissions"] },
+            { "id": "3.3.7", "text": "Implement and configure security controls for Azure App Service", "docs": ["https://learn.microsoft.com/en-us/azure/app-service/overview-security", "https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization", "https://learn.microsoft.com/en-us/azure/app-service/app-service-ip-restrictions"] },
+            { "id": "3.3.8", "text": "Implement and configure Azure Web Application Firewall", "docs": ["https://learn.microsoft.com/en-us/azure/web-application-firewall/overview", "https://learn.microsoft.com/en-us/azure/web-application-firewall/ag/ag-overview", "https://learn.microsoft.com/en-us/azure/web-application-firewall/afds/afds-overview"] },
+            { "id": "3.3.9", "text": "Implement security policies for back-end API protection by using API Management", "docs": ["https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-protect-backend-with-aad", "https://learn.microsoft.com/en-us/azure/api-management/validate-jwt-policy"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d4",
+      "title": "Manage and monitor security posture",
+      "titleFr": "Gérer et surveiller la posture de sécurité",
+      "weight": { "min": 20, "max": 25 },
+      "objectives": [
+        {
+          "id": "4.1",
+          "slug": "defender-posture",
+          "title": "Manage security posture by using Defender for Cloud",
+          "titleFr": "Gérer la posture de sécurité avec Defender for Cloud",
+          "learningPath": { "title": "Manage Security Posture by Using Microsoft Defender for Cloud", "url": "https://learn.microsoft.com/en-us/training/paths/manage-security-posture-defender-cloud/" },
+          "skills": [
+            { "id": "4.1.1", "text": "Identify security risks by using Defender CSPM", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-cloud-security-posture-management", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-attack-path"] },
+            { "id": "4.1.2", "text": "Evaluate compliance against security frameworks by using Defender for Cloud", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard"] },
+            { "id": "4.1.3", "text": "Enable and configure Defender for Cloud workload protection plans", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/connect-azure-subscription"] },
+            { "id": "4.1.4", "text": "Connect hybrid cloud and multicloud environments to Defender for Cloud, including Amazon Web Services (AWS) and Google Cloud Platform (GCP)", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/quickstart-onboard-aws", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/quickstart-onboard-gcp"] },
+            { "id": "4.1.5", "text": "Configure Microsoft Defender Vulnerability Management settings for Azure VMs", "docs": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/deploy-vulnerability-assessment-defender-vulnerability-management"] },
+            { "id": "4.1.6", "text": "Discover unprotected assets and vulnerabilities by using Microsoft Defender External Attack Surface Management (EASM)", "docs": ["https://learn.microsoft.com/en-us/azure/external-attack-surface-management/overview"] }
+          ]
+        },
+        {
+          "id": "4.2",
+          "slug": "sentinel",
+          "title": "Implement activity and event collection in Microsoft Sentinel",
+          "titleFr": "Mettre en place la collecte d'activités et d'événements dans Microsoft Sentinel",
+          "learningPath": { "title": "Implement Activity and Event Collection in Microsoft Sentinel", "url": "https://learn.microsoft.com/en-us/training/paths/implement-activity-event-collection-sentinel/" },
+          "skills": [
+            { "id": "4.2.1", "text": "Create and connect workspaces in Microsoft Sentinel", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/quickstart-onboard", "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/workspace-design"] },
+            { "id": "4.2.2", "text": "Assign roles in Microsoft Sentinel", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/roles"] },
+            { "id": "4.2.3", "text": "Implement and use content hub solutions", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/sentinel-solutions"] },
+            { "id": "4.2.4", "text": "Configure and use Microsoft data connectors for Azure resources", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-data-sources"] },
+            { "id": "4.2.5", "text": "Implement and configure syslog and Common Event Format (CEF) event collections", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-cef-syslog-ama"] },
+            { "id": "4.2.6", "text": "Implement and configure collection of Windows Security events by using data collection rules, including Windows Event Forwarding (WEF)", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-services-windows-based"] },
+            { "id": "4.2.7", "text": "Create custom log tables in the workspace to store ingested data", "docs": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/create-custom-table"] },
+            { "id": "4.2.8", "text": "Implement automation rules and playbooks in Microsoft Sentinel", "docs": ["https://learn.microsoft.com/en-us/azure/sentinel/automation/automation", "https://learn.microsoft.com/en-us/azure/sentinel/automation/automate-responses-with-playbooks"] },
+            { "id": "4.2.9", "text": "Implement data retention in Microsoft Sentinel data stores", "docs": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure", "https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-lake-overview"] },
+            { "id": "4.2.10", "text": "Query Microsoft Purview Audit in Defender XDR", "docs": ["https://learn.microsoft.com/en-us/purview/audit-search", "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-schema-tables"] }
+          ]
+        },
+        {
+          "id": "4.3",
+          "slug": "security-copilot",
+          "title": "Implement Microsoft Security Copilot",
+          "titleFr": "Mettre en place Microsoft Security Copilot",
+          "learningPath": { "title": "Deploy and Operate Microsoft Security Copilot", "url": "https://learn.microsoft.com/en-us/training/paths/deploy-operate-security-copilot/" },
+          "skills": [
+            { "id": "4.3.1", "text": "Configure workspaces for Security Copilot", "docs": ["https://learn.microsoft.com/en-us/training/modules/configure-security-copilot-workspaces/"] },
+            { "id": "4.3.2", "text": "Manage permissions and roles in Security Copilot", "docs": ["https://learn.microsoft.com/en-us/copilot/security/authentication"] },
+            { "id": "4.3.3", "text": "Enable and configure plugins", "docs": ["https://learn.microsoft.com/en-us/copilot/security/manage-plugins"] },
+            { "id": "4.3.4", "text": "Enable and configure Microsoft agents and Security Store agents", "docs": ["https://learn.microsoft.com/en-us/copilot/security/agents-overview", "https://learn.microsoft.com/en-us/security/store/what-is-security-store"] }
+          ]
+        }
+      ]
+    }
+  ]
+}
