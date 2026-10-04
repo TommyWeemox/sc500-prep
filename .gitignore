@@ -1,0 +1,23 @@
+# Dépendances
+node_modules/
+
+# Build
+dist/
+public/data/
+*.tsbuildinfo
+
+# Outils et OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Environnement (aucun secret ne doit être commité)
+.env
+.env.*
+*.pem
+*.pfx
+*.key
