@@ -19,7 +19,13 @@ export function readMarkdown(file) {
   const raw = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
   const m = raw.match(FRONT_MATTER);
   if (!m) return { meta: {}, body: raw, file };
-  return { meta: parseYaml(m[1]) ?? {}, body: raw.slice(m[0].length), file };
+  let meta;
+  try {
+    meta = parseYaml(m[1]) ?? {};
+  } catch (e) {
+    throw new Error(`Front matter YAML invalide dans ${path.relative(ROOT, file)} : ${e.message.split('\n')[0]}`);
+  }
+  return { meta, body: raw.slice(m[0].length), file };
 }
 
 function listFiles(dir, ext) {
