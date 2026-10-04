@@ -43,3 +43,20 @@ Choix faits pendant la construction, quand la consigne ne tranchait pas. Format 
 - **Maîtrise estimée** = 65 % réponses récentes (20 dernières, décroissance 0,85), 20 % rétention des flashcards, 15 % leçon lue ; tirée vers le bas sous 5 réponses. Le diagnostic sert de donnée de départ tant qu'il n'y a pas d'autres réponses.
 - **Plan** : 25 % du temps hebdomadaire réservé aux révisions et quiz mélangés à partir de la 2e semaine ; les dernières semaines (15 %, au moins une) servent à l'examen blanc, l'étude de cas et les points faibles. Le diagnostic ajuste les heures (+30 % sous 50 %, -30 % à partir de 80 %) et remonte les objectifs faibles d'une ou deux places.
 - **Score d'examen blanc sur 1000** : simple proportion de bonnes réponses, affichée comme indicative. Le barème réel de Microsoft n'est pas public.
+
+## Contenu
+
+- **Consigne tronquée.** Le premier message s'arrêtait au point 9 (« maîtrise estimée, points ») ; le second message a fourni la consigne complète, appliquée telle quelle.
+- **Entreprise fictive « Brisemer Logistique ».** Scénarios, labs et étude de cas utilisent une entreprise inventée : aucun nom d'employeur ni détail interne réel.
+- **Fil rouge PIM juste-à-temps** : un lab dédié (`lab-00-pim-jit`), repris dans les leçons 1.1 et 3.2 (PIM + JIT VM access + Bastion), dans le lab Sentinel (chasse aux activations PIM) et dans l'étude de cas.
+- **« Query Microsoft Purview Audit in Defender XDR » (4.2.10).** Learn ne décrit pas de page dédiée sous ce titre. Interprétation retenue : recherche d'audit dans Purview (rôles, rétention) et exploitation des mêmes activités dans l'advanced hunting de Defender XDR via la table `CloudAppEvents` (connecteur Microsoft 365 de Defender for Cloud Apps).
+- **« Configure workspaces for Security Copilot » (4.3.1).** La source la plus précise est le module Learn « Configure workspaces for Microsoft Security Copilot » (unités de planification et de routage des agents), cité comme source principale.
+- **Langue.** Contenu en français, noms officiels des services et des paramètres en anglais (ceux affichés dans les portails), pour reconnaître les termes à l'examen, qui est en anglais.
+- **Coûts des labs** donnés en ordre de grandeur, sans prix unitaire : les tarifs changent et dépendent de la région. Chaque lab renvoie à la vérification des tarifs et se termine par un nettoyage.
+
+## Vérification et publication
+
+- **Liens Learn** : 173 URL vérifiées le 2026-10-04, aucune cassée. Les redirections ont été remplacées par l'URL finale.
+- **Pages introuvables** : seule `azure/web-application-firewall/afd/afd-overview` (404), remplacée par `afds/afds-overview`.
+- **CI** : Node 24, `npm run check` bloquant ; vérification des liens non bloquante, pour qu'une indisponibilité passagère de Learn n'empêche pas une publication. Les pull requests sont construites sans être publiées.
+- **Validateur** : YAML accepté comme langage d'exemple (manifestes de plugins Security Copilot) ; la détection d'un chemin de portail ignore la casse.

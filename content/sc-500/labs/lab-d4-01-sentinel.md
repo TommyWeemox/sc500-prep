@@ -96,7 +96,7 @@ Monter le socle SOC du projet fil rouge : un workspace Sentinel, des accès d'an
 
 ## Vérification
 
-- **Data connectors** : Azure Activity en état **Connected** ; `AzureActivity | take 10` renvoie des lignes (comptez jusqu'à 15 minutes, à vérifier).
+- **Data connectors** : Azure Activity en état **Connected** ; `AzureActivity | take 10` renvoie des lignes (comptez jusqu'à 15 minutes) (à vérifier).
 - Après l'étape 4 et le passage de la règle : un incident « attribution de rôle » existe, avec les entités Account et IP.
 - Grâce à la règle d'automatisation, cet incident est **fermé** et porte le tag `pentest` (son historique montre l'action de la règle).
 - Connecté avec le compte analyste : il peut **assigner** et **fermer** un incident, mais **pas** modifier la règle d'analyse.

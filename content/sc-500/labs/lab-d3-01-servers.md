@@ -105,7 +105,7 @@ Construire la VM d'administration du projet fil rouge : aucun port exposé, chif
      --policy-set-definition <nom-affiché-ci-dessus> --mi-system-assigned -l $LOC
    ```
 
-   Ajoutez ensuite, depuis le portail Policy, la définition intégrée « Audit Linux machines that allow remote connections from accounts without passwords » (nom à vérifier dans votre tenant). Les résultats apparaissent après l'évaluation (jusqu'à environ 30 minutes, à vérifier).
+   Ajoutez ensuite, depuis le portail Policy, la définition intégrée « Audit Linux machines that allow remote connections from accounts without passwords » (nom exact selon votre tenant) (à vérifier). Les résultats apparaissent après l'évaluation (jusqu'à environ 30 minutes) (à vérifier).
 
 ## Vérification
 

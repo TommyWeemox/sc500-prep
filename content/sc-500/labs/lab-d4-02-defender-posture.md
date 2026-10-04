@@ -50,7 +50,7 @@ Passer d'une posture « liste de recommandations » à une posture pilotée : sc
    az security pricing create -n VirtualMachines --tier Standard --subplan P2
    ```
 
-   Les noms de plans et le paramètre `--subplan` sont à vérifier selon la version de la CLI ; sinon, portail : **Environment settings > abonnement > Defender plans**.
+   Les noms de plans et le paramètre `--subplan` dépendent de la version de la CLI (à vérifier) ; sinon, portail : **Environment settings > abonnement > Defender plans**.
 
 3. **Ajouter un standard** : **Defender for Cloud > Regulatory compliance > Manage compliance standards** (ou **Environment settings > abonnement > Security policies**), ajoutez **ISO 27001** (ou un autre). Notez que cette option n'était pas disponible avant l'activation d'un plan payant.
 
@@ -67,7 +67,7 @@ Passer d'une posture « liste de recommandations » à une posture pilotée : sc
 - `az security pricing show -n CloudPosture --query pricingTier` renvoie `Standard`.
 - Le standard ajouté apparaît dans **Regulatory compliance**, avec des contrôles réussis et en échec (les évaluations peuvent prendre jusqu'à environ 12 heures).
 - La règle de gouvernance attribue un propriétaire et une échéance aux recommandations High (colonne **Owner** dans la liste des recommandations).
-- Après quelques heures, le workspace contient des tables `SecurityRecommendation` et `SecurityRegulatoryCompliance` (noms à vérifier dans votre workspace) :
+- Après quelques heures, le workspace contient des tables `SecurityRecommendation` et `SecurityRegulatoryCompliance` (noms exacts selon votre workspace) (à vérifier) :
 
   ```kusto
   SecurityRegulatoryCompliance

@@ -5,7 +5,7 @@ domain: d2
 objectives: ["2.3", "2.2"]
 skills: ["2.3.1", "2.3.2", "2.3.9", "2.2.1", "2.2.2"]
 duration: 2 h
-cost: 1 à 2 € environ (deux petites VM quelques heures, Azure SQL niveau Basic), à vérifier selon la région
+cost: 1 à 2 € environ (deux petites VM quelques heures, Azure SQL niveau Basic), selon la région (à vérifier)
 level: Intermédiaire
 summary: NSG et ASG, security admin rule Deny via Azure Virtual Network Manager, diagnostic par IP flow verify, Azure SQL avec Entra-only, private endpoint et audit vers Log Analytics.
 sources:
@@ -30,7 +30,7 @@ Vérifier par l'expérience l'ordre d'évaluation **security admin rules puis NS
 ## Prérequis et coût estimé
 
 - Abonnement Azure personnel, rôle Owner ; Azure CLI.
-- **Coût** : deux VM `Standard_B1s` quelques heures, Azure SQL Database niveau Basic, Log Analytics (quelques Mo). Azure Virtual Network Manager peut être facturé selon le nombre d'abonnements gérés (à vérifier sur la page de prix). Supprimez tout à la fin.
+- **Coût** : deux VM `Standard_B1s` quelques heures, Azure SQL Database niveau Basic, Log Analytics (quelques Mo). Azure Virtual Network Manager peut être facturé selon le nombre d'abonnements gérés selon la page de prix (à vérifier). Supprimez tout à la fin.
 
 ## Étapes
 

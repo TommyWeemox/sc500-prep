@@ -103,7 +103,7 @@ Appliquer la checklist de la leçon 3.3 à deux plateformes et prouver chaque po
      --registry-identity system --ingress internal --target-port 80
    ```
 
-   La CLI attribue le rôle AcrPull à l'identité système (comportement à vérifier selon la version de l'extension).
+   La CLI attribue le rôle AcrPull à l'identité système selon la version de l'extension (à vérifier).
 
 ## Vérification
 

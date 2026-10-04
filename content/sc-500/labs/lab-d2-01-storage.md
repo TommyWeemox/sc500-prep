@@ -112,7 +112,7 @@ Construire un compte de stockage conforme aux recommandations de la leçon 2.1 e
    az storage account update -n $ST -g $RG --public-network-access Disabled
    ```
 
-8. **Defender for Storage** (optionnel, payant) avec malware scanning sur ce seul compte, puis téléversement du fichier de test EICAR (chaîne de test antivirus standard, inoffensive) depuis une machine autorisée. Microsoft documente un test de ce type pour valider l'analyse (à vérifier selon la procédure en vigueur).
+8. **Defender for Storage** (optionnel, payant) avec malware scanning sur ce seul compte, puis téléversement du fichier de test EICAR (chaîne de test antivirus standard, inoffensive) depuis une machine autorisée. Microsoft documente un test de ce type pour valider l'analyse, selon la procédure en vigueur (à vérifier).
 
 ## Vérification
 
