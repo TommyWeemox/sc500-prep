@@ -1,0 +1,157 @@
+[
+  {
+    "id": "q-4.1-01", "objective": "4.1", "skills": ["4.1.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Le RSSI de Brisemer reçoit 600 recommandations Defender for Cloud. Il veut savoir lesquelles permettraient réellement à un attaquant venu d'Internet d'atteindre la base des clients, en tenant compte des identités et des permissions.",
+    "stem": "Quelle fonctionnalité utilisez-vous, et avec quel plan ?",
+    "options": [
+      { "id": "a", "text": "L'analyse des chemins d'attaque (attack path analysis), avec Defender CSPM.", "correct": true, "why": "Elle part de points d'entrée externes exploitables et suit le mouvement latéral jusqu'aux ressources critiques." },
+      { "id": "b", "text": "Le secure score, avec Foundational CSPM.", "correct": false, "why": "Mesure globale de posture, sans raisonnement en chemins." },
+      { "id": "c", "text": "Le tableau de conformité réglementaire avec le MCSB.", "correct": false, "why": "Évalue des contrôles, pas des chemins exploitables." },
+      { "id": "d", "text": "Defender EASM seul.", "correct": false, "why": "Voit l'extérieur, pas les permissions et le mouvement latéral internes." }
+    ],
+    "explanation": "Le graphe de sécurité cloud combine exposition Internet, permissions, connexions et vulnérabilités. Prérequis : analyse sans agent des VM ou évaluation de vulnérabilités activée.",
+    "lesson": "4.1#s-4-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-attack-path"]
+  },
+  {
+    "id": "q-4.1-02", "objective": "4.1", "skills": ["4.1.1"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelles **trois** fonctionnalités exigent Defender CSPM plutôt que Foundational CSPM ?",
+    "options": [
+      { "id": "a", "text": "Les règles de gouvernance (propriétaires et échéances).", "correct": true, "why": "Réservées à Defender CSPM." },
+      { "id": "b", "text": "Le cloud security explorer.", "correct": true, "why": "Réservé à Defender CSPM." },
+      { "id": "c", "text": "La gestion de posture de l'IA (AI-SPM).", "correct": true, "why": "Réservée à Defender CSPM." },
+      { "id": "d", "text": "Le secure score.", "correct": false, "why": "Inclus dans Foundational CSPM." },
+      { "id": "e", "text": "L'export continu vers Log Analytics.", "correct": false, "why": "Inclus dans Foundational CSPM." }
+    ],
+    "explanation": "Foundational : inventaire, recommandations, secure score, MCSB, export, workbooks, workflow automation. Defender CSPM : chemins d'attaque, explorer, gouvernance, sans agent, DSPM, AI-SPM, EASM, conformité ajoutée.",
+    "lesson": "4.1#s-4-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-cloud-security-posture-management"]
+  },
+  {
+    "id": "q-4.1-03", "objective": "4.1", "skills": ["4.1.2"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer doit démontrer sa conformité à ISO 27001 sur ses abonnements Azure. Seul Foundational CSPM est actif. L'administrateur ne trouve pas comment ajouter le standard au tableau de conformité réglementaire.",
+    "stem": "Que manque-t-il ?",
+    "options": [
+      { "id": "a", "text": "Au moins un plan payant de Defender for Cloud activé.", "correct": true, "why": "Ajouter des standards autres que le MCSB exige un plan payant." },
+      { "id": "b", "text": "Le rôle Security Reader.", "correct": false, "why": "Security Reader ne donne même pas accès aux données de conformité Policy." },
+      { "id": "c", "text": "Un connecteur AWS.", "correct": false, "why": "Sans rapport : il s'agit d'abonnements Azure." },
+      { "id": "d", "text": "Un workspace Microsoft Sentinel.", "correct": false, "why": "La conformité réglementaire ne dépend pas de Sentinel." }
+    ],
+    "explanation": "Le MCSB est activé par défaut. Pour gérer les standards : Resource Policy Contributor et Security Admin au minimum. Évaluations environ toutes les 12 heures.",
+    "lesson": "4.1#s-4-1-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard"]
+  },
+  {
+    "id": "q-4.1-04", "objective": "4.1", "skills": ["4.1.2"], "type": "single", "difficulty": 3,
+    "scenario": "Un auditeur interne de Brisemer dispose du rôle Security Reader sur l'abonnement. Il voit les recommandations mais le tableau de conformité réglementaire reste vide pour lui. Il doit aussi joindre la preuve d'une procédure papier pour un contrôle manuel.",
+    "stem": "Que faites-vous ?",
+    "options": [
+      { "id": "a", "text": "Lui attribuer Reader sur l'abonnement ; pour le contrôle manuel, utiliser Attest avec la preuve jointe (droits de gestion nécessaires).", "correct": true, "why": "Reader donne accès aux données de conformité Policy, Security Reader non ; les contrôles manuels se valident par attestation." },
+      { "id": "b", "text": "Lui attribuer Security Admin pour qu'il voie le tableau.", "correct": false, "why": "Excessif pour la lecture : Reader suffit." },
+      { "id": "c", "text": "Exporter le tableau en PDF et le lui envoyer chaque semaine.", "correct": false, "why": "Contournement, ne règle pas l'accès ni l'attestation." },
+      { "id": "d", "text": "Activer Defender CSPM, ce qui ouvre l'accès à tous les Security Readers.", "correct": false, "why": "Le plan ne change pas le modèle d'autorisation." }
+    ],
+    "explanation": "Documenté : Reader a accès aux données de conformité Policy, Security Reader non. Attestation manuelle : Manual attestation and evidence > Attest.",
+    "lesson": "4.1#s-4-1-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/regulatory-compliance-dashboard"]
+  },
+  {
+    "id": "q-4.1-05", "objective": "4.1", "skills": ["4.1.3"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer veut être alertée quand quelqu'un exécute des opérations Azure Resource Manager inhabituelles (par exemple des opérations depuis une IP malveillante connue), quel que soit le type de ressource.",
+    "stem": "Quel plan activez-vous ?",
+    "options": [
+      { "id": "a", "text": "Defender for Resource Manager.", "correct": true, "why": "Surveille les opérations de gestion des ressources et détecte les activités suspectes." },
+      { "id": "b", "text": "Defender CSPM.", "correct": false, "why": "Posture, pas de détection d'activité ARM en temps réel." },
+      { "id": "c", "text": "Defender for Key Vault.", "correct": false, "why": "Limité aux accès aux coffres." },
+      { "id": "d", "text": "Defender for APIs.", "correct": false, "why": "Concerne les API publiées dans API Management." }
+    ],
+    "explanation": "Chaque plan CWPP couvre un type de charge. Les alertes apparaissent dès qu'un plan de protection est actif et remontent dans Defender XDR.",
+    "lesson": "4.1#s-4-1-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction"]
+  },
+  {
+    "id": "q-4.1-06", "objective": "4.1", "skills": ["4.1.4"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer a une organisation AWS de 30 comptes, avec de nouveaux comptes créés chaque mois. Le RSSI exige qu'ils soient tous couverts par Defender for Cloud automatiquement, sans clé d'accès AWS stockée dans Azure.",
+    "stem": "Comment connectez-vous AWS ?",
+    "options": [
+      { "id": "a", "text": "Connecteur natif au niveau du compte de gestion AWS (management account), déployé par CloudFormation ; l'authentification utilise une fédération et des identifiants de courte durée.", "correct": true, "why": "Le connecteur du compte de gestion crée des connecteurs pour les comptes membres actuels et futurs." },
+      { "id": "b", "text": "Un connecteur par compte, avec une clé d'accès IAM par compte.", "correct": false, "why": "Pas automatique pour les nouveaux comptes, et stocke des secrets." },
+      { "id": "c", "text": "Connecteur sur un compte administrateur délégué de l'organisation.", "correct": false, "why": "Les comptes administrateurs délégués ne sont pas pris en charge pour cet onboarding." },
+      { "id": "d", "text": "Installer Azure Arc sur toutes les instances EC2 et ne rien connecter d'autre.", "correct": false, "why": "Ne couvre que les serveurs, pas la posture du compte (S3, IAM, RDS...)." }
+    ],
+    "explanation": "Pas de secret long terme stocké. Intervalles d'analyse : 4, 6, 12 ou 24 h. Droits Azure : Contributor (Owner pour l'auto-provisioning Arc).",
+    "lesson": "4.1#s-4-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/quickstart-onboard-aws"]
+  },
+  {
+    "id": "q-4.1-07", "objective": "4.1", "skills": ["4.1.4"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Lors de l'onboarding d'un projet GCP dans Defender for Cloud, quelles **deux** affirmations sont exactes ?",
+    "options": [
+      { "id": "a", "text": "Un script gcloud généré crée un pool et un fournisseur workload identity, des comptes de service et des liaisons de stratégie.", "correct": true, "why": "Documenté dans le démarrage rapide GCP." },
+      { "id": "b", "text": "On peut connecter un projet unique ou une organisation entière, avec exclusions.", "correct": true, "why": "Projets et dossiers peuvent être exclus en mode organisation." },
+      { "id": "c", "text": "Il faut télécharger une clé JSON de compte de service et la coller dans le portail Azure.", "correct": false, "why": "La fédération évite tout secret long terme." },
+      { "id": "d", "text": "L'intervalle d'analyse est fixé à 1 heure pour toutes les ressources.", "correct": false, "why": "Choix de 4, 6, 12 ou 24 h ; seuls certains collecteurs ont un intervalle fixe." }
+    ],
+    "explanation": "Authentification : workload identity federation et usurpation de comptes de service. API GCP requises : iam, sts, cloudresourcemanager, iamcredentials, compute.",
+    "lesson": "4.1#s-4-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/quickstart-onboard-gcp"]
+  },
+  {
+    "id": "q-4.1-08", "objective": "4.1", "skills": ["4.1.5"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer a activé Defender for Servers Plan 1 sur un abonnement. L'équipe constate que les VM sans capteur Defender for Endpoint n'ont aucun résultat de vulnérabilité, alors qu'on lui avait promis une analyse sans agent.",
+    "stem": "Quelle est l'explication ?",
+    "options": [
+      { "id": "a", "text": "L'analyse sans agent exige Defender for Servers Plan 2 ou Defender CSPM ; en Plan 1, MDVM fonctionne avec l'agent (capteur MDE).", "correct": true, "why": "Mode sans agent : P2 ou Defender CSPM ; mode avec agent : P1 ou P2." },
+      { "id": "b", "text": "Il faut installer l'agent Log Analytics sur les VM.", "correct": false, "why": "Agent retiré ; MDVM s'appuie sur MDE ou l'analyse sans agent." },
+      { "id": "c", "text": "L'analyse de vulnérabilités est désactivée par défaut dans tous les plans.", "correct": false, "why": "Elle est activée par défaut avec Defender for Servers." },
+      { "id": "d", "text": "MDVM ne prend en charge que Windows.", "correct": false, "why": "Il prend en charge plusieurs systèmes (voir la liste des OS supportés)." }
+    ],
+    "explanation": "Réglage : Environment settings > Defender for Servers > Monitoring coverage > Settings > Vulnerability assessment for machines. Owner sur le RG pour déployer le scanner, Security Reader pour lire.",
+    "lesson": "4.1#s-4-1-5",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/deploy-vulnerability-assessment-defender-vulnerability-management"]
+  },
+  {
+    "id": "q-4.1-09", "objective": "4.1", "skills": ["4.1.6"], "type": "single", "difficulty": 2,
+    "scenario": "Après une première découverte Defender EASM à partir des domaines de Brisemer, 140 actifs sont à l'état Candidate. Trois mois plus tard, une vulnérabilité critique sur l'un d'eux n'a jamais été signalée dans les tableaux de bord.",
+    "stem": "Pourquoi ?",
+    "options": [
+      { "id": "a", "text": "Les actifs Candidate ne sont analysés que pendant la découverte et n'apparaissent pas dans les tableaux par défaut : il fallait les qualifier en Approved Inventory.", "correct": true, "why": "Seul l'Approved Inventory est analysé chaque jour et affiché par défaut." },
+      { "id": "b", "text": "Defender EASM ne détecte pas de vulnérabilités.", "correct": false, "why": "Il génère des insights à partir de données de vulnérabilités et d'infrastructure." },
+      { "id": "c", "text": "La période d'essai de 30 jours a expiré et les données ont été supprimées.", "correct": false, "why": "Le scénario porte sur l'état des actifs, pas sur la licence." },
+      { "id": "d", "text": "Il fallait ajouter des graines ASN.", "correct": false, "why": "L'actif est déjà découvert ; le problème est son état." }
+    ],
+    "explanation": "États : Approved Inventory, Dependency, Monitor Only, Candidate, Requires Investigation.",
+    "lesson": "4.1#s-4-1-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/external-attack-surface-management/understanding-inventory-assets"]
+  },
+  {
+    "id": "q-4.1-10", "objective": "4.1", "skills": ["4.1.6", "4.1.1"], "type": "single", "difficulty": 3,
+    "scenario": "Brisemer a Defender CSPM. Le RSSI veut que les chemins d'attaque prennent en compte les IP réellement exposées vues depuis Internet, sans acheter de licence supplémentaire.",
+    "stem": "Que répondez-vous ?",
+    "options": [
+      { "id": "a", "text": "L'intégration Defender EASM est incluse dans Defender CSPM, sans licence EASM séparée : elle alimente la découverte des ressources exposées et les chemins d'attaque.", "correct": true, "why": "Documenté : intégration incluse par défaut dans Defender CSPM." },
+      { "id": "b", "text": "Il faut acheter Defender EASM et le connecter manuellement.", "correct": false, "why": "Pas nécessaire pour l'intégration CSPM." },
+      { "id": "c", "text": "C'est impossible : les chemins d'attaque ne voient que l'intérieur.", "correct": false, "why": "Ils partent justement d'IP exposées à Internet." },
+      { "id": "d", "text": "Il faut activer Defender for Servers Plan 2 sur tous les abonnements.", "correct": false, "why": "Sans rapport avec la vue outside-in." }
+    ],
+    "explanation": "EASM (outside-in) + CSPM (inside-out) : découverte des ressources exposées, chemins d'attaque depuis les IP exposées, requêtes dans le cloud security explorer.",
+    "lesson": "4.1#s-4-1-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-easm"]
+  },
+  {
+    "id": "q-4.1-11", "objective": "4.1", "skills": ["4.1.4", "4.1.3"], "type": "order", "difficulty": 2,
+    "scenario": "Brisemer veut protéger ses instances EC2 avec Defender for Servers.",
+    "stem": "Remettez les étapes dans l'ordre.",
+    "options": [
+      { "id": "a", "text": "Créer le connecteur AWS dans Environment settings et choisir le plan Defender for Servers.", "why": "Le connecteur définit le périmètre et les plans." },
+      { "id": "b", "text": "Déployer le template CloudFormation généré dans le compte AWS.", "why": "Il crée les rôles IAM et ressources nécessaires." },
+      { "id": "c", "text": "Vérifier que l'agent SSM est présent sur les instances pour l'auto-provisioning Azure Arc.", "why": "Sans SSM, l'auto-provisioning Arc ne peut pas se faire." },
+      { "id": "d", "text": "Contrôler la colonne Connectivity status et la présence des machines Arc avec MDE.", "why": "Validation finale du connecteur et de la couverture." }
+    ],
+    "explanation": "Defender for Servers sur AWS : Arc sur les EC2 (auto-provisioning recommandé, rôle Owner), SSM avec AmazonSSMManagedInstanceCore, extensions MDE et évaluation de vulnérabilités.",
+    "lesson": "4.1#s-4-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/quickstart-onboard-aws"]
+  }
+]

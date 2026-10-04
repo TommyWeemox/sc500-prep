@@ -1,0 +1,184 @@
+[
+  {
+    "id": "q-4.2-01", "objective": "4.2", "skills": ["4.2.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer a un seul tenant Entra et des ressources en France et en Allemagne, sans exigence de résidence par pays. Une équipe propose un workspace Sentinel par région Azure « par principe ».",
+    "stem": "Que recommandez-vous ?",
+    "options": [
+      { "id": "a", "text": "Un seul workspace, et n'en créer d'autres que si un critère l'impose (tenant, résidence, rétention différente, facturation).", "correct": true, "why": "Recommandation Microsoft : partir d'un workspace unique." },
+      { "id": "b", "text": "Un workspace par région pour réduire la latence des requêtes.", "correct": false, "why": "Le volume ne dégrade pas les performances ; la multiplication complique les requêtes." },
+      { "id": "c", "text": "Un workspace par abonnement.", "correct": false, "why": "Aucun critère ne l'impose ici." },
+      { "id": "d", "text": "Utiliser le workspace par défaut de Defender for Cloud pour Sentinel.", "correct": false, "why": "Sentinel ne peut pas être installé sur ces workspaces." }
+    ],
+    "explanation": "Critères : tenants, régions, propriété, facturation, rétention, commitment tiers, contrôle d'accès, résilience. Accès fin : resource-context RBAC et table-level RBAC.",
+    "lesson": "4.2#s-4-2-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/workspace-design"]
+  },
+  {
+    "id": "q-4.2-02", "objective": "4.2", "skills": ["4.2.2"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Les analystes N1 du SOC de Brisemer doivent assigner et fermer des incidents et lancer les playbooks existants. Ils ne doivent ni créer ni modifier de règles d'analyse ni de playbooks.",
+    "stem": "Quels rôles attribuez-vous au groupe de ressources Sentinel ?",
+    "options": [
+      { "id": "a", "text": "Microsoft Sentinel Responder et Microsoft Sentinel Playbook Operator.", "correct": true, "why": "Responder gère les incidents ; Playbook Operator lance les playbooks sans les modifier." },
+      { "id": "b", "text": "Microsoft Sentinel Contributor.", "correct": false, "why": "Permet de créer et modifier les règles et le contenu." },
+      { "id": "c", "text": "Microsoft Sentinel Reader et Logic App Contributor.", "correct": false, "why": "Reader ne gère pas les incidents ; Logic App Contributor modifie les playbooks." },
+      { "id": "d", "text": "Microsoft Sentinel Automation Contributor.", "correct": false, "why": "Rôle destiné au service Sentinel, pas aux utilisateurs." }
+    ],
+    "explanation": "Recommandations Microsoft : analystes = Responder + Playbook Operator ; ingénieurs = Contributor + Logic App Contributor.",
+    "lesson": "4.2#s-4-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/roles"]
+  },
+  {
+    "id": "q-4.2-03", "objective": "4.2", "skills": ["4.2.3"], "type": "single", "difficulty": 1,
+    "scenario": "Brisemer veut ingérer les journaux de ses FortiGate et disposer rapidement de règles de détection et de workbooks adaptés.",
+    "stem": "Par où commencez-vous ?",
+    "options": [
+      { "id": "a", "text": "Installer la solution du constructeur depuis le content hub (avec le rôle Microsoft Sentinel Contributor), puis configurer son connecteur et créer les règles à partir des modèles.", "correct": true, "why": "Les solutions regroupent connecteurs, parsers, règles, workbooks, avec gestion des mises à jour." },
+      { "id": "b", "text": "Écrire les règles KQL à la main, puis chercher un connecteur.", "correct": false, "why": "Réinvente un contenu déjà packagé." },
+      { "id": "c", "text": "Activer Defender for Servers sur les FortiGate.", "correct": false, "why": "Ce ne sont pas des serveurs protégeables ainsi." },
+      { "id": "d", "text": "Les modèles de règles sont actifs dès l'installation : rien d'autre à faire.", "correct": false, "why": "Un modèle doit être transformé en règle (Create rule)." }
+    ],
+    "explanation": "Content hub : solutions et contenu standalone ; support Microsoft, partenaire ou communauté.",
+    "lesson": "4.2#s-4-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/sentinel-solutions"]
+  },
+  {
+    "id": "q-4.2-04", "objective": "4.2", "skills": ["4.2.4"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer veut collecter le journal d'activité Azure de ses 12 abonnements, y compris ceux créés plus tard, dans le workspace Sentinel.",
+    "stem": "Comment configurez-vous le connecteur Azure Activity ?",
+    "options": [
+      { "id": "a", "text": "Via l'assistant d'affectation Azure Policy du connecteur, à une portée qui couvre tous les abonnements (par exemple un groupe d'administration), avec le workspace Sentinel en paramètre.", "correct": true, "why": "Le connecteur s'appuie sur Azure Policy, qui s'applique aussi aux nouveaux abonnements de la portée." },
+      { "id": "b", "text": "En installant AMA sur une VM de chaque abonnement.", "correct": false, "why": "Le journal d'activité n'est pas collecté par un agent." },
+      { "id": "c", "text": "Par le connecteur Syslog via AMA.", "correct": false, "why": "Sans rapport avec le journal d'activité Azure." },
+      { "id": "d", "text": "Par l'HTTP Data Collector API.", "correct": false, "why": "API plus prise en charge depuis le 14 septembre 2026." }
+    ],
+    "explanation": "Démarrage rapide : Launch Azure Policy Assignment Wizard > portée > Primary Log Analytics workspace. Table AzureActivity (90 jours de rétention par défaut, sans frais d'ingestion).",
+    "lesson": "4.2#s-4-2-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/quickstart-onboard"]
+  },
+  {
+    "id": "q-4.2-05", "objective": "4.2", "skills": ["4.2.5"], "type": "single", "difficulty": 2,
+    "scenario": "Des pare-feu on-premises de Brisemer doivent envoyer leurs journaux CEF à Sentinel. Le forwarder Linux est une VM VMware dans le datacenter.",
+    "stem": "Quel prérequis est indispensable sur ce forwarder ?",
+    "options": [
+      { "id": "a", "text": "L'agent Azure Arc (Connected Machine), puis AMA via la DCR du connecteur CEF via AMA.", "correct": true, "why": "Un forwarder hors Azure doit être un serveur Arc pour recevoir AMA." },
+      { "id": "b", "text": "L'agent Log Analytics (MMA).", "correct": false, "why": "Agent retiré ; on utilise AMA." },
+      { "id": "c", "text": "Defender for Endpoint.", "correct": false, "why": "Ne collecte pas le CEF pour Sentinel." },
+      { "id": "d", "text": "Une IP publique sur le forwarder.", "correct": false, "why": "Pas requis ; il faut la connectivité de l'agent vers Azure." }
+    ],
+    "explanation": "Forwarder : rsyslog ou syslog-ng, Python, script Forwarder_AMA_installer.py qui ouvre 514 UDP/TCP. CEF vers CommonSecurityLog.",
+    "lesson": "4.2#s-4-2-5",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-cef-syslog-ama"]
+  },
+  {
+    "id": "q-4.2-06", "objective": "4.2", "skills": ["4.2.5"], "type": "single", "difficulty": 3,
+    "scenario": "Un forwarder collecte du CEF (facility local4) et du Syslog. L'équipe a configuré la DCR Syslog via AMA avec toutes les facilities, dont local4. La facture d'ingestion a doublé pour les journaux de pare-feu.",
+    "stem": "Quelle est la cause la plus probable ?",
+    "options": [
+      { "id": "a", "text": "La même facility est collectée par les deux flux : les messages CEF arrivent aussi dans Syslog (ingestion en double).", "correct": true, "why": "Microsoft avertit qu'utiliser la même facility pour Syslog et CEF peut dupliquer l'ingestion." },
+      { "id": "b", "text": "Le port 514 est ouvert en UDP et TCP.", "correct": false, "why": "Comportement normal du script d'installation." },
+      { "id": "c", "text": "La table CommonSecurityLog est en plan Basic.", "correct": false, "why": "N'explique pas un doublement du volume." },
+      { "id": "d", "text": "Le niveau minimal LOG_ERR ne collecte que les erreurs.", "correct": false, "why": "Il collecte LOG_ERR et plus grave ; sans lien avec un doublon." }
+    ],
+    "explanation": "Séparer les facilities entre flux Syslog et CEF, ou retirer local4 de la DCR Syslog.",
+    "lesson": "4.2#s-4-2-5",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-cef-syslog-ama"]
+  },
+  {
+    "id": "q-4.2-07", "objective": "4.2", "skills": ["4.2.6"], "type": "single", "difficulty": 3,
+    "scenario": "Brisemer collecte les journaux de 300 serveurs Windows via Windows Event Forwarding vers un collecteur WEC, avec AMA et le connecteur Windows Forwarded Events. Les règles d'analyse intégrées sur les ouvertures de session ne déclenchent jamais.",
+    "stem": "Pourquoi ?",
+    "options": [
+      { "id": "a", "text": "Les événements WEF arrivent dans la table WindowsEvent, alors que ces règles interrogent SecurityEvent.", "correct": true, "why": "Documenté : les événements transférés ne vont pas dans SecurityEvent." },
+      { "id": "b", "text": "Le collecteur WEC doit être une VM Azure.", "correct": false, "why": "Il peut être hors Azure (avec Arc)." },
+      { "id": "c", "text": "Le jeu d'événements Minimal ne contient pas les ouvertures de session.", "correct": false, "why": "Les jeux d'événements concernent le connecteur Windows Security Events, pas WEF." },
+      { "id": "d", "text": "XPath 2.0 n'est pas activé.", "correct": false, "why": "AMA ne supporte que XPath 1.0 et ce n'est pas la cause." }
+    ],
+    "explanation": "Solutions : adapter les règles à WindowsEvent ou aux parsers ASIM, ou collecter avec Windows Security Events via AMA vers SecurityEvent.",
+    "lesson": "4.2#s-4-2-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-services-windows-based"]
+  },
+  {
+    "id": "q-4.2-08", "objective": "4.2", "skills": ["4.2.6"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "À propos du connecteur Windows Security Events via AMA, quelles **deux** affirmations sont exactes ?",
+    "options": [
+      { "id": "a", "text": "On peut choisir les jeux All events, Common, Minimal, ou Custom avec des requêtes XPath.", "correct": true, "why": "Jeux d'événements documentés." },
+      { "id": "b", "text": "Les serveurs hors Azure doivent avoir Azure Arc avant l'activation du connecteur.", "correct": true, "why": "Prérequis documenté." },
+      { "id": "c", "text": "AMA accepte XPath 2.0 et 3.0.", "correct": false, "why": "XPath 1.0 seulement." },
+      { "id": "d", "text": "La DCR doit être dans le même groupe de ressources que les machines.", "correct": false, "why": "Elle peut être ailleurs, dans le même tenant." }
+    ],
+    "explanation": "Filtrer à la source avec XPath réduit les coûts. Tester avec Get-WinEvent -FilterXPath.",
+    "lesson": "4.2#s-4-2-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/connect-services-windows-based"]
+  },
+  {
+    "id": "q-4.2-09", "objective": "4.2", "skills": ["4.2.7"], "type": "single", "difficulty": 2,
+    "scenario": "L'application de contrôle d'accès physique de Brisemer doit envoyer ses événements de badge dans Sentinel. Elle peut appeler une API REST avec une identité Entra.",
+    "stem": "Quelle approche retenez-vous ?",
+    "options": [
+      { "id": "a", "text": "Créer une table personnalisée BadgeAccess_CL avec TimeGenerated, une DCR qui la cible, et envoyer les données par la Logs Ingestion API.", "correct": true, "why": "Méthode actuelle pour une source personnalisée." },
+      { "id": "b", "text": "Utiliser l'HTTP Data Collector API avec la clé du workspace.", "correct": false, "why": "Plus prise en charge depuis le 14 septembre 2026, et repose sur une clé partagée." },
+      { "id": "c", "text": "Écrire dans la table SecurityEvent.", "correct": false, "why": "Table Azure au schéma imposé, prévue pour les événements Windows." },
+      { "id": "d", "text": "Créer une table sans suffixe nommée BadgeAccess.", "correct": false, "why": "Les tables personnalisées portent obligatoirement le suffixe _CL." }
+    ],
+    "explanation": "Plans de table : Analytics, Basic, Auxiliary. DCR Direct sans DCE possible. Transformation KQL dans la DCR.",
+    "lesson": "4.2#s-4-2-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/create-custom-table"]
+  },
+  {
+    "id": "q-4.2-10", "objective": "4.2", "skills": ["4.2.8"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Un ingénieur crée une règle d'automatisation avec l'action Run playbook. Le playbook voulu, situé dans le groupe de ressources rg-soar, apparaît grisé dans la liste.",
+    "stem": "Que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "Accorder au service Sentinel des permissions sur rg-soar (Manage playbook permissions, rôle Microsoft Sentinel Automation Contributor), ce qui exige d'être Owner de ce groupe.", "correct": true, "why": "Sentinel lance les playbooks avec un compte de service qui doit avoir des droits explicites sur le groupe du playbook." },
+      { "id": "b", "text": "Donner à l'ingénieur le rôle Playbook Operator.", "correct": false, "why": "Concerne le lancement manuel par un utilisateur, pas l'automatisation." },
+      { "id": "c", "text": "Convertir le playbook en Logic App Standard.", "correct": false, "why": "Consumption et Standard sont tous deux pris en charge." },
+      { "id": "d", "text": "Déplacer le workspace Sentinel dans rg-soar.", "correct": false, "why": "Un workspace Sentinel ne peut pas être déplacé, et ce n'est pas nécessaire." }
+    ],
+    "explanation": "Vérifier aussi la cohérence des déclencheurs : un playbook à déclencheur incident pour une règle à déclencheur incident.",
+    "lesson": "4.2#s-4-2-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules"]
+  },
+  {
+    "id": "q-4.2-11", "objective": "4.2", "skills": ["4.2.8"], "type": "single", "difficulty": 2,
+    "scenario": "Un prestataire réalise un test d'intrusion chez Brisemer du 3 au 7 novembre depuis une plage d'IP connue. Le SOC veut fermer automatiquement les incidents liés à ces IP pendant cette période, avec une trace, sans rien oublier de désactiver ensuite.",
+    "stem": "Que configurez-vous ?",
+    "options": [
+      { "id": "a", "text": "Une règle d'automatisation sur création d'incident, condition sur l'entité IP, action fermer avec raison et tag, et une date d'expiration au 7 novembre.", "correct": true, "why": "Suppression sans playbook, limitée dans le temps par l'expiration." },
+      { "id": "b", "text": "Désactiver toutes les règles d'analyse pendant le test.", "correct": false, "why": "Aveugle le SOC sur les vraies attaques." },
+      { "id": "c", "text": "Un playbook qui supprime les incidents.", "correct": false, "why": "Plus complexe, et la suppression efface la trace." },
+      { "id": "d", "text": "Une watchlist sans autre configuration.", "correct": false, "why": "Une watchlist seule ne ferme pas d'incidents." }
+    ],
+    "explanation": "Composants : déclencheur, conditions, actions, ordre, expiration.",
+    "lesson": "4.2#s-4-2-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules"]
+  },
+  {
+    "id": "q-4.2-12", "objective": "4.2", "skills": ["4.2.9"], "type": "single", "difficulty": 2,
+    "scenario": "La réglementation impose à Brisemer de conserver 7 ans les journaux de connexion, avec des requêtes rares. Les 90 derniers jours doivent rester disponibles pour la détection.",
+    "stem": "Quelle configuration de la table ?",
+    "options": [
+      { "id": "a", "text": "Rétention analytique de 90 jours et rétention totale de 7 ans (long terme, ou data lake si le workspace est embarqué dans le portail Defender).", "correct": true, "why": "La rétention totale va jusqu'à 12 ans ; l'analytique jusqu'à 2 ans seulement." },
+      { "id": "b", "text": "Rétention analytique de 7 ans.", "correct": false, "why": "Impossible : maximum 730 jours." },
+      { "id": "c", "text": "Exporter chaque nuit vers un compte de stockage et vider la table.", "correct": false, "why": "Possible mais inutilement complexe face aux options natives." },
+      { "id": "d", "text": "Passer la table en plan Basic.", "correct": false, "why": "Basic limite les requêtes à 30 jours et ne règle pas la durée totale." }
+    ],
+    "explanation": "Au-delà de la rétention analytique : search jobs ou restauration. Réduire la rétention totale : délai de 30 jours avant suppression.",
+    "lesson": "4.2#s-4-2-9",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure", "https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-lake-overview"]
+  },
+  {
+    "id": "q-4.2-13", "objective": "4.2", "skills": ["4.2.10"], "type": "single", "difficulty": 2,
+    "scenario": "Un analyste veut, dans l'advanced hunting de Defender XDR, retrouver les téléchargements massifs SharePoint d'un compte. La table CloudAppEvents ne renvoie aucun résultat, alors que la recherche d'audit Purview montre bien les événements.",
+    "stem": "Que faut-il corriger ?",
+    "options": [
+      { "id": "a", "text": "Dans Settings > Cloud apps > App connectors, connecter Microsoft 365 à Defender for Cloud Apps en cochant Microsoft 365 activities.", "correct": true, "why": "CloudAppEvents est alimentée par Defender for Cloud Apps." },
+      { "id": "b", "text": "Activer l'audit unifié avec Set-AdminAuditLogConfig.", "correct": false, "why": "L'audit fonctionne déjà, puisque la recherche Purview renvoie des résultats." },
+      { "id": "c", "text": "Attribuer le rôle View-Only Audit Logs à l'analyste.", "correct": false, "why": "Rôle de la recherche Purview, sans effet sur le remplissage de CloudAppEvents." },
+      { "id": "d", "text": "Créer une table personnalisée SharePoint_CL.", "correct": false, "why": "Inutile : la table native existe." }
+    ],
+    "explanation": "Purview Audit : rôles Audit Logs / View-Only Audit Logs, 180 jours (Standard), 1 an pour certains services en E5.",
+    "lesson": "4.2#s-4-2-10",
+    "sources": ["https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-cloudappevents-table", "https://learn.microsoft.com/en-us/purview/audit-search"]
+  }
+]

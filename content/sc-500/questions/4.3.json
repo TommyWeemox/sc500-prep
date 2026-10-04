@@ -1,0 +1,156 @@
+[
+  {
+    "id": "q-4.3-01", "objective": "4.3", "skills": ["4.3.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "L'équipe conformité de Brisemer exige que ses sessions Security Copilot soient stockées en Europe et que les prompts ne soient jamais traités hors de cette région. Le SOC, lui, veut la meilleure réactivité.",
+    "stem": "Que configurez-vous ?",
+    "options": [
+      { "id": "a", "text": "Deux workspaces : conformité avec stockage EU et évaluation des prompts dans la même région ; SOC avec évaluation « anywhere ». Choix faits à la création.", "correct": true, "why": "Le stockage est immuable après création ; l'évaluation « anywhere » peut traiter hors région." },
+      { "id": "b", "text": "Un seul workspace en EU, évaluation anywhere.", "correct": false, "why": "Les prompts de la conformité pourraient être traités hors d'Europe." },
+      { "id": "c", "text": "Un workspace en US que l'on déplacera en EU plus tard.", "correct": false, "why": "L'emplacement de stockage ne se modifie pas après création." },
+      { "id": "d", "text": "Une politique d'accès conditionnel limitant les connexions à l'Europe.", "correct": false, "why": "Ne contrôle pas où les données sont stockées ou traitées." }
+    ],
+    "explanation": "Emplacements de stockage : ANZ, EU, CH, UK, US. Chaque workspace a sa capacité, ses rôles, ses plugins.",
+    "lesson": "4.3#s-4-3-1",
+    "sources": ["https://learn.microsoft.com/en-us/training/modules/configure-security-copilot-workspaces/2-plan-workspace-deployment"]
+  },
+  {
+    "id": "q-4.3-02", "objective": "4.3", "skills": ["4.3.1"], "type": "single", "difficulty": 3,
+    "scenario": "Brisemer a créé un workspace « Sandbox » en premier, puis « SOC ». Les analystes qui utilisent Copilot dans le portail Defender consomment la capacité du Sandbox et se plaignent de lenteurs.",
+    "stem": "Que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "Dans Owner settings > Workspaces for Microsoft Security Copilot agents, router Microsoft Defender XDR vers le workspace SOC.", "correct": true, "why": "Sans affectation explicite, le trafic intégré va au workspace par défaut, le plus ancien." },
+      { "id": "b", "text": "Demander à chaque analyste de choisir SOC dans le sélecteur de workspace.", "correct": false, "why": "Le routage des expériences intégrées est un paramètre tenant, pas un choix individuel." },
+      { "id": "c", "text": "Supprimer les SCU du Sandbox.", "correct": false, "why": "Ne réoriente pas le trafic, qui échouerait faute de capacité." },
+      { "id": "d", "text": "Ajouter des SCU d'overage au Sandbox.", "correct": false, "why": "Coûte plus sans corriger le mauvais routage." }
+    ],
+    "explanation": "Avant de changer l'affectation : désactiver les déclencheurs des agents de l'ancien workspace ; les agents reconfigurés n'accèdent pas à l'ancienne mémoire.",
+    "lesson": "4.3#s-4-3-1",
+    "sources": ["https://learn.microsoft.com/en-us/training/modules/configure-security-copilot-workspaces/5-assign-workspaces-integrated-agents"]
+  },
+  {
+    "id": "q-4.3-03", "objective": "4.3", "skills": ["4.3.1"], "type": "single", "difficulty": 1,
+    "scenario": null,
+    "stem": "Combien de SCU l'inclusion Security Copilot de Microsoft 365 E5 fournit-elle ?",
+    "options": [
+      { "id": "a", "text": "400 SCU par mois pour 1 000 licences E5, sans report des unités non consommées.", "correct": true, "why": "Chiffre documenté dans le module Learn." },
+      { "id": "b", "text": "1 SCU par licence E5 et par mois.", "correct": false, "why": "Ratio inexact." },
+      { "id": "c", "text": "Capacité illimitée.", "correct": false, "why": "L'usage est déduit d'une allocation mensuelle." },
+      { "id": "d", "text": "400 SCU par mois avec report sur 12 mois.", "correct": false, "why": "Les unités non utilisées ne sont pas reportées." }
+    ],
+    "explanation": "Autre modèle : pay-as-you-go avec SCU provisionnées à l'heure et SCU d'overage.",
+    "lesson": "4.3#s-4-3-1",
+    "sources": ["https://learn.microsoft.com/en-us/training/modules/configure-security-copilot-workspaces/2-plan-workspace-deployment"]
+  },
+  {
+    "id": "q-4.3-04", "objective": "4.3", "skills": ["4.3.2"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Une analyste de Brisemer a le rôle Copilot contributor. Quand elle demande à Security Copilot de résumer les incidents Sentinel de la nuit, le plugin Sentinel ne renvoie rien.",
+    "stem": "Que lui manque-t-il ?",
+    "options": [
+      { "id": "a", "text": "Un rôle Sentinel sur le workspace, par exemple Microsoft Sentinel Reader : Copilot interroge Sentinel en son nom (on-behalf-of).", "correct": true, "why": "Le rôle Copilot n'ouvre aucune donnée ; les plugins respectent les droits de l'utilisateur." },
+      { "id": "b", "text": "Le rôle Copilot owner.", "correct": false, "why": "Owner gère la plateforme mais ne donne pas accès aux données Sentinel." },
+      { "id": "c", "text": "Le rôle Entra Security Administrator.", "correct": false, "why": "Rôle privilégié, à ne pas attribuer pour cela." },
+      { "id": "d", "text": "Plus de SCU dans le workspace.", "correct": false, "why": "Le manque de capacité produit une erreur de capacité, pas une absence de données." }
+    ],
+    "explanation": "Trois couches : rôles Copilot (plateforme), rôles des services (données), Azure RBAC (capacité, workspaces).",
+    "lesson": "4.3#s-4-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/authentication"]
+  },
+  {
+    "id": "q-4.3-05", "objective": "4.3", "skills": ["4.3.2"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelles **deux** affirmations sur les rôles Security Copilot sont exactes ?",
+    "options": [
+      { "id": "a", "text": "Les Global Administrators et Security Administrators héritent automatiquement du rôle Copilot owner.", "correct": true, "why": "Rôles Entra listés comme héritant de l'accès owner." },
+      { "id": "b", "text": "Si l'on retire le groupe Everyone du rôle contributor, on ne peut plus le réattribuer.", "correct": true, "why": "Comportement documenté." },
+      { "id": "c", "text": "Copilot owner et Copilot contributor sont des rôles Entra ID.", "correct": false, "why": "Ce sont des rôles propres à Security Copilot." },
+      { "id": "d", "text": "N'importe quel groupe de sécurité peut recevoir un rôle Copilot.", "correct": false, "why": "Seuls les groupes assignables à des rôles sont pris en charge." }
+    ],
+    "explanation": "Security Copilot conserve en permanence deux owners. Par défaut, les contributors sont le groupe Recommended Microsoft Security roles.",
+    "lesson": "4.3#s-4-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/authentication"]
+  },
+  {
+    "id": "q-4.3-06", "objective": "4.3", "skills": ["4.3.2"], "type": "single", "difficulty": 2,
+    "scenario": "Pour donner l'accès à Security Copilot à 15 analystes, un administrateur propose de leur attribuer le rôle Entra Security Administrator, « puisqu'il donne automatiquement owner ».",
+    "stem": "Que recommandez-vous ?",
+    "options": [
+      { "id": "a", "text": "Créer un groupe assignable à des rôles, lui attribuer Copilot contributor, et donner les rôles de lecture des services nécessaires.", "correct": true, "why": "Moindre privilège : Security Administrator est un rôle privilégié." },
+      { "id": "b", "text": "Accepter la proposition, avec PIM.", "correct": false, "why": "Reste un rôle privilégié inutile pour cet usage." },
+      { "id": "c", "text": "Attribuer Global Reader.", "correct": false, "why": "Ne donne pas l'accès à la plateforme Copilot en soi." },
+      { "id": "d", "text": "Attribuer Copilot owner aux 15 analystes.", "correct": false, "why": "Leur donnerait la gestion de la plateforme sans nécessité." }
+    ],
+    "explanation": "Documentation : ne pas attribuer Security Administrator uniquement pour l'accès à Copilot.",
+    "lesson": "4.3#s-4-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/authentication"]
+  },
+  {
+    "id": "q-4.3-07", "objective": "4.3", "skills": ["4.3.3"], "type": "single", "difficulty": 2,
+    "scenario": "Les contributors de Brisemer doivent pouvoir téléverser et tester leurs propres plugins KQL, mais seuls les owners doivent pouvoir publier un plugin pour toute l'organisation.",
+    "stem": "Quels paramètres choisissez-vous dans Owner > Plugin settings ?",
+    "options": [
+      { "id": "a", "text": "« Owners and Contributors » pour les plugins personnels, « Owners only » pour les plugins de l'organisation.", "correct": true, "why": "Les deux réglages sont indépendants." },
+      { "id": "b", "text": "« Owners only » pour les deux.", "correct": false, "why": "Empêche les contributors de tester leurs plugins." },
+      { "id": "c", "text": "« Owners and Contributors » pour les deux.", "correct": false, "why": "Permettrait aux contributors de publier pour tous." },
+      { "id": "d", "text": "Restreindre tous les plugins préinstallés aux owners.", "correct": false, "why": "Sans rapport, et affecte aussi les expériences intégrées." }
+    ],
+    "explanation": "Par défaut, seuls les owners ajoutent des plugins personnalisés. Formats : plugin Security Copilot (YAML ou JSON) ou plugin OpenAI.",
+    "lesson": "4.3#s-4-3-3",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/manage-plugins"]
+  },
+  {
+    "id": "q-4.3-08", "objective": "4.3", "skills": ["4.3.3"], "type": "single", "difficulty": 3,
+    "scenario": "Un owner restreint le plugin Microsoft Defender XDR aux owners, pour un test. Une heure plus tard, des analystes contributors signalent que Copilot dans le portail Defender ne fonctionne plus.",
+    "stem": "Pourquoi ?",
+    "options": [
+      { "id": "a", "text": "La restriction d'un plugin préinstallé est immédiate et s'applique aussi aux expériences intégrées.", "correct": true, "why": "Documenté : les plugins restreints affectent les expériences intégrées." },
+      { "id": "b", "text": "Les SCU ont été épuisées par le test.", "correct": false, "why": "Le scénario désigne la restriction comme cause." },
+      { "id": "c", "text": "Les contributors doivent reconfigurer le plugin avec l'engrenage.", "correct": false, "why": "Ils n'y ont plus accès du tout." },
+      { "id": "d", "text": "Les expériences intégrées ne dépendent pas des plugins.", "correct": false, "why": "Elles en dépendent." }
+    ],
+    "explanation": "Prévenir les utilisateurs avant toute restriction. Une fois l'accès restreint, les nouveaux plugins préinstallés sont réservés aux owners jusqu'à nouvel ordre.",
+    "lesson": "4.3#s-4-3-3",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/manage-plugins"]
+  },
+  {
+    "id": "q-4.3-09", "objective": "4.3", "skills": ["4.3.4"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer configure un agent Microsoft de Security Copilot qui s'exécutera chaque nuit. Le RSSI refuse qu'il fonctionne avec les droits complets d'un administrateur.",
+    "stem": "Quelle identité choisissez-vous ?",
+    "options": [
+      { "id": "a", "text": "Créer une agent identity (Microsoft Entra Agent ID) et ne lui accorder que les permissions requises.", "correct": true, "why": "Option recommandée, à portée limitée et gouvernable." },
+      { "id": "b", "text": "Le compte de l'administrateur qui configure l'agent.", "correct": false, "why": "L'agent hériterait de tous ses droits." },
+      { "id": "c", "text": "Un compte partagé avec mot de passe stocké dans l'agent.", "correct": false, "why": "Mauvaise pratique, et non prévu." },
+      { "id": "d", "text": "Aucune identité : l'agent utilise les SCU.", "correct": false, "why": "Les SCU sont la capacité, pas une identité." }
+    ],
+    "explanation": "Paramètres d'un agent : trigger, permissions, identity, plugins, products, role-based access. Agent identity disponible pour les agents Microsoft.",
+    "lesson": "4.3#s-4-3-4",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/agents-overview", "https://learn.microsoft.com/en-us/copilot/security/agents-manage"]
+  },
+  {
+    "id": "q-4.3-10", "objective": "4.3", "skills": ["4.3.4"], "type": "single", "difficulty": 2,
+    "scenario": "Une contributor de Brisemer veut configurer un agent partenaire trouvé dans le Security Store, qui lit des données Intune et Sentinel. Le bouton Set up est désactivé avec une bannière.",
+    "stem": "Que doit-elle faire ?",
+    "options": [
+      { "id": "a", "text": "Copier le lien et le transmettre à un Global Administrator, qui approuve les permissions de l'agent ; elle termine ensuite la configuration.", "correct": true, "why": "Les agents partenaires qui accèdent aux données Microsoft exigent l'approbation d'un Global Administrator." },
+      { "id": "b", "text": "Demander le rôle Copilot owner.", "correct": false, "why": "Le rôle owner ne remplace pas le consentement d'un Global Administrator." },
+      { "id": "c", "text": "Ajouter des SCU d'overage.", "correct": false, "why": "Sans rapport avec le consentement." },
+      { "id": "d", "text": "Installer l'agent depuis le Microsoft Marketplace classique.", "correct": false, "why": "Même exigence de consentement." }
+    ],
+    "explanation": "Sans accès aux produits Microsoft, aucune approbation n'est nécessaire. Security Store : agents, SaaS, connecteurs, services ; facturation Microsoft existante.",
+    "lesson": "4.3#s-4-3-4",
+    "sources": ["https://learn.microsoft.com/en-us/copilot/security/agents-manage", "https://learn.microsoft.com/en-us/security/store/what-is-security-store"]
+  },
+  {
+    "id": "q-4.3-11", "objective": "4.3", "skills": ["4.3.1", "4.3.2"], "type": "order", "difficulty": 2,
+    "scenario": "Brisemer déploie Security Copilot pour la première fois en pay-as-you-go.",
+    "stem": "Remettez les étapes dans l'ordre.",
+    "options": [
+      { "id": "a", "text": "Vérifier les droits : Security Administrator dans le tenant et Owner ou Contributor Azure sur l'abonnement de capacité.", "why": "Sans ces droits, impossible de créer le workspace et sa capacité." },
+      { "id": "b", "text": "Créer le workspace : SCU provisionnées et d'overage, stockage des données, lieu d'évaluation des prompts.", "why": "Les choix géographiques sont définitifs pour le stockage." },
+      { "id": "c", "text": "Attribuer Copilot contributor à un groupe assignable à des rôles et vérifier les owners.", "why": "Ouvre la plateforme aux bons utilisateurs." },
+      { "id": "d", "text": "Configurer les plugins et le routage des agents intégrés vers ce workspace.", "why": "Réglages de fonctionnement une fois les accès en place." }
+    ],
+    "explanation": "Planification : capacité, résidence, rôles ; puis configuration ; puis suivi de l'usage (tableau d'usage réservé aux owners).",
+    "lesson": "4.3#s-4-3-1",
+    "sources": ["https://learn.microsoft.com/en-us/training/modules/configure-security-copilot-workspaces/2-plan-workspace-deployment", "https://learn.microsoft.com/en-us/copilot/security/authentication"]
+  }
+]

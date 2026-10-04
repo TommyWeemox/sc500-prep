@@ -88,10 +88,10 @@ function validateCert(certId) {
     for (const c of LESSON_CALLOUTS) if (!doc.body.includes(`[!${c}]`)) err(w, `encadré [!${c}] manquant`);
     if (!/```mermaid/.test(doc.body)) err(w, 'aucun schéma Mermaid');
     if (!/^\|.*\|\s*$/m.test(doc.body)) err(w, 'aucun tableau comparatif');
-    const langs = new Set([...doc.body.matchAll(/```(azurecli|powershell|bicep|kusto|json|bash|xml)/g)].map((x) => x[1]));
+    const langs = new Set([...doc.body.matchAll(/```(azurecli|powershell|bicep|kusto|json|bash|xml|yaml)/g)].map((x) => x[1]));
     if (langs.size === 0) err(w, 'aucun exemple de code (Azure CLI, PowerShell, Bicep, KQL...)');
     else if (langs.size < 2) warn(w, `un seul langage d'exemple (${[...langs].join(', ')})`);
-    if (!/portail|Portal|portal/.test(doc.body)) warn(w, 'pas de chemin dans le portail mentionné');
+    if (!/portail|portal/i.test(doc.body)) warn(w, 'pas de chemin dans le portail mentionné');
     const ownSkills = objectiveById.get(id).skills.map((s) => s.id);
     for (const s of ownSkills) if (!doc.body.includes(`{#s-${s.replace(/\./g, '-')}}`)) warn(w, `pas de section ancrée {#s-${s.replace(/\./g, '-')}} pour le sous-objectif ${s}`);
   }
