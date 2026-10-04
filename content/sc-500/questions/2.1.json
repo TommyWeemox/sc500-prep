@@ -1,0 +1,144 @@
+[
+  {
+    "id": "q-2.1-01", "objective": "2.1", "skills": ["2.1.4"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer partage des factures avec un transporteur partenaire via des SAS de service sur le conteneur `factures`. Le partenaire résilie son contrat : ses SAS doivent cesser de fonctionner **immédiatement**, sans perturber les autres partenaires qui utilisent des SAS signées avec la même clé de compte.",
+    "stem": "Quelle approche permet cela, et aurait dû être prévue dès le départ ?",
+    "options": [
+      { "id": "a", "text": "Lier les SAS du partenaire à une stored access policy dédiée sur le conteneur, puis supprimer cette policy.", "correct": true, "why": "Supprimer (ou renommer, ou faire expirer) la policy révoque toutes les SAS de service qui la référencent, sans toucher aux clés." },
+      { "id": "b", "text": "Régénérer la clé 1 du compte de stockage.", "correct": false, "why": "Cela révoque aussi les SAS de tous les autres partenaires signées avec cette clé." },
+      { "id": "c", "text": "Retirer l'IP du partenaire du pare-feu du stockage.", "correct": false, "why": "Si le compte accepte d'autres sources ou si le partenaire change d'IP, la SAS resterait utilisable ; ce n'est pas une révocation." },
+      { "id": "d", "text": "Supprimer l'attribution de rôle RBAC du partenaire.", "correct": false, "why": "Une SAS de service est autorisée par la clé du compte, pas par RBAC." }
+    ],
+    "explanation": "Une SAS ad hoc signée par la clé ne se révoque qu'en régénérant la clé. Une **stored access policy** (5 maximum par conteneur) centralise les contraintes des SAS de service et permet une révocation ciblée.",
+    "lesson": "2.1#s-2-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview", "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"]
+  },
+  {
+    "id": "q-2.1-02", "objective": "2.1", "skills": ["2.1.1", "2.1.4"], "type": "single", "difficulty": 2,
+    "scenario": "Le RSSI veut appliquer une politique d'accès conditionnel (appareil conforme) aux accès aux données du compte `stbrisemerdata01`, et ne plus jamais voir de requête autorisée par la clé du compte.",
+    "stem": "Quel paramètre du compte est indispensable ?",
+    "options": [
+      { "id": "a", "text": "Interdire l'autorisation Shared Key (`allowSharedKeyAccess = false`).", "correct": true, "why": "Microsoft indique que c'est requis pour protéger un compte de stockage par l'accès conditionnel ; seules Entra ID et la user delegation SAS restent possibles." },
+      { "id": "b", "text": "Exiger HTTPS (secure transfer required).", "correct": false, "why": "Bonne pratique, mais sans rapport avec la clé ni l'accès conditionnel." },
+      { "id": "c", "text": "Désactiver l'accès anonyme aux blobs.", "correct": false, "why": "Ne bloque pas les requêtes signées par la clé." },
+      { "id": "d", "text": "Configurer une politique d'expiration SAS.", "correct": false, "why": "Elle ne produit qu'un avertissement et une journalisation ; la clé reste utilisable." }
+    ],
+    "explanation": "Les requêtes signées par la clé ne passent pas par Entra ID, donc pas par l'accès conditionnel. Il faut interdire Shared Key.",
+    "lesson": "2.1#s-2-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/authorize-data-access", "https://learn.microsoft.com/en-us/azure/storage/common/shared-key-authorization-prevent"]
+  },
+  {
+    "id": "q-2.1-03", "objective": "2.1", "skills": ["2.1.2"], "type": "single", "difficulty": 3,
+    "scenario": "Le compte de stockage autorise l'IP publique de sortie du hub (NAT). L'équipe réseau active un service endpoint `Microsoft.Storage` sur le sous-réseau applicatif pour optimiser le trafic. Aussitôt, l'application reçoit des erreurs 403.",
+    "stem": "Que faut-il faire ?",
+    "options": [
+      { "id": "a", "text": "Ajouter une règle de réseau virtuel pour ce sous-réseau sur le compte de stockage.", "correct": true, "why": "Avec le service endpoint, la source devient une IP privée : la règle IP publique ne s'applique plus, il faut une règle VNet." },
+      { "id": "b", "text": "Ajouter la plage privée du sous-réseau dans les règles IP.", "correct": false, "why": "Les règles IP ne concernent que des adresses publiques." },
+      { "id": "c", "text": "Cocher l'exception pour les services Microsoft de confiance.", "correct": false, "why": "L'application n'est pas un service de confiance au sens de cette exception." },
+      { "id": "d", "text": "Remplacer le service endpoint par Microsoft.Storage.Global.", "correct": false, "why": "Change seulement la portée régionale ; il faut toujours une règle VNet." }
+    ],
+    "explanation": "Documenté : une fois le service endpoint activé, le trafic du sous-réseau utilise une IP privée et les règles IP qui l'autorisaient « n'ont plus d'effet ». Jusqu'à 400 règles VNet par compte.",
+    "lesson": "2.1#s-2-1-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"]
+  },
+  {
+    "id": "q-2.1-04", "objective": "2.1", "skills": ["2.1.3"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Des fournisseurs téléversent des documents dans un conteneur. Brisemer veut détecter tout fichier malveillant **dès le téléversement**, mettre automatiquement en quarantaine les fichiers infectés, et plafonner le coût de l'analyse.",
+    "stem": "Quelle solution répond à ces exigences ?",
+    "options": [
+      { "id": "a", "text": "Defender for Storage avec malware scanning on-upload, un plafond mensuel en Go par compte, et une réponse automatisée via Event Grid vers une Function ou une Logic App.", "correct": true, "why": "Couvre la détection au téléversement, la remédiation automatique et la maîtrise du coût." },
+      { "id": "b", "text": "Activer les journaux de diagnostic et une alerte Azure Monitor sur les écritures.", "correct": false, "why": "Les journaux disent qui écrit, pas si le fichier est malveillant." },
+      { "id": "c", "text": "Defender for Servers sur les VM qui lisent les fichiers.", "correct": false, "why": "Détecte trop tard (à la lecture sur la VM) et ne couvre pas le stockage lui-même." },
+      { "id": "d", "text": "Une stored access policy en écriture seule pour les fournisseurs.", "correct": false, "why": "Contrôle l'accès, pas le contenu." }
+    ],
+    "explanation": "Malware scanning (Microsoft Defender Antivirus) est facturé au Go, avec un plafond par compte (10 000 Go par défaut) et des alertes à 75 % et 100 %. La remédiation passe par Event Grid.",
+    "lesson": "2.1#s-2-1-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-introduction"]
+  },
+  {
+    "id": "q-2.1-05", "objective": "2.1", "skills": ["2.1.4"], "type": "single", "difficulty": 2,
+    "scenario": "Une application web génère des liens de téléchargement temporaires vers des blobs pour ses clients. L'équipe sécurité refuse que l'application détienne la clé du compte.",
+    "stem": "Quel type de SAS l'application doit-elle générer ?",
+    "options": [
+      { "id": "a", "text": "Une user delegation SAS, signée avec une clé de délégation obtenue via l'identité Entra de l'application.", "correct": true, "why": "Aucune clé de compte n'est nécessaire ; c'est le type recommandé par Microsoft." },
+      { "id": "b", "text": "Une SAS de compte.", "correct": false, "why": "Signée avec la clé du compte, et la plus large des SAS." },
+      { "id": "c", "text": "Une SAS de service avec stored access policy.", "correct": false, "why": "Toujours signée avec la clé du compte." },
+      { "id": "d", "text": "Un conteneur en accès anonyme public.", "correct": false, "why": "Expose tous les blobs sans contrôle : déconseillé." }
+    ],
+    "explanation": "User delegation SAS = Entra ID. Service SAS et account SAS = clé partagée. L'identité doit avoir une permission incluant `generateUserDelegationKey`.",
+    "lesson": "2.1#s-2-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"]
+  },
+  {
+    "id": "q-2.1-06", "objective": "2.1", "skills": ["2.1.4"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelles **deux** affirmations sur les SAS sont exactes selon Microsoft ?",
+    "options": [
+      { "id": "a", "text": "La génération de SAS n'est pas auditée et Azure Storage ne compte pas les SAS émises.", "correct": true, "why": "Documenté : impossible d'auditer la création ni de connaître le nombre de SAS." },
+      { "id": "b", "text": "Une SAS de service sans stored access policy devrait expirer en une heure ou moins.", "correct": true, "why": "Recommandation : une telle SAS ne peut pas être révoquée sans régénérer la clé." },
+      { "id": "c", "text": "Les stored access policies s'appliquent aussi aux user delegation SAS.", "correct": false, "why": "Non : user delegation SAS et SAS de compte sont toujours ad hoc." },
+      { "id": "d", "text": "Une SAS restreinte à une IP accorde un accès même si le pare-feu du compte bloque cette IP.", "correct": false, "why": "Une SAS limitée à une IP n'accorde pas d'accès au-delà des règles réseau." },
+      { "id": "e", "text": "On peut définir jusqu'à 50 stored access policies par conteneur.", "correct": false, "why": "La limite est de 5 par conteneur." }
+    ],
+    "explanation": "Bonnes pratiques SAS : user delegation, HTTPS, expiration courte, stored access policy pour révoquer, politique d'expiration, moindre privilège, plan de révocation.",
+    "lesson": "2.1#s-2-1-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview", "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"]
+  },
+  {
+    "id": "q-2.1-07", "objective": "2.1", "skills": ["2.1.1"], "type": "order", "difficulty": 2,
+    "scenario": "Brisemer veut interdire la clé partagée sur un compte utilisé depuis des années par plusieurs applications, sans provoquer de panne.",
+    "stem": "Dans quel ordre procédez-vous ?",
+    "options": [
+      { "id": "a", "text": "Activer les journaux du stockage pour voir quelles requêtes sont autorisées par Shared Key ou par SAS de compte/service.", "why": "Les journaux indiquent la méthode d'autorisation de chaque requête : c'est l'inventaire." },
+      { "id": "b", "text": "Migrer chaque application vers une identité managée avec un rôle de données RBAC, ou vers des user delegation SAS.", "why": "On remplace les usages avant de couper." },
+      { "id": "c", "text": "Vérifier dans les journaux qu'il n'y a plus de requêtes Shared Key.", "why": "Confirme que la migration est complète." },
+      { "id": "d", "text": "Passer `allowSharedKeyAccess` à false et l'imposer par Azure Policy pour les nouveaux comptes.", "why": "La coupure arrive en dernier, puis on empêche la régression." }
+    ],
+    "explanation": "Interdire Shared Key rejette toute requête signée par la clé, y compris les SAS de service et de compte. On inventorie, on migre, on vérifie, puis on coupe.",
+    "lesson": "2.1#s-2-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/shared-key-authorization-prevent", "https://learn.microsoft.com/en-us/azure/storage/blobs/security-recommendations"]
+  },
+  {
+    "id": "q-2.1-08", "objective": "2.1", "skills": ["2.1.2"], "type": "single", "difficulty": 2,
+    "scenario": "Une instance Azure de Brisemer (un service PaaS qui ne peut pas être placé dans un VNet ni avoir d'IP fixe) doit écrire dans un compte de stockage dont le pare-feu refuse tout par défaut. Seule cette instance doit être autorisée, pas tout le service.",
+    "stem": "Quel type de règle utilisez-vous ?",
+    "options": [
+      { "id": "a", "text": "Une règle d'instance de ressource (resource instance rule).", "correct": true, "why": "Elle autorise une instance précise du même tenant ; ses droits viennent de ses attributions RBAC." },
+      { "id": "b", "text": "L'exception pour tous les services Microsoft de confiance.", "correct": false, "why": "Elle autorise un service entier de la liste, pas une seule instance." },
+      { "id": "c", "text": "Une règle IP avec les plages publiées pour ce service.", "correct": false, "why": "Ouvre à toutes les instances du service dans la région, y compris celles d'autres clients." },
+      { "id": "d", "text": "Une règle de réseau virtuel.", "correct": false, "why": "L'instance n'est pas dans un VNet." }
+    ],
+    "explanation": "Quatre types de règles : VNet, IP publique, **instance de ressource** (pour les services non isolables, même tenant) et exceptions de services de confiance.",
+    "lesson": "2.1#s-2-1-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"]
+  },
+  {
+    "id": "q-2.1-09", "objective": "2.1", "skills": ["2.1.3"], "type": "single", "difficulty": 1,
+    "scenario": null,
+    "stem": "Pour que Defender for Storage détecte des accès anormaux à un compte, faut-il activer les journaux de diagnostic du stockage ?",
+    "options": [
+      { "id": "a", "text": "Non : il analyse en continu la télémétrie des plans de données et de contrôle, sans journaux de diagnostic.", "correct": true, "why": "C'est explicitement documenté comme un avantage du plan." },
+      { "id": "b", "text": "Oui, vers un espace Log Analytics.", "correct": false, "why": "Pas nécessaire pour la détection." },
+      { "id": "c", "text": "Oui, vers un autre compte de stockage.", "correct": false, "why": "Pas nécessaire." },
+      { "id": "d", "text": "Seulement pour Azure Files.", "correct": false, "why": "Aucune exigence de journaux, quel que soit le service." }
+    ],
+    "explanation": "Defender for Storage est sans agent et ne dépend pas des journaux. Il s'active de préférence au niveau abonnement.",
+    "lesson": "2.1#s-2-1-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-introduction"]
+  },
+  {
+    "id": "q-2.1-10", "objective": "2.1", "skills": ["2.1.1"], "type": "multiple", "difficulty": 2,
+    "scenario": "Après un incident de rançongiciel chez un concurrent, Brisemer veut pouvoir récupérer des blobs supprimés ou écrasés, et rendre certaines archives impossibles à modifier pendant 7 ans.",
+    "stem": "Quelles **trois** fonctionnalités activez-vous ?",
+    "options": [
+      { "id": "a", "text": "Soft delete des blobs (et des conteneurs).", "correct": true, "why": "Permet de récupérer les blobs et conteneurs supprimés." },
+      { "id": "b", "text": "Versioning des blobs.", "correct": true, "why": "Conserve les versions précédentes en cas d'écrasement." },
+      { "id": "c", "text": "Stockage immuable avec une politique de rétention temporelle.", "correct": true, "why": "WORM : lecture possible, ni modification ni suppression pendant la rétention." },
+      { "id": "d", "text": "Un verrou CanNotDelete sur le compte.", "correct": false, "why": "Protège le compte, pas les données qu'il contient." },
+      { "id": "e", "text": "Une politique d'expiration SAS.", "correct": false, "why": "Sans rapport avec la récupération ou l'immutabilité." }
+    ],
+    "explanation": "Protection des données : soft delete, versioning, immutabilité (legal hold ou rétention). Un verrou ne protège que la ressource compte.",
+    "lesson": "2.1#s-2-1-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/storage/blobs/security-recommendations"]
+  }
+]

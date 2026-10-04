@@ -1,0 +1,142 @@
+[
+  {
+    "id": "q-2.2-01", "objective": "2.2", "skills": ["2.2.1"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer veut que plus aucun compte SQL avec mot de passe (y compris l'administrateur `sa` du serveur) ne puisse se connecter à `sql-brisemer-prod`. Les applications utilisent des identités managées.",
+    "stem": "Que configurez-vous ?",
+    "options": [
+      { "id": "a", "text": "Un administrateur Microsoft Entra (un groupe) sur le serveur, puis Microsoft Entra-only authentication, imposée par Azure Policy.", "correct": true, "why": "Entra-only désactive toute authentification SQL, y compris l'admin du serveur." },
+      { "id": "b", "text": "Des règles de pare-feu n'autorisant que les sous-réseaux applicatifs.", "correct": false, "why": "Le réseau n'empêche pas l'usage de comptes SQL depuis ces sous-réseaux." },
+      { "id": "c", "text": "Le rôle Azure SQL DB Contributor pour les identités managées.", "correct": false, "why": "Rôle de gestion ARM, sans lien avec l'authentification à la base." },
+      { "id": "d", "text": "Supprimer le login de l'administrateur SQL dans la base master.", "correct": false, "why": "L'administrateur du serveur ne se gère pas ainsi ; la fonction prévue est Entra-only." }
+    ],
+    "explanation": "Avec Microsoft Entra-only authentication, toutes les autres méthodes sont désactivées (SQL auth, et Windows auth pour MI). Azure Policy peut l'imposer et l'auditer.",
+    "lesson": "2.2#s-2-2-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-overview"]
+  },
+  {
+    "id": "q-2.2-02", "objective": "2.2", "skills": ["2.2.1"], "type": "single", "difficulty": 2,
+    "scenario": "Une base contient des numéros de carte de paiement. Les DBA doivent pouvoir administrer la base mais ne jamais voir ces numéros en clair, même avec des droits élevés.",
+    "stem": "Quelle fonctionnalité choisissez-vous ?",
+    "options": [
+      { "id": "a", "text": "Always Encrypted sur les colonnes concernées.", "correct": true, "why": "Les données ne sont déchiffrées que côté client ; la clé n'est jamais exposée au moteur SQL ni aux administrateurs." },
+      { "id": "b", "text": "Transparent Data Encryption avec clé gérée par le client.", "correct": false, "why": "TDE protège les fichiers au repos ; un DBA qui interroge la base voit les données en clair." },
+      { "id": "c", "text": "Dynamic Data Masking.", "correct": false, "why": "Le masquage ne chiffre rien et ne s'applique pas aux utilisateurs privilégiés." },
+      { "id": "d", "text": "Row-Level Security.", "correct": false, "why": "Filtre des lignes, pas des colonnes, et ne protège pas contre un administrateur." }
+    ],
+    "explanation": "Contre les privilégiés : **Always Encrypted** (éventuellement avec enclaves sécurisées). TDE = au repos. Masquage = exposition limitée aux non-privilégiés.",
+    "lesson": "2.2#s-2-2-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/security-overview"]
+  },
+  {
+    "id": "q-2.2-03", "objective": "2.2", "skills": ["2.2.2"], "type": "order", "difficulty": 3,
+    "scenario": "Vous devez envoyer l'audit de sécurité d'une **SQL Managed Instance** vers l'espace Log Analytics de Sentinel.",
+    "stem": "Dans quel ordre procédez-vous ?",
+    "options": [
+      { "id": "a", "text": "Créer un paramètre de diagnostic sur l'instance avec la catégorie SQLSecurityAuditEvents vers l'espace Log Analytics.", "why": "La destination doit exister avant que l'audit n'y écrive." },
+      { "id": "b", "text": "En T-SQL : CREATE SERVER AUDIT [...] TO EXTERNAL_MONITOR.", "why": "EXTERNAL_MONITOR envoie vers les destinations du diagnostic." },
+      { "id": "c", "text": "Créer une spécification d'audit de serveur ou de base (groupes d'actions) liée à cet audit.", "why": "Elle définit quoi auditer." },
+      { "id": "d", "text": "ALTER SERVER AUDIT [...] WITH (STATE = ON).", "why": "L'audit est créé désactivé ; on l'active en dernier." }
+    ],
+    "explanation": "Sur MI, l'audit suit le modèle SQL Server en T-SQL. Vers le stockage : CREATE CREDENTIAL + TO URL. Vers Log Analytics ou Event Hubs : diagnostic SQLSecurityAuditEvents + TO EXTERNAL_MONITOR.",
+    "lesson": "2.2#s-2-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/auditing-configure"]
+  },
+  {
+    "id": "q-2.2-04", "objective": "2.2", "skills": ["2.2.2"], "type": "single", "difficulty": 3,
+    "scenario": "Un enquêteur cherche dans l'audit SQL d'Azure SQL Database les tentatives de connexion échouées d'un utilisateur Microsoft Entra suspect. Il ne trouve rien, alors que l'utilisateur affirme avoir essayé plusieurs fois.",
+    "stem": "Où doit-il chercher ?",
+    "options": [
+      { "id": "a", "text": "Dans les journaux de connexion Microsoft Entra : les échecs Entra n'atteignent pas la base et ne sont pas dans l'audit SQL.", "correct": true, "why": "Documenté : avec l'authentification Entra, les échecs de connexion n'apparaissent pas dans l'audit SQL." },
+      { "id": "b", "text": "Dans le journal d'activité Azure du serveur SQL.", "correct": false, "why": "Le journal d'activité trace les opérations ARM, pas les connexions à la base." },
+      { "id": "c", "text": "Il faut activer l'audit au niveau base au lieu du niveau serveur.", "correct": false, "why": "Le niveau d'audit ne change rien : la tentative n'atteint jamais la base." },
+      { "id": "d", "text": "Dans les alertes Defender for Key Vault.", "correct": false, "why": "Sans rapport." }
+    ],
+    "explanation": "Avec Entra, les identifiants sont vérifiés avant d'atteindre la base : en cas d'échec, aucun audit SQL. Avec les logins SQL, la vérification a lieu dans la base, donc l'échec est audité.",
+    "lesson": "2.2#s-2-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview"]
+  },
+  {
+    "id": "q-2.2-05", "objective": "2.2", "skills": ["2.2.3"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer exploite un SQL Server 2019 dans son datacenter et veut les mêmes alertes de menaces (injection SQL, force brute) et l'évaluation des vulnérabilités que pour ses bases Azure SQL.",
+    "stem": "Que faites-vous ?",
+    "options": [
+      { "id": "a", "text": "Connecter le serveur à Azure Arc et activer Defender for SQL Servers on machines.", "correct": true, "why": "Ce plan couvre SQL Server sur VM Azure et SQL Server activé par Azure Arc." },
+      { "id": "b", "text": "Activer Defender for Open-Source Relational Databases.", "correct": false, "why": "Couvre PostgreSQL, MySQL et RDS, et n'est pas pris en charge sur Arc." },
+      { "id": "c", "text": "Activer Defender for Azure SQL Databases sur l'abonnement.", "correct": false, "why": "Couvre les services Azure SQL PaaS, pas un serveur on-premises." },
+      { "id": "d", "text": "Configurer l'audit SQL vers Log Analytics.", "correct": false, "why": "L'audit journalise mais ne fournit ni détection de menaces ni évaluation de vulnérabilités." }
+    ],
+    "explanation": "Pour SQL hors PaaS : Arc + **Defender for SQL Servers on machines**. Pour Azure SQL / MI : **Defender for Azure SQL Databases**.",
+    "lesson": "2.2#s-2-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-sql-introduction", "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-databases-introduction"]
+  },
+  {
+    "id": "q-2.2-06", "objective": "2.2", "skills": ["2.2.1"], "type": "single", "difficulty": 2,
+    "scenario": "Le serveur SQL utilise TDE avec une clé gérée par le client dans `kv-brisemer-prod-01`. Un administrateur désactive par erreur l'accès de l'identité du serveur au coffre.",
+    "stem": "Quelle est la conséquence documentée ?",
+    "options": [
+      { "id": "a", "text": "Les bases deviennent inaccessibles tant que l'accès à la clé n'est pas rétabli.", "correct": true, "why": "Sans accès au protecteur TDE, la DEK ne peut plus être déchiffrée." },
+      { "id": "b", "text": "Azure bascule automatiquement sur une clé gérée par le service.", "correct": false, "why": "Aucune bascule automatique n'est documentée." },
+      { "id": "c", "text": "Rien jusqu'à la prochaine rotation annuelle.", "correct": false, "why": "La rotation annuelle concerne le certificat géré par le service, pas la clé client." },
+      { "id": "d", "text": "Seules les sauvegardes deviennent illisibles.", "correct": false, "why": "Ce sont les bases elles-mêmes qui deviennent inaccessibles." }
+    ],
+    "explanation": "BYOK donne le contrôle (rotation, révocation, audit) mais aussi la responsabilité : protégez le coffre (purge protection, RBAC, alertes).",
+    "lesson": "2.2#s-2-2-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"]
+  },
+  {
+    "id": "q-2.2-07", "objective": "2.2", "skills": ["2.2.2"], "type": "single", "difficulty": 2,
+    "scenario": "L'audit d'un serveur Azure SQL Database doit écrire dans un compte de stockage dont le pare-feu refuse tout par défaut et dont la clé partagée est interdite.",
+    "stem": "Que faut-il configurer ?",
+    "options": [
+      { "id": "a", "text": "Un compte GPv2, l'identité managée du serveur avec le rôle Storage Blob Data Contributor sur le compte, et l'audit configuré pour utiliser l'identité managée.", "correct": true, "why": "C'est la configuration documentée pour écrire derrière un VNet ou un pare-feu, avec Entra uniquement." },
+      { "id": "b", "text": "Une SAS de compte stockée dans la configuration d'audit.", "correct": false, "why": "Impossible : la clé partagée est interdite, donc les SAS signées par clé aussi." },
+      { "id": "c", "text": "Rendre le conteneur public.", "correct": false, "why": "Contraire à toutes les recommandations et inutile." },
+      { "id": "d", "text": "Désactiver le pare-feu le temps de l'écriture.", "correct": false, "why": "Pas une solution durable ni sûre." }
+    ],
+    "explanation": "Audit vers stockage protégé : GPv2 + identité managée du serveur + Storage Blob Data Contributor. Le mode d'authentification de l'audit doit correspondre à celui du compte.",
+    "lesson": "2.2#s-2-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview"]
+  },
+  {
+    "id": "q-2.2-08", "objective": "2.2", "skills": ["2.2.1"], "type": "multiple", "difficulty": 2,
+    "scenario": null,
+    "stem": "Quelles **deux** affirmations sur la sécurité réseau d'Azure SQL sont exactes ?",
+    "options": [
+      { "id": "a", "text": "Les règles de pare-feu IP et de réseau virtuel ne s'appliquent pas à SQL Managed Instance.", "correct": true, "why": "MI vit dans un sous-réseau de votre VNet ; son accès se contrôle autrement (NSG, private endpoint...)." },
+      { "id": "b", "text": "Azure SQL impose toujours le chiffrement TLS des connexions.", "correct": true, "why": "ForceEncryption = Yes : les clients doivent prendre en charge le chiffrement." },
+      { "id": "c", "text": "Le Network Security Perimeter pour Azure SQL Database est en disponibilité générale.", "correct": false, "why": "Il est indiqué en préversion au moment de la vérification." },
+      { "id": "d", "text": "`TrustServerCertificate=True` est recommandé en production.", "correct": false, "why": "Trop permissif : ne protège pas contre une interception." }
+    ],
+    "explanation": "Réseau Azure SQL Database : pare-feu IP, règles VNet, private endpoints, accès public désactivable. MI : réseau du VNet. TLS toujours imposé.",
+    "lesson": "2.2#s-2-2-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/security-overview"]
+  },
+  {
+    "id": "q-2.2-09", "objective": "2.2", "skills": ["2.2.3"], "type": "single", "difficulty": 1,
+    "scenario": "Brisemer utilise Azure Database for PostgreSQL - Flexible Server et Amazon RDS for MySQL. Elle veut des alertes sur les attaques par force brute pour les deux.",
+    "stem": "Quel plan active-t-elle ?",
+    "options": [
+      { "id": "a", "text": "Defender for Open-Source Relational Databases.", "correct": true, "why": "Il couvre PostgreSQL et MySQL Flexible Server sur Azure, et Amazon RDS (dont MySQL)." },
+      { "id": "b", "text": "Defender for Azure SQL Databases.", "correct": false, "why": "Limité à Azure SQL, MI et Synapse." },
+      { "id": "c", "text": "Defender for SQL Servers on machines.", "correct": false, "why": "Pour SQL Server sur VM ou Arc." },
+      { "id": "d", "text": "Defender for Azure Cosmos DB.", "correct": false, "why": "Pour Cosmos DB uniquement." }
+    ],
+    "explanation": "Le plan open source distingue même les attaques par force brute réussies des échouées.",
+    "lesson": "2.2#s-2-2-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-databases-introduction"]
+  },
+  {
+    "id": "q-2.2-10", "objective": "2.2", "skills": ["2.2.2"], "type": "single", "difficulty": 2,
+    "scenario": "Un serveur Azure SQL héberge 300 bases fortement transactionnelles. Avec l'audit au niveau serveur, interroger les journaux d'une seule base est devenu très lent.",
+    "stem": "Que recommande Microsoft ?",
+    "options": [
+      { "id": "a", "text": "Passer à l'audit au niveau base, et revoir les groupes d'actions audités pour filtrer ce qui n'est pas nécessaire.", "correct": true, "why": "Chaque base écrit alors dans son propre dossier, ce qui réduit le volume à parcourir." },
+      { "id": "b", "text": "Désactiver l'audit sur les bases non critiques.", "correct": false, "why": "Crée des angles morts ; ce n'est pas la recommandation." },
+      { "id": "c", "text": "Envoyer l'audit vers un compte Premium BlockBlobStorage uniquement.", "correct": false, "why": "Le type de compte ne règle pas le problème de volume par dossier." },
+      { "id": "d", "text": "Passer le serveur en Managed Instance.", "correct": false, "why": "Démesuré et sans lien avec la recommandation." }
+    ],
+    "explanation": "Depuis la refonte de l'audit serveur (GA juillet 2025), tous les événements serveur vont dans un dossier `master`. Pour de grosses charges OLTP, l'audit au niveau base est recommandé.",
+    "lesson": "2.2#s-2-2-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview"]
+  }
+]

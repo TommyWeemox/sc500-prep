@@ -1,0 +1,157 @@
+[
+  {
+    "id": "q-2.3-01", "objective": "2.3", "skills": ["2.3.2"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Brisemer compte 60 abonnements gérés par des équipes applicatives autonomes qui écrivent leurs propres NSG. L'équipe réseau centrale doit garantir que RDP (3389) et SSH (22) depuis Internet sont bloqués partout, **quoi que contiennent les NSG**.",
+    "stem": "Quelle solution choisissez-vous ?",
+    "options": [
+      { "id": "a", "text": "Une configuration de security admin rules dans Azure Virtual Network Manager, avec des règles Deny, appliquée à un groupe réseau contenant tous les VNet.", "correct": true, "why": "Évaluées avant les NSG, les règles Deny terminent l'évaluation : aucun NSG ne peut rouvrir." },
+      { "id": "b", "text": "Une Azure Policy qui audite les NSG ouvrant 3389 et 22.", "correct": false, "why": "L'audit signale mais ne bloque pas le trafic." },
+      { "id": "c", "text": "Un NSG central associé à chaque sous-réseau par l'équipe réseau.", "correct": false, "why": "Les équipes peuvent remplacer ou modifier les NSG ; aucune garantie." },
+      { "id": "d", "text": "Une security admin rule Allow pour le reste du trafic.", "correct": false, "why": "Allow laisse ensuite les NSG décider : ne bloque rien." }
+    ],
+    "explanation": "Security admin rules : globales, au niveau VNet, évaluées avant les NSG. Deny et Always Allow court-circuitent les NSG ; Allow les laisse décider.",
+    "lesson": "2.3#s-2-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-security-admins"]
+  },
+  {
+    "id": "q-2.3-02", "objective": "2.3", "skills": ["2.3.1"], "type": "single", "difficulty": 2,
+    "scenario": "Un NSG contient une règle personnalisée Deny Any à la priorité 4000. Une VM du même VNet n'arrive plus à joindre une autre VM du VNet, alors qu'« il existe une règle par défaut AllowVNetInBound ».",
+    "stem": "Pourquoi ?",
+    "options": [
+      { "id": "a", "text": "Les règles par défaut ont les priorités les plus basses (65000 et plus) : la règle 4000 est évaluée avant et bloque.", "correct": true, "why": "Le traitement s'arrête à la première règle qui correspond, par ordre de priorité croissant." },
+      { "id": "b", "text": "Les règles par défaut sont désactivées dès qu'on ajoute une règle personnalisée.", "correct": false, "why": "Elles restent présentes ; on ne peut que les surpasser par priorité." },
+      { "id": "c", "text": "Les NSG ne sont pas stateful pour le trafic interne au VNet.", "correct": false, "why": "Les NSG sont toujours stateful." },
+      { "id": "d", "text": "AllowVNetInBound ne s'applique qu'au trafic venant d'un VNet appairé.", "correct": false, "why": "Le tag VirtualNetwork couvre aussi le VNet lui-même." }
+    ],
+    "explanation": "Priorités 100 à 4096 pour les règles personnalisées ; défauts 65000, 65001, 65500. Les règles par défaut ne se suppriment pas mais sont toujours évaluées en dernier.",
+    "lesson": "2.3#s-2-3-1",
+    "sources": ["https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"]
+  },
+  {
+    "id": "q-2.3-03", "objective": "2.3", "skills": ["2.3.3"], "type": "single", "difficulty": 3,
+    "scenario": "Brisemer migre vers Virtual WAN avec un hub sécurisé (Azure Firewall). Exigence : tout le trafic **entre sites, entre VNet et entre hubs** doit être inspecté, ainsi que la sortie Internet des VNet.",
+    "stem": "Que configurez-vous sur le hub ?",
+    "options": [
+      { "id": "a", "text": "Un routing intent avec une Private Traffic policy et une Internet Traffic policy, next hop Azure Firewall du hub.", "correct": true, "why": "Private couvre branche/VNet/inter-hub ; Internet annonce 0.0.0.0/0 et inspecte la sortie." },
+      { "id": "b", "text": "Des UDR dans chaque spoke vers l'IP privée du pare-feu.", "correct": false, "why": "Approche hub-and-spoke classique ; avec Virtual WAN, le routing intent remplace cette gestion manuelle." },
+      { "id": "c", "text": "Seulement une Internet Traffic policy.", "correct": false, "why": "Le trafic privé (branches, VNet, inter-hub) ne serait pas inspecté." },
+      { "id": "d", "text": "Des tables de routage personnalisées avec le routing intent.", "correct": false, "why": "Le routing intent est incompatible avec les tables de routage personnalisées." }
+    ],
+    "explanation": "Au plus une policy Internet et une Private par hub. La route par défaut ne se propage pas entre hubs : chaque hub sort par sa propre solution de sécurité.",
+    "lesson": "2.3#s-2-3-3",
+    "sources": ["https://learn.microsoft.com/en-us/azure/virtual-wan/how-to-routing-policies", "https://learn.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub"]
+  },
+  {
+    "id": "q-2.3-04", "objective": "2.3", "skills": ["2.3.5"], "type": "single", "diagnostic": true, "difficulty": 2,
+    "scenario": "Les commerciaux nomades de Brisemer accèdent aujourd'hui à une application interne (serveur on-premises) par un VPN client. Le RSSI veut supprimer ce VPN, appliquer MFA et appareil conforme **à cette application précise**, et ne jamais donner un accès réseau complet.",
+    "stem": "Quelle solution recommandez-vous ?",
+    "options": [
+      { "id": "a", "text": "Microsoft Entra Private Access : client Global Secure Access, connecteur de réseau privé, application Global Secure Access (per-app) avec une politique d'accès conditionnel.", "correct": true, "why": "Accès par application, sans VPN, contrôlé par l'accès conditionnel." },
+      { "id": "b", "text": "Un VPN point à site avec authentification Microsoft Entra.", "correct": false, "why": "Améliore l'authentification mais donne toujours un accès réseau, et garde un VPN." },
+      { "id": "c", "text": "Publier l'application sur Internet derrière Azure Firewall.", "correct": false, "why": "Expose l'application et ne fournit pas de contrôle par utilisateur et appareil." },
+      { "id": "d", "text": "Un private endpoint vers le serveur on-premises.", "correct": false, "why": "Les private endpoints visent des services Private Link, pas un serveur interne pour des nomades." }
+    ],
+    "explanation": "Quick Access pour les ressources toujours tunnelées, application per-app pour des politiques différenciées. Le connecteur relaie vers la ressource interne.",
+    "lesson": "2.3#s-2-3-5",
+    "sources": ["https://learn.microsoft.com/en-us/entra/global-secure-access/concept-private-access"]
+  },
+  {
+    "id": "q-2.3-05", "objective": "2.3", "skills": ["2.3.6"], "type": "single", "difficulty": 2,
+    "scenario": "Un private endpoint vers `stbrisemerdata01` (sous-ressource blob) a été créé dans le spoke. Les VM du spoke continuent pourtant de joindre le stockage par son IP publique.",
+    "stem": "Quelle est la cause la plus probable ?",
+    "options": [
+      { "id": "a", "text": "La zone DNS privée privatelink.blob.core.windows.net n'est pas liée au VNet (ou pas utilisée par le DNS du spoke), donc le nom résout vers l'IP publique.", "correct": true, "why": "Sans résolution vers l'IP privée, les clients utilisent toujours le point d'accès public." },
+      { "id": "b", "text": "Un private endpoint ne fonctionne qu'avec la sous-ressource file.", "correct": false, "why": "Chaque sous-ressource a son propre private endpoint ; blob est prise en charge." },
+      { "id": "c", "text": "Le private endpoint doit être dans la même région que le compte de stockage.", "correct": false, "why": "Le private endpoint doit être dans la région de son VNet ; la ressource peut être ailleurs." },
+      { "id": "d", "text": "Il faut un Private Link service devant le compte de stockage.", "correct": false, "why": "Private Link service sert à publier son propre service, pas à consommer Storage." }
+    ],
+    "explanation": "Le DNS est le point de défaillance n° 1 des private endpoints. Et un private endpoint ne coupe pas l'accès public : il faut aussi régler le pare-feu ou désactiver l'accès public.",
+    "lesson": "2.3#s-2-3-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview", "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns"]
+  },
+  {
+    "id": "q-2.3-06", "objective": "2.3", "skills": ["2.3.7"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer développe une API de suivi de conteneurs hébergée sur des VM derrière un Standard Load Balancer. Ses clients (autres tenants Azure) doivent la consommer en privé, sans peering ni exposition Internet.",
+    "stem": "Que met en place Brisemer ?",
+    "options": [
+      { "id": "a", "text": "Un Private Link service devant le Standard Load Balancer ; chaque client crée un private endpoint vers son alias, approuvé par Brisemer.", "correct": true, "why": "C'est le côté fournisseur de Private Link." },
+      { "id": "b", "text": "Un private endpoint dans le VNet de Brisemer vers chaque client.", "correct": false, "why": "Inversé : le private endpoint est créé côté consommateur." },
+      { "id": "c", "text": "Un peering global avec chaque client.", "correct": false, "why": "Exclu par l'énoncé, et expose plus que l'API." },
+      { "id": "d", "text": "Un Application Gateway public avec WAF.", "correct": false, "why": "Expose l'API sur Internet." }
+    ],
+    "explanation": "Private endpoint = consommer. Private Link service = publier son service derrière un Standard Load Balancer, avec alias, visibilité et approbation.",
+    "lesson": "2.3#s-2-3-7",
+    "sources": ["https://learn.microsoft.com/en-us/azure/private-link/private-link-service-overview", "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"]
+  },
+  {
+    "id": "q-2.3-07", "objective": "2.3", "skills": ["2.3.8"], "type": "single", "difficulty": 2,
+    "scenario": "Brisemer doit détecter des signatures d'attaque dans le trafic **HTTPS sortant** des serveurs et filtrer selon le chemin complet des URL (pas seulement le nom de domaine).",
+    "stem": "Quel SKU d'Azure Firewall faut-il au minimum ?",
+    "options": [
+      { "id": "a", "text": "Premium.", "correct": true, "why": "Inspection TLS sortante, IDPS et filtrage d'URL complet sont réservés à Premium." },
+      { "id": "b", "text": "Standard.", "correct": false, "why": "Standard filtre par FQDN et catégories web, sans inspection TLS ni IDPS." },
+      { "id": "c", "text": "Basic.", "correct": false, "why": "Basic n'a ni IDPS ni inspection TLS, et la threat intelligence n'y est qu'en alerte." },
+      { "id": "d", "text": "N'importe lequel, avec Azure Firewall Manager.", "correct": false, "why": "Firewall Manager gère les politiques, il n'ajoute pas de capacités d'inspection." }
+    ],
+    "explanation": "Premium : TLS forward proxy, IDPS géré, URL filtering. L'inspection TLS **entrante** se fait avec Application Gateway.",
+    "lesson": "2.3#s-2-3-8",
+    "sources": ["https://learn.microsoft.com/en-us/azure/firewall/choose-firewall-sku"]
+  },
+  {
+    "id": "q-2.3-08", "objective": "2.3", "skills": ["2.3.9"], "type": "single", "difficulty": 1,
+    "scenario": "Une connexion TCP 1433 entre `vm-app01` et `vm-sql01` échoue. Vous voulez savoir si un NSG la bloque, et lequel.",
+    "stem": "Quel outil Network Watcher utilisez-vous en premier ?",
+    "options": [
+      { "id": "a", "text": "IP flow verify.", "correct": true, "why": "Il teste un 5-tuple et renvoie Allow ou Deny avec la règle responsable." },
+      { "id": "b", "text": "Next hop.", "correct": false, "why": "Donne le prochain saut de routage, pas la décision de filtrage." },
+      { "id": "c", "text": "VNet flow logs.", "correct": false, "why": "Montre ce qui a circulé a posteriori, pas une réponse immédiate pour un flux précis." },
+      { "id": "d", "text": "Packet capture.", "correct": false, "why": "Utile ensuite, mais ne nomme pas la règle qui bloque." }
+    ],
+    "explanation": "IP flow verify ou NSG diagnostics pour « quelle règle bloque ? », effective security rules pour « quelles règles s'appliquent ? », next hop pour le routage.",
+    "lesson": "2.3#s-2-3-9",
+    "sources": ["https://learn.microsoft.com/en-us/azure/network-watcher/ip-flow-verify-overview", "https://learn.microsoft.com/en-us/azure/network-watcher/effective-security-rules-overview"]
+  },
+  {
+    "id": "q-2.3-09", "objective": "2.3", "skills": ["2.3.4"], "type": "multiple", "difficulty": 2,
+    "scenario": "La conformité de Brisemer exige que le tunnel site à site vers Azure n'utilise que AES-256 GCM, une PFS forte et des durées de vie de SA définies, et que les télétravailleurs en point à site soient soumis à MFA.",
+    "stem": "Quelles **deux** configurations répondent à ces exigences ?",
+    "options": [
+      { "id": "a", "text": "Une politique IPsec/IKE personnalisée sur la connexion site à site.", "correct": true, "why": "Permet d'imposer chiffrement, intégrité, groupes DH, PFS et durées de vie." },
+      { "id": "b", "text": "L'authentification Microsoft Entra ID sur la passerelle point à site, avec une politique d'accès conditionnel exigeant la MFA.", "correct": true, "why": "Avec Entra ID, la connexion P2S bénéficie de l'accès conditionnel." },
+      { "id": "c", "text": "L'authentification par certificat pour le point à site.", "correct": false, "why": "Un certificat seul n'apporte pas l'accès conditionnel ni la MFA." },
+      { "id": "d", "text": "Une passerelle VPN policy-based.", "correct": false, "why": "Ne répond pas aux exigences et limite les fonctionnalités." },
+      { "id": "e", "text": "Un NSG sur le GatewaySubnet.", "correct": false, "why": "Ne règle pas les algorithmes IPsec ni la MFA." }
+    ],
+    "explanation": "S2S : politiques IPsec/IKE personnalisées. P2S : authentification Entra ID pour l'accès conditionnel et la MFA.",
+    "lesson": "2.3#s-2-3-4",
+    "sources": ["https://learn.microsoft.com/en-us/azure/vpn-gateway/ipsec-ike-policy-howto", "https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-entra-gateway"]
+  },
+  {
+    "id": "q-2.3-10", "objective": "2.3", "skills": ["2.3.1", "2.3.6"], "type": "single", "difficulty": 3,
+    "scenario": "Un NSG est associé au sous-réseau `snet-pe` qui héberge des private endpoints. Une règle Deny devrait bloquer l'accès d'un sous-réseau de test au private endpoint du coffre, mais le trafic passe.",
+    "stem": "Que faut-il vérifier ?",
+    "options": [
+      { "id": "a", "text": "Que les network policies pour private endpoints sont activées sur le sous-réseau.", "correct": true, "why": "Sans cette activation, les NSG (et UDR, ASG) ne s'appliquent pas aux private endpoints." },
+      { "id": "b", "text": "Que le NSG est associé à la carte réseau du private endpoint.", "correct": false, "why": "La carte d'un private endpoint est en lecture seule ; on agit au niveau du sous-réseau." },
+      { "id": "c", "text": "Que la règle utilise le service tag AzureKeyVault.", "correct": false, "why": "Le trafic vise l'IP privée du private endpoint ; le tag n'est pas la cause." },
+      { "id": "d", "text": "Que le NSG flow log est activé.", "correct": false, "why": "Journaliser ne bloque pas, et les flow logs ne couvrent d'ailleurs pas le trafic entrant vers un private endpoint." }
+    ],
+    "explanation": "Les private endpoints prennent en charge NSG, UDR et ASG via les **network policies** du sous-réseau (`--private-endpoint-network-policies Enabled`). Les effective security rules ne s'affichent pas pour leur carte réseau.",
+    "lesson": "2.3#s-2-3-6",
+    "sources": ["https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"]
+  },
+  {
+    "id": "q-2.3-11", "objective": "2.3", "skills": ["2.3.2"], "type": "single", "difficulty": 2,
+    "scenario": "L'équipe supervision centrale doit toujours pouvoir joindre les VM sur le port 5986, même si une équipe applicative écrit un NSG trop restrictif.",
+    "stem": "Quelle action de security admin rule utilisez-vous ?",
+    "options": [
+      { "id": "a", "text": "Always Allow.", "correct": true, "why": "Autorise et termine l'évaluation : les NSG ne peuvent plus bloquer ce flux." },
+      { "id": "b", "text": "Allow.", "correct": false, "why": "Allow laisse ensuite les NSG décider : un NSG restrictif bloquerait." },
+      { "id": "c", "text": "Deny avec exception.", "correct": false, "why": "Le besoin est de garantir un flux, pas de le bloquer." },
+      { "id": "d", "text": "Une règle NSG priorité 100 dans chaque NSG.", "correct": false, "why": "Les équipes peuvent la modifier ; aucune garantie centrale." }
+    ],
+    "explanation": "Always Allow : la garantie de flux centrale. Deny : le blocage central. Allow : une base que les NSG peuvent affiner.",
+    "lesson": "2.3#s-2-3-2",
+    "sources": ["https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-security-admins"]
+  }
+]
